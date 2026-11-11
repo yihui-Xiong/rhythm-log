@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Get started with Rhythm Log, an iPhone app for exploring training, HRV, and recovery from Apple Health. Sleep tracking is optional.">
+<title>Rhythm Log · Get started</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@600&family=Instrument+Serif&display=swap">
+</head>
+<body>
+<header class="masthead shell">
+  <a class="brand" href="./">Rhythm Log</a>
+  <nav aria-label="Main navigation"><a href="#setup">Set up</a><a href="portfolio/">Screenshots</a><a href="methods.html">Evidence &amp; methods</a></nav>
+</header>
+<main class="shell">
+  <section class="hero" aria-labelledby="intro">
+    <div>
+      <h1 id="intro">Get to know<br>your rhythm</h1>
+      <p class="lede">Explore how your heart readings, workouts, and daily activity change over time. Start with the data you already have in Apple Health.</p>
+      <div class="actions"><a class="button" href="#setup">Get started</a><a href="portfolio/">Explore the app screens</a></div>
+    </div>
+    <figure class="hero-media">
+      <a href="portfolio/#day"><img src="portfolio/screenshots/02-day-timeline.png" width="644" height="1400" alt="Daily HRV dial with hourly estimates and a sleep arc"></a>
+      <a href="portfolio/#training"><img src="portfolio/screenshots/14-week-training.png" width="644" height="1400" alt="Weekly training minutes stacked by activity"></a>
+      <figcaption>iPhone simulator · Synthetic data</figcaption>
+    </figure>
+  </section>
+  <section class="section split" id="setup">
+    <h2>Start with Apple Health</h2>
+    <div class="stack">
+      <ol class="steps">
+        <li><h3>Open Rhythm Log</h3><p>Run the Xcode project on an iPhone. You can explore the same screens with sample records in the simulator. <a href="https://github.com/yihui-Xiong/rhythm-log#run-the-app">Open the installation guide</a>.</p></li>
+        <li><h3>Choose what to share</h3><p>Tap <strong>Connect Apple Health</strong>. Allow the records you want to explore, such as heart rate, HRV, steps, and workouts. Sleep and overnight readings are optional.</p></li>
+        <li><h3>Open a day with records</h3><p>Tap the date to choose a day. Start with a day that includes a workout or several heart readings. Use Week or Month when you want to look for a pattern.</p></li>
+      </ol>
+      <p class="callout">Rhythm Log reads the Health records you share on your iPhone. You can review or update access in Settings. A gap can mean there are no matching records or that the app lacks read access.</p>
+    </div>
+  </section>
+  <section class="section split" id="explore">
+    <h2>Three ways to explore</h2>
+    <div class="stack">
+      <div><h3><a href="portfolio/#day">Day timeline</a></h3><p>Hold a position on the 24-hour dial to inspect an hourly HRV estimate. Scroll for recorded heart rate, HRV, resting heart rate, steps, sleep stages, and workouts. Open a chart’s history or raw readings when you want to check the underlying data.</p></div>
+      <div><h3><a href="portfolio/#training">Training</a></h3><p>Compare seven-day blocks of workout minutes by sport. Tap a bar, then a workout, to see heart rate and available zone times. Use the pace scatterplot and one-minute heart-rate recovery chart to compare workouts of the same type.</p></div>
+      <div><h3><a href="portfolio/#recovery">Recovery, with or without sleep</a></h3><p>Start with daytime HRV, resting heart rate, and steps. Tap a date in the HRV chart to see its activity context. If you share sleep records, explore sleep timing by wake date, overnight HRV, and overnight vitals when recorded.</p></div>
+      <div><h3><a href="portfolio/#navigation">Calendars and history</a></h3><p>In Month, switch between charts and calendars. A training date opens its workout list in Day; a recovery date opens the day’s timeline. Year shows monthly heart metrics.</p></div>
+    </div>
+  </section>
+  <section class="section split" id="interpret">
+    <h2>Read the trend in context</h2>
+    <div class="stack">
+      <p>The HRV score ranks eligible readings against your own recent history. A score near 70 means roughly 70% of reference values were higher. It has no clinical cutoff.</p>
+      <p>Check how many days contributed before comparing periods. For pace and heart rate, compare similar workouts and consider conditions such as heat, grade, and cooldown. <a href="methods.html">Read the evidence and how the app calculates each view</a>.</p>
+    </div>
+  </section>
+</main>
+<footer class="shell">Rhythm Log · <a href="https://github.com/yihui-Xiong/rhythm-log">Source on GitHub</a> · <a href="portfolio/">Full screenshot gallery</a></footer>
+</body>
+</html>

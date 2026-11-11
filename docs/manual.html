@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="How to use Rhythm Log, connect Apple Health, read your daily timeline, and explore training and recovery.">
+<title>Rhythm Log · User manual</title>
+<link rel="icon" type="image/svg+xml" href="rhythm-mark.svg">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="portfolio/manual.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;family=Instrument+Serif&amp;display=swap">
+<script src="portfolio/manual.js" defer></script>
+</head>
+<body class="story-page">
+<header class="masthead shell" id="top">
+  <nav aria-label="Main navigation"><a href="./">Home</a><a href="#setup">Setup</a><a href="#evidence">Evidence</a></nav>
+  <a class="brand brand-lockup" href="./"><img src="rhythm-mark.svg" width="30" height="30" alt="">Rhythm Log</a>
+</header>
+<main>
+  <section class="manual-intro shell" aria-labelledby="manual-title">
+    <h1 id="manual-title">User manual</h1>
+    <p>Find the controls for Apple Health, the daily timeline, training, and recovery. Screens use synthetic data.</p>
+    <a href="#setup">Installation and permissions</a>
+  </section>
+  <nav class="chapter-nav" aria-label="Story chapters"><div class="shell chapter-links">
+    <a href="#start">Apple Health</a>
+    <a href="#day">Day timeline</a>
+    <a href="#workouts">Workout detail</a>
+    <a href="#training">Training</a>
+    <a href="#recovery">Recovery</a>
+    <a href="#navigation">Calendar &amp; settings</a>
+    <a href="#setup">Setup</a>
+    <a href="#evidence">Evidence</a>
+  </div></nav>
+  <div class="story-layout shell">
+    <figure class="story-device" data-story-device hidden>
+      <div class="story-phone"><img data-story-screen src="portfolio/screenshots/01-welcome.png" width="644" height="1400" alt="Rhythm Log welcome screen"></div>
+      <figcaption>iPhone simulator · Sample data</figcaption>
+    </figure>
+    <div class="story-scenes">
+      <section class="story-chapter" id="start" aria-labelledby="start-title">
+        <header class="chapter-intro"><p>Apple Health</p><h2 id="start-title">Your data, your choice.</h2><p>The experience begins with the records you already have.</p></header>
+        <article class="story-scene" id="01-welcome">
+          <div><h3>A starting point for your own data</h3><p>Rhythm Log reads the Apple Health records you choose to share. A daytime profile can start with heart readings, workouts, and steps. Sleep is optional.</p><p class="manual-instruction"><strong>How to use it</strong> On first launch, tap Connect Apple Health and choose the records you want to share.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/01-welcome.png" width="644" height="1400" loading="lazy" alt="A starting point for your own data in Rhythm Log">
+        </article>
+      </section>
+      <section class="story-chapter" id="day" aria-labelledby="day-title">
+        <header class="chapter-intro"><p>Day timeline</p><h2 id="day-title">One day, in context.</h2><p>A single number means more when you can see the day around it.</p></header>
+        <article class="story-scene" id="02-day-timeline">
+          <div><h3>Twenty-four hours on one dial</h3><p>Hourly HRV estimates sit beside sleep and workout arcs. In this sample, the dial reads 47%, and hours without observations stay blank.</p><p class="manual-instruction"><strong>How to use it</strong> Hold a point on the dial to inspect its hourly HRV estimate. The info button explains the daily score.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/02-day-timeline.png" width="644" height="1400" loading="lazy" alt="Twenty-four hours on one dial in Rhythm Log">
+        </article>
+        <article class="story-scene" id="03-score-guide">
+          <div><h3>What 47% actually means</h3><p>About 47% of the person’s eligible historical daily medians were higher. It’s a position within their recent history, with a separate comparison for overnight data.</p><p class="manual-instruction"><strong>How to use it</strong> Open Understanding Pressure to see what the daily and overnight scores compare.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/03-score-guide.png" width="644" height="1400" loading="lazy" alt="What 47% actually means in Rhythm Log">
+        </article>
+        <article class="story-scene" id="04-day-hrv">
+          <div><h3>The measurements underneath</h3><p>Individual dots show SDNN in milliseconds. The shaded band is the person’s daytime reference range, and the bars below summarize available readings by hour.</p><p class="manual-instruction"><strong>How to use it</strong> Scroll to Heart Readings. Tap a dot to inspect a sample or open 30-Day Trend beneath the chart.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/04-day-hrv.png" width="644" height="1400" loading="lazy" alt="The measurements underneath in Rhythm Log">
+        </article>
+        <article class="story-scene" id="05-hrv-history">
+          <div><h3>A day becomes a month</h3><p>The history view puts daily medians on the same axis, so a single day can be seen alongside the past month and the number of days that contributed.</p><p class="manual-instruction"><strong>How to use it</strong> Open the HRV history from the daily chart. Move across the plot to inspect earlier dates.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/05-hrv-history.png" width="644" height="1400" loading="lazy" alt="A day becomes a month in Rhythm Log">
+        </article>
+        <article class="story-scene" id="06-raw-readings">
+          <div><h3>Every dot has a source</h3><p>The underlying records show the time, value, and source. An unusual point can be traced back to the measurement that produced it.</p><p class="manual-instruction"><strong>How to use it</strong> Tap View All Readings beneath the chart to open its sample list.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/06-raw-readings.png" width="644" height="1400" loading="lazy" alt="Every dot has a source in Rhythm Log">
+        </article>
+        <article class="story-scene" id="07-day-steps">
+          <div><h3>When movement happened</h3><p>A daily step total hides the shape of the day. The hourly chart makes this sample’s short burst of activity visible.</p><p class="manual-instruction"><strong>How to use it</strong> Scroll to Hourly Steps in the Day view.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/07-day-steps.png" width="644" height="1400" loading="lazy" alt="When movement happened in Rhythm Log">
+        </article>
+        <article class="story-scene" id="08-sleep-stages">
+          <div><h3>The shape of a night</h3><p>Recorded stages give the sleep arc more detail. The expanded list shows where each interval began and ended.</p><p class="manual-instruction"><strong>How to use it</strong> Under Sleep, open Sleep Details to inspect individual stage intervals.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/08-sleep-stages.png" width="644" height="1400" loading="lazy" alt="The shape of a night in Rhythm Log">
+        </article>
+        <article class="story-scene" id="09-day-workouts">
+          <div><h3>A run appears in the day</h3><p>The running entry brings time, duration, and available active energy into the same timeline as heart readings.</p><p class="manual-instruction"><strong>How to use it</strong> Scroll to Workouts and select Running.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/09-day-workouts.png" width="644" height="1400" loading="lazy" alt="A run appears in the day in Rhythm Log">
+        </article>
+      </section>
+      <section class="story-chapter" id="workouts" aria-labelledby="workouts-title">
+        <header class="chapter-intro"><p>Workout detail</p><h2 id="workouts-title">Inside a 35-minute run.</h2><p>The summary, heart-rate trace, and monthly calendar tell different parts of the same workout story.</p></header>
+        <article class="story-scene" id="10-workout-overview">
+          <div><h3>The run at a glance</h3><p>This sample run lasted just over 35 minutes and averaged 145 BPM. Its header shows where the session falls among runs that month.</p><p class="manual-instruction"><strong>How to use it</strong> Open a workout to see its duration, energy, and available heart-rate statistics. Scroll down for the zone breakdown.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/10-workout-overview.png" width="644" height="1400" loading="lazy" alt="The run at a glance in Rhythm Log">
+        </article>
+        <article class="story-scene" id="11-workout-zones">
+          <div><h3>Most of the time fell in Zones 3 and 4</h3><p>The bars show where the accounted-for time went. The note identifies whether those times came from recorded zones or estimates from heart-rate samples.</p><p class="manual-instruction"><strong>How to use it</strong> Look for the longest bar in Time in Zones and check its BPM boundaries.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/11-workout-zones.png" width="644" height="1400" loading="lazy" alt="Most of the time fell in Zones 3 and 4 in Rhythm Log">
+        </article>
+        <article class="story-scene" id="12-workout-heart-rate">
+          <div><h3>Intensity over the course of the run</h3><p>The time axis shows how heart rate changed during the session. Raw and color-coded views offer two ways to see the same available readings.</p><p class="manual-instruction"><strong>How to use it</strong> Switch between Raw and Color-coded above the chart. Select a mark or open View All Readings to inspect the recorded samples.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/12-workout-heart-rate.png" width="644" height="1400" loading="lazy" alt="Intensity over the course of the run in Rhythm Log">
+        </article>
+        <article class="story-scene" id="13-workout-calendar">
+          <div><h3>One session in a longer habit</h3><p>The workout calendar highlights other days with the same activity, giving this run a place in the month.</p><p class="manual-instruction"><strong>How to use it</strong> In This Month, tap a highlighted date to open that day’s workout list.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/13-workout-calendar.png" width="644" height="1400" loading="lazy" alt="One session in a longer habit in Rhythm Log">
+        </article>
+      </section>
+    </div>
+  </div>
+  <section class="feature-chapter training-chapter" id="training" aria-labelledby="training-title">
+    <div class="shell feature-inner">
+      <header class="feature-heading" data-reveal>
+        <p class="feature-label">Training</p>
+        <h2 id="training-title">A lighter week.<br>But where?</h2>
+        <p>Two seven-day blocks show the change. The workout list and performance views show what was behind it.</p>
+      </header>
+      <div class="training-layout">
+        <figure class="week-comparison" aria-labelledby="week-title" data-reveal>
+          <figcaption><h3 id="week-title">Workout minutes</h3><p>Two seven-day blocks from the sample timeline</p></figcaption>
+          <div class="week-bars" role="group" aria-label="Select a seven-day period">
+            <button class="week-bar" type="button" data-week="previous" aria-pressed="false">
+              <span class="bar-space"><span class="bar-fill" style="--amount:100%"></span></span>
+              <strong>221.2 <small>min</small></strong><span>Oct 28–Nov 3</span>
+            </button>
+            <button class="week-bar" type="button" data-week="latest" aria-pressed="true">
+              <span class="bar-space"><span class="bar-fill" style="--amount:66.28%"></span></span>
+              <strong>146.6 <small>min</small></strong><span>Nov 4–10</span>
+            </button>
+          </div>
+          <div class="week-result" aria-live="polite"><strong id="week-delta">−74.6 min</strong><p id="week-note">Compared with the previous block. Strength training accounts for the largest change.</p></div>
+        </figure>
+        <div class="training-screens" data-screen-picker>
+          <div class="scene-picker" role="group" aria-label="Training views" data-controls hidden>
+          <button type="button" data-screen="14-week-training" aria-pressed="true">Volume</button>
+          <button type="button" data-screen="15-week-workouts" aria-pressed="false">Workouts</button>
+          <button type="button" data-screen="16-training-performance" aria-pressed="false">Performance</button>
+          <button type="button" data-screen="17-training-calendar" aria-pressed="false">Calendar</button>
+          </div>
+        <article class="story-scene" id="14-week-training">
+          <div><h3>146.6 minutes, down 75</h3><p>The sample week is lighter than the preceding seven-day block. Strength training accounts for the largest drop, visible in the sport-level comparison.</p><p class="manual-instruction"><strong>How to use it</strong> Open Week → Training. Select a colored bar to see its seven-day block and workout count.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/14-week-training.png" width="644" height="1400" loading="lazy" alt="146.6 minutes, down 75 in Rhythm Log">
+        </article>
+        <article class="story-scene" id="15-week-workouts">
+          <div><h3>The sessions behind the bars</h3><p>The weekly list shows the individual runs and strength sessions that contributed to the selected block.</p><p class="manual-instruction"><strong>How to use it</strong> Expand the workout count beneath the bars. Tap a row to inspect the session itself.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/15-week-workouts.png" width="644" height="1400" loading="lazy" alt="The sessions behind the bars in Rhythm Log">
+        </article>
+        <article class="story-scene" id="16-training-performance">
+          <div><h3>Pace and recovery tell different stories</h3><p>The upper plot compares heart rate at similar paces. The lower one shows how far heart rate dropped a minute after exercise, where a matched reading exists.</p><p class="manual-instruction"><strong>How to use it</strong> Scroll to Training Performance. Pick an activity and setting, then compare points at nearby paces. Use the lower chart for one-minute heart-rate recovery.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/16-training-performance.png" width="644" height="1400" loading="lazy" alt="Pace and recovery tell different stories in Rhythm Log">
+        </article>
+        <article class="story-scene" id="17-training-calendar">
+          <div><h3>The spacing between workouts</h3><p>A monthly view makes clusters and gaps easier to see. Each workout day can show its main activity and total recorded minutes.</p><p class="manual-instruction"><strong>How to use it</strong> In Month → Training, switch to the calendar and pick a date.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/17-training-calendar.png" width="644" height="1400" loading="lazy" alt="The spacing between workouts in Rhythm Log">
+        </article>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="feature-chapter recovery-chapter" id="recovery" aria-labelledby="recovery-title">
+    <div class="shell feature-inner">
+      <header class="feature-heading" data-reveal>
+        <p class="feature-label">Recovery</p>
+        <h2 id="recovery-title">Your recovery,<br>day or night.</h2>
+        <p>Two sample profiles show how the recovery view changes with the records available.</p>
+      </header>
+      <div class="recovery-profile" data-controls hidden>
+        <div class="profile-picker" role="group" aria-label="Select a sample profile">
+          <button type="button" data-profile="day" aria-pressed="true">Daytime only</button>
+          <button type="button" data-profile="night" aria-pressed="false">With overnight data</button>
+        </div>
+      </div>
+      <div class="recovery-layout">
+        <div class="recovery-figures" aria-live="polite">
+          <figure class="recovery-figure" data-recovery-figure="day" data-reveal>
+            <figcaption><h3>Daytime HRV</h3><p>November sample · no sleep records</p></figcaption>
+            <p class="recovery-value">43.7 <span>ms median</span></p>
+            <div class="coverage-label"><span>Days with an HRV value</span><strong>10 of 11</strong></div>
+            <div class="coverage-track" aria-hidden="true"><span></span></div>
+            <p class="recovery-caption">The daytime series can provide a baseline even when no nights are recorded.</p>
+          </figure>
+          <figure class="recovery-figure" data-recovery-figure="night" data-reveal>
+            <figcaption><h3>Sleep timing</h3><p>Sample session ending Nov 11 · local time</p></figcaption>
+            <p class="recovery-value">7.9 <span>hours recorded</span></p>
+            <div class="sleep-axis" role="img" aria-label="Sample sleep session from 11:18 PM to 7:13 AM">
+              <div class="sleep-track" aria-hidden="true"><span></span></div>
+              <div class="sleep-ticks" aria-hidden="true"><span>6 PM</span><span>Midnight</span><span>6 AM</span><span>Noon</span></div>
+            </div>
+            <p class="recovery-caption">11:18 PM to 7:13 AM. The app groups this session under the date the person woke up.</p>
+          </figure>
+        </div>
+        <div class="recovery-screens" data-screen-picker>
+      <div data-recovery-panel="day">
+        <div class="scene-picker" role="group" aria-label="Recovery views" data-controls hidden>
+          <button type="button" data-screen="18-recovery-no-sleep" aria-pressed="true">HRV trend</button>
+          <button type="button" data-screen="19-recovery-activity" aria-pressed="false">Heart rate & steps</button>
+        </div>
+        <article class="story-scene" id="18-recovery-no-sleep">
+          <div><h3>A daytime baseline still takes shape</h3><p>With no nights recorded, the daytime HRV series still shows measured days, a seven-day median, and the person’s recent range.</p><p class="manual-instruction"><strong>How to use it</strong> Open Month → Recovery. Select a date in the HRV plot to see its recorded activity context.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/18-recovery-no-sleep.png" width="644" height="1400" loading="lazy" alt="A daytime baseline still takes shape in Rhythm Log">
+        </article>
+        <article class="story-scene" id="19-recovery-activity">
+          <div><h3>Resting heart rate and steps add context</h3><p>The same profile can compare resting heart rate and movement across periods. Coverage counts show how many days each comparison represents.</p><p class="manual-instruction"><strong>How to use it</strong> Scroll below HRV to Resting Heart Rate and Daily Steps. Compare each with the previous period.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/19-recovery-activity.png" width="644" height="1400" loading="lazy" alt="Resting heart rate and steps add context in Rhythm Log">
+        </article>
+      </div>
+      <div data-recovery-panel="night">
+        <div class="scene-picker" role="group" aria-label="Recovery views" data-controls hidden>
+          <button type="button" data-screen="20-sleep-timing" aria-pressed="true">Sleep timing</button>
+          <button type="button" data-screen="21-overnight-hrv" aria-pressed="false">Overnight HRV</button>
+          <button type="button" data-screen="22-overnight-vitals" aria-pressed="false">Heart & breathing rates</button>
+          <button type="button" data-screen="23-oxygen-and-wrist-temperature" aria-pressed="false">Oxygen & wrist temperature</button>
+        </div>
+        <article class="story-scene" id="20-sleep-timing">
+          <div><h3>When a night crosses midnight</h3><p>For a profile with sleep records, the wake date keeps the session together. Each row can pair its sleep timing with overnight HRV and wake-day resting heart rate.</p><p class="manual-instruction"><strong>How to use it</strong> When sleep records exist, select a row in Sleep &amp; Recovery to see its timing and available wake-day measurements.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/20-sleep-timing.png" width="644" height="1400" loading="lazy" alt="When a night crosses midnight in Rhythm Log">
+        </article>
+        <article class="story-scene" id="21-overnight-hrv">
+          <div><h3>A separate overnight comparison</h3><p>Daytime and overnight readings have their own reference histories. The night series keeps gaps where there aren’t enough measurements.</p><p class="manual-instruction"><strong>How to use it</strong> In the HRV Trend card, tap Overnight when that option is available.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/21-overnight-hrv.png" width="644" height="1400" loading="lazy" alt="A separate overnight comparison in Rhythm Log">
+        </article>
+        <article class="story-scene" id="22-overnight-vitals">
+          <div><h3>One night, several measurements</h3><p>Sleep heart rate and respiratory rate share a date axis. Each uses its own units and recent personal range.</p><p class="manual-instruction"><strong>How to use it</strong> Expand Overnight Vitals and select a date to inspect the same night across metrics.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/22-overnight-vitals.png" width="644" height="1400" loading="lazy" alt="One night, several measurements in Rhythm Log">
+        </article>
+        <article class="story-scene" id="23-oxygen-and-wrist-temperature">
+          <div><h3>What changed relative to recent nights</h3><p>Blood oxygen and wrist temperature have separate bands. A highlight signals a difference from recent records, while a gap shows that a usable measurement was unavailable.</p><p class="manual-instruction"><strong>How to use it</strong> Scroll to Blood Oxygen and Wrist Temperature. Look for the shaded ranges and any highlighted points.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/23-oxygen-and-wrist-temperature.png" width="644" height="1400" loading="lazy" alt="What changed relative to recent nights in Rhythm Log">
+        </article>
+      </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="story-layout shell">
+    <figure class="story-device" data-story-device hidden>
+      <div class="story-phone"><img data-story-screen src="portfolio/screenshots/24-recovery-calendar.png" width="644" height="1400" alt="Rhythm Log recovery calendar"></div>
+      <figcaption>iPhone simulator · Sample data</figcaption>
+    </figure>
+    <div class="story-scenes">
+      <section class="story-chapter" id="navigation" aria-labelledby="navigation-title">
+        <header class="chapter-intro"><p>Calendar &amp; settings</p><h2 id="navigation-title">From a single day to a year.</h2><p>Calendars and preferences give the same records a different scale.</p></header>
+        <article class="story-scene" id="24-recovery-calendar">
+          <div><h3>A month of daily context</h3><p>The recovery calendar places each day’s HRV score or selected heart metric in the month, with a direct route back to its daily records.</p><p class="manual-instruction"><strong>How to use it</strong> Open Month → Recovery and switch to the calendar. Choose a metric from the menu, then tap a date.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/24-recovery-calendar.png" width="644" height="1400" loading="lazy" alt="A month of daily context in Rhythm Log">
+        </article>
+        <article class="story-scene" id="25-year-trends">
+          <div><h3>Patterns that take longer to emerge</h3><p>Monthly summaries bring heart rate, HRV, and resting heart rate into a wider view. A shorter time range can supply more context for any month that stands out.</p><p class="manual-instruction"><strong>How to use it</strong> Switch to Year and scroll through heart rate, HRV, and resting heart rate.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/25-year-trends.png" width="644" height="1400" loading="lazy" alt="Patterns that take longer to emerge in Rhythm Log">
+        </article>
+        <article class="story-scene" id="26-date-picker">
+          <div><h3>The date stays at the center</h3><p>Day, Week, Month, and Year change the view around a selected date. Today brings the timeline back to the present.</p><p class="manual-instruction"><strong>How to use it</strong> Tap the date heading, choose a day in the picker, and tap Done.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/26-date-picker.png" width="644" height="1400" loading="lazy" alt="The date stays at the center in Rhythm Log">
+        </article>
+        <article class="story-scene" id="27-settings">
+          <div><h3>Preferences and access in one place</h3><p>Language, appearance, and Apple Health access can be revisited as tracking habits change.</p><p class="manual-instruction"><strong>How to use it</strong> Tap the gear to change language or appearance, or revisit Apple Health access.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/27-settings.png" width="644" height="1400" loading="lazy" alt="Preferences and access in one place in Rhythm Log">
+        </article>
+        <article class="story-scene" id="28-manual-zones">
+          <div><h3>Zones can reflect your own boundaries</h3><p>Four example thresholds show how custom BPM boundaries determine the zones assigned to eligible heart-rate readings.</p><p class="manual-instruction"><strong>How to use it</strong> Open Manual Heart Rate Zones and enter four increasing BPM boundaries when your preferred HealthKit zones are unavailable.</p></div>
+          <img class="scene-image" src="portfolio/screenshots/28-manual-zones.png" width="644" height="1400" loading="lazy" alt="Zones can reflect your own boundaries in Rhythm Log">
+        </article>
+      </section>
+    </div>
+  </div>
+  <div class="shell story-end">
+  <section class="section split" id="setup">
+    <h2>Start with Apple Health</h2>
+    <div class="stack">
+      <ol class="steps">
+        <li><h3>Open Rhythm Log</h3><p>Run the Xcode project on an iPhone. You can explore the same screens with sample records in the simulator. <a href="https://github.com/yihui-Xiong/rhythm-log#run-the-app">Open the installation guide</a>.</p></li>
+        <li><h3>Choose what to share</h3><p>Tap <strong>Connect Apple Health</strong>. Allow the records you want to explore, such as heart rate, HRV, steps, and workouts. Sleep and overnight readings are optional. <a href="#start">See the first-run screen</a>.</p></li>
+        <li><h3>Open a day with records</h3><p>Tap the date to choose a day. Start with a day that includes a workout or several heart readings. Use Week or Month when you want to look for a pattern.</p></li>
+      </ol>
+      <p class="callout">Rhythm Log reads the Health records you share on your iPhone. You can review or update access in Settings. A gap can mean there are no matching records or that the app lacks read access.</p>
+    </div>
+  </section>
+    <section class="section" id="evidence" aria-labelledby="evidence-title">
+      <h2 id="evidence-title">Evidence and methods</h2>
+      <details class="evidence-details">
+        <summary>How the metrics are calculated and what the research supports</summary>
+        <div class="copy evidence-copy">
+<p class="lede">How Rhythm Log turns Apple Health records into daily views and personal trends, and where the evidence ends.</p>
+
+  <h3>Heart rate variability</h3>
+  <p>HealthKit stores HRV as SDNN in milliseconds, the standard deviation of intervals between normal heartbeats. The ESC/NASPE Task Force emphasizes comparable recording duration and circumstances. In a study of short ECG segments, agreement improved with longer recording windows, especially for SDNN. An Apple Watch validation study compared derived HRV during controlled rest and mild cognitive stress in 20 healthy volunteers and found gaps in the watch interval series. These studies support examining HRV under comparable conditions. They did not test Rhythm Log’s score or everyday passive sampling. <a href="#ref-hrv">Sources 1–4</a></p>
+  <p><strong>Rhythm Log’s daily score.</strong> It ranks the median of eligible daytime readings against the same source’s daily medians from the previous 30 days, with at least seven reference days. It uses local 06:00–22:00 and excludes recorded workout and asleep intervals. Historical values above the current median count toward the rank and ties count half. The app maps the result to 1–100. A higher score means the current HRV was lower relative to more of that personal history. Individual chart colors use a separate comparison with historical readings. The four bands and minimum counts are app design choices. They describe relative position in the data and have no validated cutoff for stress, readiness, or disease.</p>
+  <p><strong>Recovery trend.</strong> The daily HRV chart uses medians with at least two eligible readings from one source. The trailing seven-day median needs at least four days with values. The shaded historical range uses the 10th–90th percentiles from the prior 30 days when at least seven values exist. Daytime and overnight are separate series. Changes in sampling time, device, or source can change what gets into the trend, even with a personal baseline.</p>
+
+  <h3>Training and comparable sessions</h3>
+  <p><strong>Training volume.</strong> The app groups recorded workout minutes by activity over eight rolling seven-day blocks. The latest block for an ongoing period ends yesterday. The typical week is a median across the available earlier blocks after initial empty blocks are dropped, with a minimum of three blocks. Minutes describe duration. Effort, intensity, and mechanical load can differ across workouts of equal duration.</p>
+  <p><strong>Pace and heart rate.</strong> Each point uses workout duration divided by recorded distance, paired with the workout’s HealthKit average heart rate. The comparison groups by activity and indoor/outdoor metadata, when available, and compares the latest valid point with the median of earlier points within 15 seconds per kilometer. This tolerance is an app choice. Similar pace gives a starting point for comparison. Grade, weather, hydration, workout structure, and sensor accuracy can still affect the result. Heat and dehydration changed cardiovascular responses in a controlled exercise study, and wrist-monitor agreement varied across activities in an ECG comparison. <a href="#ref-exercise">Sources 5–6</a></p>
+  <p><strong>Workout zones.</strong> Recorded zone times are used when supplied with the workout. With available thresholds and no recorded times, the app estimates time between adjacent heart-rate samples, crediting up to two minutes per interval. The percentages describe the accounted-for zone time. The workout detail’s average and maximum are calculated from heart-rate readings in the workout’s time window. Those values can differ from the recorded workout average used in the pace chart. <a href="#ref-zones">Source 7</a></p>
+
+  <h3>One-minute heart-rate recovery</h3>
+  <p>Apple’s HealthKit type represents the drop from peak exercise heart rate to the reading one minute after exercise. Rhythm Log displays a stored sample only when it can be matched unambiguously by activity, source, and timing. Missing or ambiguous matches stay blank. Research links heart-rate recovery to post-exercise physiology, and a controlled comparison found that active versus passive recovery and posture affect the result. Clinical treadmill protocols are distinct from the app’s comparison of ordinary workouts. Compare trends within similar activity and cooldown conditions. <a href="#ref-hrr">Sources 8–10</a></p>
+
+  <h3>Recovery without overnight wear</h3>
+  <p>Daytime HRV, resting heart rate, steps, and recorded workouts can populate independently of sleep data. When there are overnight records, the app groups asleep segments by the main session’s wake date. Overnight heart rate, breathing rate, blood oxygen, and wrist temperature use available samples overlapping those segments. Each displayed range is the 10th–90th percentile of that metric’s prior 30 nights, with at least seven nights measured. The calculation belongs to Rhythm Log. Apple’s own Vitals app also presents personal ranges, and its feature availability varies by model and region. A value beyond the app’s band describes a difference from recorded history. <a href="#ref-overnight">Sources 11–12</a></p>
+  <p>HealthKit read permissions are granular, and the app cannot directly distinguish denied read access from an empty result. Check coverage counts and the underlying records in Apple Health before interpreting a blank or a change. <a href="#ref-access">Source 13</a></p>
+
+  <h3 id="references">References</h3>
+  <ol>
+    <li id="ref-hrv"><a href="https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilitysdnn">Apple Developer. HealthKit SDNN definition.</a></li>
+    <li><a href="https://www.escardio.org/static-file/Escardio/Guidelines/Scientific-Statements/guidelines-Heart-Rate-Variability-FT-1996.pdf">ESC/NASPE Task Force (1996). Heart rate variability measurement and interpretation standards.</a></li>
+    <li><a href="https://doi.org/10.1371/journal.pone.0138921">Muñoz et al. (2015). Validity of (ultra-)short recordings for HRV measurements.</a></li>
+    <li><a href="https://doi.org/10.3390/s18082619">Hernando et al. (2018). Apple Watch HRV validation during rest and mild cognitive stress.</a></li>
+    <li id="ref-exercise"><a href="https://doi.org/10.1152/jappl.1997.82.4.1229">González-Alonso et al. (1997). Dehydration and cardiovascular function during exercise in the heat.</a></li>
+    <li><a href="https://pubmed.ncbi.nlm.nih.gov/28709155/">Gillinov et al. (2017). Variable accuracy of wearable heart-rate monitors during aerobic exercise.</a></li>
+    <li id="ref-zones"><a href="https://support.apple.com/en-gb/guide/watch/apd897dccddf/watchos">Apple Watch User Guide. View and edit heart-rate zones.</a></li>
+    <li id="ref-hrr"><a href="https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartraterecoveryoneminute">Apple Developer. HealthKit one-minute heart-rate recovery definition.</a></li>
+    <li><a href="https://doi.org/10.1056/NEJM199910283411804">Cole et al. (1999). Heart-rate recovery after graded exercise in a clinical cohort.</a></li>
+    <li><a href="https://pubmed.ncbi.nlm.nih.gov/24149885/">Barak et al. (2011). Heart-rate recovery across four post-exercise protocols.</a></li>
+    <li id="ref-overnight"><a href="https://support.apple.com/en-ie/120142">Apple Support. Overnight vitals and typical ranges.</a></li>
+    <li><a href="https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingwristtemperature">Apple Developer. Sleeping wrist temperature samples.</a></li>
+    <li id="ref-access"><a href="https://developer.apple.com/documentation/healthkit/authorizing-access-to-health-data">Apple Developer. Authorizing access to health data.</a></li>
+  </ol>
+        </div>
+      </details>
+    </section>
+  </div>
+</main>
+<footer class="shell"><a href="https://github.com/yihui-Xiong/rhythm-log">Source on GitHub</a> · <a href="https://github.com/yihui-Xiong/rhythm-log/tree/main/docs/portfolio/screenshots">Portfolio screenshots</a></footer>
+</body>
+</html>

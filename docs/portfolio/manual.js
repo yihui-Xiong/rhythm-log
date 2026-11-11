@@ -119,10 +119,10 @@ for (const button of weekButtons) {
   button.addEventListener("click", () => {
     const latest = button.dataset.week === "latest";
     for (const option of weekButtons) option.setAttribute("aria-pressed", String(option === button));
-    weekDelta.textContent = latest ? "−75 min" : "+75 min";
+    weekDelta.textContent = latest ? "−74.6 min" : "+74.6 min";
     weekNote.textContent = latest
       ? "Compared with the previous block. Strength training accounts for the largest change."
-      : "Compared with the following block. This earlier week recorded 222 minutes.";
+      : "Compared with the following block. This earlier week recorded 221.2 minutes.";
   });
 }
 

@@ -2,7 +2,7 @@
 
 Every image is an iPhone simulator capture with synthetic records. The scrolling app story includes both a daytime-only profile and one with overnight records. This index links to the original screenshots in walkthrough order.
 
-[Explore the app story](index.html) · [Project description](project-description.md)
+[Rhythm Log homepage](../index.html) · [User manual](../manual.html) · [Project description](project-description.md)
 
 ## Getting started
 

@@ -1,8 +1,8 @@
 # Rhythm Log portfolio assets
 
-Every image is an iPhone simulator capture with synthetic records. The gallery includes both a daytime-only profile and one with overnight records. The files are organized in walkthrough order.
+Every image is an iPhone simulator capture with synthetic records. The guided walkthrough includes both a daytime-only profile and one with overnight records. This index links to the original screenshots in walkthrough order.
 
-[Open the gallery](index.html) · [Project description](project-description.md)
+[Start the guided walkthrough](index.html) · [Project description](project-description.md)
 
 ## Getting started
 

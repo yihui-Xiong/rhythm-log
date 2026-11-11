@@ -1,0 +1,222 @@
+.tour-shell {
+  width: min(1240px, 100% - 3rem);
+  margin-inline: auto;
+}
+.tour-intro {
+  display: flex;
+  gap: 1rem 2.2rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+  padding-block: 1.45rem 1.25rem;
+}
+.tour-intro h1 { font-size: clamp(2.65rem, 4.6vw, 4.4rem); }
+.tour-intro p { max-width: 42ch; color: var(--muted); }
+.tour {
+  display: grid;
+  grid-template-columns: minmax(166px, .7fr) minmax(310px, 1.38fr) minmax(280px, 1.1fr);
+  grid-template-areas: "sidebar stage guide" "sidebar stage controls";
+  grid-template-rows: auto 1fr;
+  gap: 1.25rem clamp(1.05rem, 2.8vw, 2.4rem);
+  align-items: start;
+  padding-block: 0 2.3rem;
+}
+.tour-sidebar { grid-area: sidebar; min-width: 0; }
+.tour-sidebar nav { display: block; }
+.tour-sidebar h2 {
+  font: 600 .74rem var(--sans);
+  color: var(--muted);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .5rem .55rem;
+}
+.tour-sidebar ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#chapters { display: grid; gap: .28rem; }
+#chapters a {
+  display: block;
+  min-height: 58px;
+  text-decoration: none;
+  border-radius: .62rem;
+  border-inline-start: 3px solid transparent;
+  padding: .55rem .65rem;
+  color: var(--ink);
+  font-size: .93rem;
+  line-height: 1.35;
+}
+#chapters a:hover { background: #f0ecf7; }
+#chapters a[aria-current] { background: var(--wash); border-color: var(--violet); color: var(--violet); }
+.chapter-title { display: block; font-weight: 700; }
+.chapter-goal { display: block; margin-top: .16rem; font-size: .77rem; color: var(--muted); }
+.step-index {
+  border-top: 1px solid var(--line);
+  margin-top: 1rem;
+  padding: .65rem .65rem 0;
+  font-size: .86rem;
+}
+.step-index summary { cursor: pointer; font-weight: 600; min-height: 32px; }
+#step-index { display: grid; gap: .38rem; padding-bottom: .75rem; }
+#step-index a { display: block; line-height: 1.35; }
+#step-index a[aria-current] { font-weight: 700; }
+.chapter-select { display: none; }
+.tour-guide {
+  grid-area: guide;
+  display: grid;
+  min-width: 0;
+  gap: .55rem;
+  padding-top: .55rem;
+}
+.tour-location {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font: 600 .76rem "IBM Plex Mono", ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--violet);
+}
+#step-count { white-space: nowrap; }
+#progress { width: 100%; height: 4px; accent-color: var(--violet); }
+.tour-copy { padding-top: 1rem; }
+.tour-copy h2 { font-size: clamp(2.55rem, 4.35vw, 4.1rem); text-wrap: balance; }
+.tour-instruction { margin-top: 1.45rem; }
+.tour-copy h3 { margin-bottom: .3rem; font-size: .94rem; }
+.tour-copy p { color: var(--muted); }
+.tour-insight {
+  margin-top: 1.2rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.2rem;
+}
+.sleep-choice { margin-top: .35rem; font-size: .92rem; }
+.tour-controls {
+  grid-area: controls;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  min-width: 0;
+}
+.tour-controls button {
+  appearance: none;
+  font: 700 .91rem var(--sans);
+  min-height: 44px;
+  padding: .63rem .9rem;
+  border: 1px solid var(--line);
+  border-radius: .48rem;
+  color: var(--ink);
+  background: var(--surface);
+  cursor: pointer;
+}
+.tour-controls button:disabled { opacity: .55; cursor: default; }
+.tour-controls #next { background: var(--violet); border-color: var(--violet); color: white; }
+.tour-controls #next:not(:disabled):hover { background: #3f278b; }
+.tour-controls button:focus-visible, .hotspot:focus-visible, .chapter-select select:focus-visible {
+  outline: 3px solid var(--violet);
+  outline-offset: 3px;
+}
+.tour-stage {
+  grid-area: stage;
+  background: radial-gradient(ellipse at 50% 48%, var(--stage-center, #f4effb) 5%, var(--stage-edge, #ded5f2) 100%);
+  border: 1px solid #e1d8ee;
+  border-radius: 1.25rem;
+  min-width: 0;
+  padding: .95rem .7rem .72rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .7rem;
+}
+.tour[data-chapter="day"], .tour[data-chapter="navigation"] { --stage-center: #edf5fb; --stage-edge: #d7e5f4; }
+.tour[data-chapter="training"], .tour[data-chapter="workouts"] { --stage-center: #fcf3e8; --stage-edge: #f1dece; }
+.phone {
+  position: relative;
+  width: clamp(216px, calc((100dvh - 220px) * .45), 286px);
+  max-width: 100%;
+  border: 6px solid #241d32;
+  border-radius: 2rem;
+  background: #f7f3fb;
+  box-shadow: 0 13px 30px #3e26502e;
+}
+.phone img { width: 100%; border-radius: calc(2rem - 6px); }
+.hotspot {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+.hotspot span {
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: var(--violet);
+  color: white;
+  box-shadow: 0 0 0 3px #5037a337, 0 3px 9px #30204438;
+  font: 700 .93rem var(--sans);
+}
+.hotspot[hidden] { display: none; }
+.hotspot:hover span { background: #3f278b; box-shadow: 0 0 0 5px #5037a33b; }
+.tour-stage figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .15rem .85rem;
+  color: #4e4462;
+  font-size: .78rem;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 980px) {
+  .tour {
+    grid-template-columns: minmax(245px, 1fr) minmax(260px, 1fr);
+    grid-template-areas: "sidebar sidebar" "stage guide" "stage controls";
+    grid-template-rows: auto auto 1fr;
+  }
+  .tour-sidebar { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; }
+  .tour-sidebar nav { display: none; }
+  .step-index { order: 1; border: 0; margin: 0; padding: 0; }
+  .chapter-select { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .6rem; font-size: .87rem; font-weight: 600; }
+  .chapter-select select {
+    min-height: 44px;
+    max-width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: .4rem;
+    padding: .4rem .55rem;
+  }
+}
+@media (max-width: 590px) {
+  .tour-shell { width: calc(100% - 2rem); }
+  .tour { grid-template-columns: minmax(0, 1fr); grid-template-areas: "sidebar" "guide" "stage" "controls"; gap: 1.05rem; }
+  .tour-intro { display: block; }
+  .tour-intro p { margin-top: .5rem; }
+  .tour-copy { padding-top: .6rem; }
+  .tour-copy h2 { font-size: clamp(2.45rem, 10vw, 3.5rem); }
+  .tour-instruction, .tour-insight { margin-top: .85rem; }
+  .tour-insight { padding-top: .8rem; }
+  .tour-controls { justify-content: space-between; }
+  .tour-stage { padding: 1rem .85rem .8rem; }
+  .phone { width: min(75%, 260px); }
+}

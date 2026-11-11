@@ -1,67 +1,83 @@
 <!doctype html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rhythm Log · App walkthrough</title>
+<meta name="description" content="Follow an interactive, step-by-step Rhythm Log demo using sample Apple Health records.">
+<title>Rhythm Log · Guided walkthrough</title>
 <link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="walkthrough.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@600&family=Instrument+Serif&display=swap">
-</head><body>
-<header class="masthead shell">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Serif&display=swap">
+<script src="steps.js" defer></script>
+<script src="walkthrough.js" defer></script>
+</head>
+<body>
+<header class="masthead tour-shell">
   <a class="brand" href="../">Rhythm Log</a>
-  <nav aria-label="Main navigation"><a href="../#setup">Set up</a><a href="../methods.html">Evidence &amp; methods</a><a href="project-description.md">Portfolio copy</a></nav>
+  <nav aria-label="Main navigation">
+    <a href="../#setup">Setup guide</a><a href="../methods.html">Evidence &amp; methods</a><a href="project-description.md">Portfolio copy</a>
+  </nav>
 </header>
-<main class="shell">
-  <section class="copy">
+<main class="tour-shell">
+  <div class="tour-intro">
     <h1>App walkthrough</h1>
-    <p class="lede">Explore the iPhone interface with synthetic workouts, heart readings, activity, and optional sleep records. Select any image to open the full screenshot.</p>
-    <nav aria-label="Walkthrough sections"><ul class="gallery-nav">
-<li><a href="#start">Getting started</a></li>
-<li><a href="#day">Day timeline and readings</a></li>
-<li><a href="#workouts">Workout detail</a></li>
-<li><a href="#training">Training analysis</a></li>
-<li><a href="#recovery">Daytime and overnight recovery</a></li>
-<li><a href="#navigation">Calendars, navigation, and preferences</a></li>
-</ul></nav></section>
-<section class="section" id="start"><h2>Getting started</h2><div class="gallery-grid">
-<figure class="shot"><a href="screenshots/01-welcome.png" aria-label="Open screenshot: Welcome and Apple Health access"><img src="screenshots/01-welcome.png" loading="lazy" width="644" height="1400" alt="Welcome and Apple Health access"></a><figcaption><h3>Welcome and Apple Health access</h3><p>The first-run screen introduces Day, Training, and Recovery, explains that sleep is optional, and opens Apple Health’s read-permission flow.</p></figcaption></figure>
-</div></section>
-<section class="section" id="day"><h2>Day timeline and readings</h2><div class="gallery-grid">
-<figure class="shot"><a href="screenshots/02-day-timeline.png" aria-label="Open screenshot: 24-hour timeline"><img src="screenshots/02-day-timeline.png" loading="lazy" width="644" height="1400" alt="24-hour timeline"></a><figcaption><h3>24-hour timeline</h3><p>A full day of synthetic HRV, sleep, and activity. Hold the dial to inspect an hourly estimate; use the cards below to open related readings.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/03-score-guide.png" aria-label="Open screenshot: How the HRV score works"><img src="screenshots/03-score-guide.png" loading="lazy" width="644" height="1400" alt="How the HRV score works"></a><figcaption><h3>How the HRV score works</h3><p>The in-app guide explains the personal comparison and its separate daytime and overnight reference histories.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/04-day-hrv.png" aria-label="Open screenshot: Daytime HRV and its reference band"><img src="screenshots/04-day-hrv.png" loading="lazy" width="644" height="1400" alt="Daytime HRV and its reference band"></a><figcaption><h3>Daytime HRV and its reference band</h3><p>See individual SDNN measurements in milliseconds and the personal reference shading. The pressure timeline groups readings by hour.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/05-hrv-history.png" aria-label="Open screenshot: 30-day HRV history"><img src="screenshots/05-hrv-history.png" loading="lazy" width="644" height="1400" alt="30-day HRV history"></a><figcaption><h3>30-day HRV history</h3><p>Open history from the day chart to inspect daily medians, data coverage, and dates with no readings.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/06-raw-readings.png" aria-label="Open screenshot: Individual HealthKit readings"><img src="screenshots/06-raw-readings.png" loading="lazy" width="644" height="1400" alt="Individual HealthKit readings"></a><figcaption><h3>Individual HealthKit readings</h3><p>Open the record list to check the timestamp, value, and source behind plotted measurements.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/07-day-steps.png" aria-label="Open screenshot: Hourly activity"><img src="screenshots/07-day-steps.png" loading="lazy" width="644" height="1400" alt="Hourly activity"></a><figcaption><h3>Hourly activity</h3><p>The Day view groups steps into hourly totals. The same section leads to the sleep and workout blocks when records exist.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/08-sleep-stages.png" aria-label="Open screenshot: Sleep stages and raw intervals"><img src="screenshots/08-sleep-stages.png" loading="lazy" width="644" height="1400" alt="Sleep stages and raw intervals"></a><figcaption><h3>Sleep stages and raw intervals</h3><p>Color bands show recorded sleep stages. Expand the list to inspect individual start and end times.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/09-day-workouts.png" aria-label="Open screenshot: Workouts on the day timeline"><img src="screenshots/09-day-workouts.png" loading="lazy" width="644" height="1400" alt="Workouts on the day timeline"></a><figcaption><h3>Workouts on the day timeline</h3><p>A workout row shows activity, time, duration, and active energy when recorded. It opens the same detail screen as the training report.</p></figcaption></figure>
-</div></section>
-<section class="section" id="workouts"><h2>Workout detail</h2><div class="gallery-grid">
-<figure class="shot"><a href="screenshots/10-workout-overview.png" aria-label="Open screenshot: Workout summary"><img src="screenshots/10-workout-overview.png" loading="lazy" width="644" height="1400" alt="Workout summary"></a><figcaption><h3>Workout summary</h3><p>View duration, active energy, heart-rate statistics, and available recovery. The header gives the workout’s position among sessions of that type.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/11-workout-zones.png" aria-label="Open screenshot: Time in heart-rate zones"><img src="screenshots/11-workout-zones.png" loading="lazy" width="644" height="1400" alt="Time in heart-rate zones"></a><figcaption><h3>Time in heart-rate zones</h3><p>Bars show accounted-for time and BPM boundaries. The app labels recorded zone time or estimates based on adjacent readings.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/12-workout-heart-rate.png" aria-label="Open screenshot: Heart-rate chart during a workout"><img src="screenshots/12-workout-heart-rate.png" loading="lazy" width="644" height="1400" alt="Heart-rate chart during a workout"></a><figcaption><h3>Heart-rate chart during a workout</h3><p>Switch between Raw and Color-coded readings, inspect heart rate across the session, and open the underlying samples.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/13-workout-calendar.png" aria-label="Open screenshot: Workout frequency and month calendar"><img src="screenshots/13-workout-calendar.png" loading="lazy" width="644" height="1400" alt="Workout frequency and month calendar"></a><figcaption><h3>Workout frequency and month calendar</h3><p>The workout detail highlights other days with the same activity. Select a day to open its workout list.</p></figcaption></figure>
-</div></section>
-<section class="section" id="training"><h2>Training analysis</h2><div class="gallery-grid">
-<figure class="shot"><a href="screenshots/14-week-training.png" aria-label="Open screenshot: Weekly training volume"><img src="screenshots/14-week-training.png" loading="lazy" width="644" height="1400" alt="Weekly training volume"></a><figcaption><h3>Weekly training volume</h3><p>Eight rolling seven-day blocks show recorded minutes by sport. The selected block compares total minutes and highlights the largest sport-level change.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/15-week-workouts.png" aria-label="Open screenshot: Weekly workout drill-down"><img src="screenshots/15-week-workouts.png" loading="lazy" width="644" height="1400" alt="Weekly workout drill-down"></a><figcaption><h3>Weekly workout drill-down</h3><p>Expand the list below a selected bar to review the workouts that contribute to that block.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/16-training-performance.png" aria-label="Open screenshot: Pace versus heart rate and one-minute recovery"><img src="screenshots/16-training-performance.png" loading="lazy" width="644" height="1400" alt="Pace versus heart rate and one-minute recovery"></a><figcaption><h3>Pace versus heart rate and one-minute recovery</h3><p>Choose an activity and setting. Compare average heart rate at similar paces and review recorded post-workout recovery on a separate chart.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/17-training-calendar.png" aria-label="Open screenshot: Monthly training calendar"><img src="screenshots/17-training-calendar.png" loading="lazy" width="644" height="1400" alt="Monthly training calendar"></a><figcaption><h3>Monthly training calendar</h3><p>Each day can show a main activity and total workout minutes. Tap a day to open its workouts.</p></figcaption></figure>
-</div></section>
-<section class="section" id="recovery"><h2>Daytime and overnight recovery</h2><div class="gallery-grid">
-<figure class="shot"><a href="screenshots/18-recovery-no-sleep.png" aria-label="Open screenshot: Daytime HRV without sleep data"><img src="screenshots/18-recovery-no-sleep.png" loading="lazy" width="644" height="1400" alt="Daytime HRV without sleep data"></a><figcaption><h3>Daytime HRV without sleep data</h3><p>This sample profile has no sleep records. Daily HRV, the seven-day median, the prior range, and recorded same-day context still populate.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/19-recovery-activity.png" aria-label="Open screenshot: Resting heart rate and daily steps"><img src="screenshots/19-recovery-activity.png" loading="lazy" width="644" height="1400" alt="Resting heart rate and daily steps"></a><figcaption><h3>Resting heart rate and daily steps</h3><p>Compare coverage and medians with the previous period. These two series also work with no sleep history.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/20-sleep-timing.png" aria-label="Open screenshot: Sleep timing by wake date"><img src="screenshots/20-sleep-timing.png" loading="lazy" width="644" height="1400" alt="Sleep timing by wake date"></a><figcaption><h3>Sleep timing by wake date</h3><p>When sleep exists, select a night to review its time span, sleep duration, overnight HRV, and wake-date resting heart rate.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/21-overnight-hrv.png" aria-label="Open screenshot: Daytime and overnight HRV"><img src="screenshots/21-overnight-hrv.png" loading="lazy" width="644" height="1400" alt="Daytime and overnight HRV"></a><figcaption><h3>Daytime and overnight HRV</h3><p>The Overnight view uses a separate series and baseline. Gaps remain visible when the app lacks enough measurements.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/22-overnight-vitals.png" aria-label="Open screenshot: Sleep heart rate and respiratory rate"><img src="screenshots/22-overnight-vitals.png" loading="lazy" width="644" height="1400" alt="Sleep heart rate and respiratory rate"></a><figcaption><h3>Sleep heart rate and respiratory rate</h3><p>Charts use a shared date axis and metric-specific units and personal ranges. Select a night to inspect its values.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/23-oxygen-and-wrist-temperature.png" aria-label="Open screenshot: Blood oxygen and wrist temperature"><img src="screenshots/23-oxygen-and-wrist-temperature.png" loading="lazy" width="644" height="1400" alt="Blood oxygen and wrist temperature"></a><figcaption><h3>Blood oxygen and wrist temperature</h3><p>Available measurements appear in their own units. Gaps and values outside the prior personal range are visible.</p></figcaption></figure>
-</div></section>
-<section class="section" id="navigation"><h2>Calendars, navigation, and preferences</h2><div class="gallery-grid">
-<figure class="shot"><a href="screenshots/24-recovery-calendar.png" aria-label="Open screenshot: Monthly recovery calendar"><img src="screenshots/24-recovery-calendar.png" loading="lazy" width="644" height="1400" alt="Monthly recovery calendar"></a><figcaption><h3>Monthly recovery calendar</h3><p>Use the metric menu to switch between HRV score, HRV, heart rate, and resting heart rate. Tap a date for the Day view.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/25-year-trends.png" aria-label="Open screenshot: Yearly heart trends"><img src="screenshots/25-year-trends.png" loading="lazy" width="644" height="1400" alt="Yearly heart trends"></a><figcaption><h3>Yearly heart trends</h3><p>Monthly aggregates show longer-term patterns in heart rate, HRV, and resting heart rate.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/26-date-picker.png" aria-label="Open screenshot: Date picker"><img src="screenshots/26-date-picker.png" loading="lazy" width="644" height="1400" alt="Date picker"></a><figcaption><h3>Date picker</h3><p>Jump to a date from the date heading, then use Day, Week, Month, or Year to change the view.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/27-settings.png" aria-label="Open screenshot: Language, appearance, and Health access"><img src="screenshots/27-settings.png" loading="lazy" width="644" height="1400" alt="Language, appearance, and Health access"></a><figcaption><h3>Language, appearance, and Health access</h3><p>Settings include English and Simplified Chinese, display preferences, manual zones, and a way to update Apple Health permissions.</p></figcaption></figure>
-<figure class="shot"><a href="screenshots/28-manual-zones.png" aria-label="Open screenshot: Manual zone boundaries"><img src="screenshots/28-manual-zones.png" loading="lazy" width="644" height="1400" alt="Manual zone boundaries"></a><figcaption><h3>Manual zone boundaries</h3><p>Enter four increasing BPM boundaries when your preferred HealthKit zone settings are unavailable. The values shown here are synthetic.</p></figcaption></figure>
-</div></section>
-</main><footer class="shell"><a href="../">Back to onboarding</a> · <a href="../methods.html">Evidence and methods</a></footer></body></html>
+    <p>Follow a sample day from your first Apple Health connection to training and recovery.</p>
+  </div>
+  <div class="tour" id="tour">
+    <aside class="tour-sidebar">
+      <nav aria-label="Walkthrough chapters">
+        <h2>Chapters</h2>
+        <ol id="chapters"></ol>
+      </nav>
+      <details class="step-index">
+        <summary>Find a screen</summary>
+        <ol id="step-index"></ol>
+      </details>
+      <label class="chapter-select">Jump to chapter
+        <select id="chapter-select"></select>
+      </label>
+    </aside>
+    <section class="tour-guide" aria-labelledby="step-title">
+      <div class="tour-location">
+        <span id="current-chapter">Get started</span>
+        <span id="step-count">01 / 28</span>
+      </div>
+      <progress id="progress" aria-label="Walkthrough progress" value="1" max="28"></progress>
+      <div class="tour-copy">
+        <h2 id="step-title" tabindex="-1">Start with what you track</h2>
+        <div class="tour-instruction">
+          <h3>In the app</h3>
+          <p id="step-action">On first launch, tap Connect Apple Health and choose the records you want to share.</p>
+        </div>
+        <div class="tour-insight">
+          <h3>What to look for</h3>
+          <p id="step-context">Heart rate, workouts, and steps can power the daytime views. You can leave sleep access off and add it later in Settings.</p>
+        </div>
+      </div>
+      <div id="sleep-choice" class="sleep-choice" hidden>
+        <a href="#24-recovery-calendar">Skip overnight screens</a>
+      </div>
+    </section>
+    <figure class="tour-stage" id="stage">
+      <div class="phone" id="phone">
+        <img id="screen" src="screenshots/01-welcome.png" alt="Rhythm Log first-run welcome and Apple Health access" width="644" height="1400">
+        <button type="button" id="hotspot" class="hotspot" hidden><span aria-hidden="true">↗</span></button>
+      </div>
+      <figcaption>
+        <span id="stage-caption">iPhone preview · Sample data</span>
+        <a id="full-screen" href="screenshots/01-welcome.png" target="_blank" rel="noopener">View full size</a>
+      </figcaption>
+    </figure>
+    <nav class="tour-controls" aria-label="Step navigation">
+        <button type="button" id="previous" disabled>Back</button>
+        <button type="button" id="next">Next step <span aria-hidden="true">→</span></button>
+      </nav>
+    <div class="visually-hidden" id="announcement" role="status"></div>
+  </div>
+  <noscript><p>Turn on JavaScript for the guided tour, or open the <a href="README.md">screen descriptions and original images</a>.</p></noscript>
+</main>
+<footer class="tour-shell"><a href="../">Back to onboarding</a> · <a href="../methods.html">How the metrics are calculated</a></footer>
+</body>
+</html>

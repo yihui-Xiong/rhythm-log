@@ -7,7 +7,7 @@ A native iPhone app for exploring heart rate, heart rate variability (HRV), trai
 - **Recovery** — Explore daytime HRV, resting heart rate, and steps. With sleep data, view sleep timing by wake date, overnight HRV, and four overnight vitals.
 - **Month and Year** — Use monthly calendars to open a specific day and yearly charts to see monthly averages.
 
-[Onboarding](https://yihui-xiong.github.io/rhythm-log/) · [App story](https://yihui-xiong.github.io/rhythm-log/portfolio/) · [Evidence and methods](https://yihui-xiong.github.io/rhythm-log/methods.html) · [简体中文说明](README.zh-Hans.md)
+[Onboarding](https://yihui-xiong.github.io/rhythm-log/) · [App story](https://yihui-xiong.github.io/rhythm-log/#start) · [Evidence and methods](https://yihui-xiong.github.io/rhythm-log/#evidence) · [简体中文说明](README.zh-Hans.md)
 
 ## Run the app
 
@@ -21,4 +21,4 @@ Open `HealthTimeline.xcodeproj` with an Xcode version that includes the iOS 27 S
 
 Rhythm Log reads authorized HealthKit records on the device. The app’s queries request read access only. Its reference bands and HRV score describe personal history and are intended for exploratory use. The public screenshots contain synthetic records.
 
-The shared workout screen uses time-window heart-rate readings for its displayed average and maximum. The pace scatterplot uses the workout’s HealthKit average when available, so the figures can differ. One-minute recovery appears only when a HealthKit recovery sample can be matched to a workout. See the [methods page](docs/methods.html) for the full definitions and evidence.
+The shared workout screen uses time-window heart-rate readings for its displayed average and maximum. The pace scatterplot uses the workout’s HealthKit average when available, so the figures can differ. One-minute recovery appears only when a HealthKit recovery sample can be matched to a workout. See the [methods page](docs/index.html#evidence) for the full definitions and evidence.

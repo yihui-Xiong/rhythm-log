@@ -1,6 +1,6 @@
 # Rhythm Log
 
-[英文说明](README.md) · [上手指南](docs/index.html) · [示例截图](docs/portfolio/index.html) · [研究依据与计算方法](docs/methods.html)
+[英文说明](README.md) · [上手指南](docs/index.html) · [示例截图](docs/index.html#start) · [研究依据与计算方法](docs/index.html#evidence)
 
 一个使用 SwiftUI、Swift Charts 和 HealthKit 的 iPhone App。选择日期，就能回看 Apple「健康」里已保存的心率、心率变异性（SDNN）、静息心率、步数、睡眠和体能训练。
 

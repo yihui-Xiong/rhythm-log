@@ -3,55 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rhythm Log · Evidence and methods</title>
-<link rel="stylesheet" href="styles.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@600&family=Instrument+Serif&display=swap">
+<title>Rhythm Log</title>
+<script>location.replace("./" + (location.hash || "#evidence"));</script>
 </head>
-<body>
-<header class="masthead shell">
-  <a class="brand" href="./">Rhythm Log</a>
-  <nav aria-label="Main navigation"><a href="./#setup">Set up</a><a href="portfolio/">App story</a><a href="#references">References</a></nav>
-</header>
-<main class="shell copy">
-  <h1>Evidence and methods</h1>
-  <p class="lede">How Rhythm Log turns Apple Health records into daily views and personal trends, and where the evidence ends.</p>
-
-  <h2>Heart rate variability</h2>
-  <p>HealthKit stores HRV as SDNN in milliseconds, the standard deviation of intervals between normal heartbeats. The ESC/NASPE Task Force emphasizes comparable recording duration and circumstances. In a study of short ECG segments, agreement improved with longer recording windows, especially for SDNN. An Apple Watch validation study compared derived HRV during controlled rest and mild cognitive stress in 20 healthy volunteers and found gaps in the watch interval series. These studies support examining HRV under comparable conditions. They did not test Rhythm Log’s score or everyday passive sampling. <a href="#ref-hrv">Sources 1–4</a></p>
-  <p><strong>Rhythm Log’s daily score.</strong> It ranks the median of eligible daytime readings against the same source’s daily medians from the previous 30 days, with at least seven reference days. It uses local 06:00–22:00 and excludes recorded workout and asleep intervals. Historical values above the current median count toward the rank and ties count half. The app maps the result to 1–100. A higher score means the current HRV was lower relative to more of that personal history. Individual chart colors use a separate comparison with historical readings. The four bands and minimum counts are app design choices. They describe relative position in the data and have no validated cutoff for stress, readiness, or disease.</p>
-  <p><strong>Recovery trend.</strong> The daily HRV chart uses medians with at least two eligible readings from one source. The trailing seven-day median needs at least four days with values. The shaded historical range uses the 10th–90th percentiles from the prior 30 days when at least seven values exist. Daytime and overnight are separate series. Changes in sampling time, device, or source can change what gets into the trend, even with a personal baseline.</p>
-
-  <h2>Training and comparable sessions</h2>
-  <p><strong>Training volume.</strong> The app groups recorded workout minutes by activity over eight rolling seven-day blocks. The latest block for an ongoing period ends yesterday. The typical week is a median across the available earlier blocks after initial empty blocks are dropped, with a minimum of three blocks. Minutes describe duration. Effort, intensity, and mechanical load can differ across workouts of equal duration.</p>
-  <p><strong>Pace and heart rate.</strong> Each point uses workout duration divided by recorded distance, paired with the workout’s HealthKit average heart rate. The comparison groups by activity and indoor/outdoor metadata, when available, and compares the latest valid point with the median of earlier points within 15 seconds per kilometer. This tolerance is an app choice. Similar pace gives a starting point for comparison. Grade, weather, hydration, workout structure, and sensor accuracy can still affect the result. Heat and dehydration changed cardiovascular responses in a controlled exercise study, and wrist-monitor agreement varied across activities in an ECG comparison. <a href="#ref-exercise">Sources 5–6</a></p>
-  <p><strong>Workout zones.</strong> Recorded zone times are used when supplied with the workout. With available thresholds and no recorded times, the app estimates time between adjacent heart-rate samples, crediting up to two minutes per interval. The percentages describe the accounted-for zone time. The workout detail’s average and maximum are calculated from heart-rate readings in the workout’s time window. Those values can differ from the recorded workout average used in the pace chart. <a href="#ref-zones">Source 7</a></p>
-
-  <h2>One-minute heart-rate recovery</h2>
-  <p>Apple’s HealthKit type represents the drop from peak exercise heart rate to the reading one minute after exercise. Rhythm Log displays a stored sample only when it can be matched unambiguously by activity, source, and timing. Missing or ambiguous matches stay blank. Research links heart-rate recovery to post-exercise physiology, and a controlled comparison found that active versus passive recovery and posture affect the result. Clinical treadmill protocols are distinct from the app’s comparison of ordinary workouts. Compare trends within similar activity and cooldown conditions. <a href="#ref-hrr">Sources 8–10</a></p>
-
-  <h2>Recovery without overnight wear</h2>
-  <p>Daytime HRV, resting heart rate, steps, and recorded workouts can populate independently of sleep data. When there are overnight records, the app groups asleep segments by the main session’s wake date. Overnight heart rate, breathing rate, blood oxygen, and wrist temperature use available samples overlapping those segments. Each displayed range is the 10th–90th percentile of that metric’s prior 30 nights, with at least seven nights measured. The calculation belongs to Rhythm Log. Apple’s own Vitals app also presents personal ranges, and its feature availability varies by model and region. A value beyond the app’s band describes a difference from recorded history. <a href="#ref-overnight">Sources 11–12</a></p>
-  <p>HealthKit read permissions are granular, and the app cannot directly distinguish denied read access from an empty result. Check coverage counts and the underlying records in Apple Health before interpreting a blank or a change. <a href="#ref-access">Source 13</a></p>
-
-  <h2 id="references">References</h2>
-  <ol>
-    <li id="ref-hrv"><a href="https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilitysdnn">Apple Developer. HealthKit SDNN definition.</a></li>
-    <li><a href="https://www.escardio.org/static-file/Escardio/Guidelines/Scientific-Statements/guidelines-Heart-Rate-Variability-FT-1996.pdf">ESC/NASPE Task Force (1996). Heart rate variability measurement and interpretation standards.</a></li>
-    <li><a href="https://doi.org/10.1371/journal.pone.0138921">Muñoz et al. (2015). Validity of (ultra-)short recordings for HRV measurements.</a></li>
-    <li><a href="https://doi.org/10.3390/s18082619">Hernando et al. (2018). Apple Watch HRV validation during rest and mild cognitive stress.</a></li>
-    <li id="ref-exercise"><a href="https://doi.org/10.1152/jappl.1997.82.4.1229">González-Alonso et al. (1997). Dehydration and cardiovascular function during exercise in the heat.</a></li>
-    <li><a href="https://pubmed.ncbi.nlm.nih.gov/28709155/">Gillinov et al. (2017). Variable accuracy of wearable heart-rate monitors during aerobic exercise.</a></li>
-    <li id="ref-zones"><a href="https://support.apple.com/en-gb/guide/watch/apd897dccddf/watchos">Apple Watch User Guide. View and edit heart-rate zones.</a></li>
-    <li id="ref-hrr"><a href="https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartraterecoveryoneminute">Apple Developer. HealthKit one-minute heart-rate recovery definition.</a></li>
-    <li><a href="https://doi.org/10.1056/NEJM199910283411804">Cole et al. (1999). Heart-rate recovery after graded exercise in a clinical cohort.</a></li>
-    <li><a href="https://pubmed.ncbi.nlm.nih.gov/24149885/">Barak et al. (2011). Heart-rate recovery across four post-exercise protocols.</a></li>
-    <li id="ref-overnight"><a href="https://support.apple.com/en-ie/120142">Apple Support. Overnight vitals and typical ranges.</a></li>
-    <li><a href="https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingwristtemperature">Apple Developer. Sleeping wrist temperature samples.</a></li>
-    <li id="ref-access"><a href="https://developer.apple.com/documentation/healthkit/authorizing-access-to-health-data">Apple Developer. Authorizing access to health data.</a></li>
-  </ol>
-</main>
-<footer class="shell"><a href="./">Back to onboarding</a> · <a href="portfolio/">Explore the app story</a></footer>
-</body>
+<body><p><a href="./#evidence">Open Rhythm Log</a></p></body>
 </html>

@@ -3,81 +3,185 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Follow an interactive, step-by-step Rhythm Log demo using sample Apple Health records.">
-<title>Rhythm Log · Guided walkthrough</title>
+<meta name="description" content="A scroll-led tour of Rhythm Log, from a single day of heart readings to training and recovery trends.">
+<title>Rhythm Log · The app story</title>
 <link rel="stylesheet" href="../styles.css">
 <link rel="stylesheet" href="walkthrough.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Serif&display=swap">
-<script src="steps.js" defer></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;family=Instrument+Serif&amp;display=swap">
 <script src="walkthrough.js" defer></script>
 </head>
-<body>
-<header class="masthead tour-shell">
+<body class="story-page">
+<header class="masthead shell">
   <a class="brand" href="../">Rhythm Log</a>
-  <nav aria-label="Main navigation">
-    <a href="../#setup">Setup guide</a><a href="../methods.html">Evidence &amp; methods</a><a href="project-description.md">Portfolio copy</a>
-  </nav>
+  <nav aria-label="Main navigation"><a href="../#setup">Setup guide</a><a href="../methods.html">Evidence &amp; methods</a><a href="project-description.md">Portfolio copy</a></nav>
 </header>
-<main class="tour-shell">
-  <div class="tour-intro">
-    <h1>App walkthrough</h1>
-    <p>Follow a sample day from your first Apple Health connection to training and recovery.</p>
-  </div>
-  <div class="tour" id="tour">
-    <aside class="tour-sidebar">
-      <nav aria-label="Walkthrough chapters">
-        <h2>Chapters</h2>
-        <ol id="chapters"></ol>
-      </nav>
-      <details class="step-index">
-        <summary>Find a screen</summary>
-        <ol id="step-index"></ol>
-      </details>
-      <label class="chapter-select">Jump to chapter
-        <select id="chapter-select"></select>
-      </label>
-    </aside>
-    <section class="tour-guide" aria-labelledby="step-title">
-      <div class="tour-location">
-        <span id="current-chapter">Get started</span>
-        <span id="step-count">01 / 28</span>
+<main>
+  <section class="story-hero" aria-labelledby="story-title">
+    <div class="shell story-hero-inner">
+      <div>
+        <h1 id="story-title">A day in<br>Rhythm Log</h1>
+        <p>Follow a heart reading from the 24-hour dial to the workouts, trends, and routines around it.</p>
+        <a href="#start">Explore the story <span aria-hidden="true">↓</span></a>
       </div>
-      <progress id="progress" aria-label="Walkthrough progress" value="1" max="28"></progress>
-      <div class="tour-copy">
-        <h2 id="step-title" tabindex="-1">Start with what you track</h2>
-        <div class="tour-instruction">
-          <h3>In the app</h3>
-          <p id="step-action">On first launch, tap Connect Apple Health and choose the records you want to share.</p>
-        </div>
-        <div class="tour-insight">
-          <h3>What to look for</h3>
-          <p id="step-context">Heart rate, workouts, and steps can power the daytime views. You can leave sleep access off and add it later in Settings.</p>
-        </div>
-      </div>
-      <div id="sleep-choice" class="sleep-choice" hidden>
-        <a href="#24-recovery-calendar">Skip overnight screens</a>
-      </div>
-    </section>
-    <figure class="tour-stage" id="stage">
-      <div class="phone" id="phone">
-        <img id="screen" src="screenshots/01-welcome.png" alt="Rhythm Log first-run welcome and Apple Health access" width="644" height="1400">
-        <button type="button" id="hotspot" class="hotspot" hidden><span aria-hidden="true">↗</span></button>
-      </div>
-      <figcaption>
-        <span id="stage-caption">iPhone preview · Sample data</span>
-        <a id="full-screen" href="screenshots/01-welcome.png" target="_blank" rel="noopener">View full size</a>
-      </figcaption>
+      <figure class="hero-phone" aria-label="Rhythm Log day timeline">
+        <img src="screenshots/02-day-timeline.png" width="644" height="1400" alt="Day timeline showing a 47% sample HRV score, with colored hourly estimates and a sleep arc">
+      </figure>
+    </div>
+  </section>
+  <nav class="chapter-nav" aria-label="Story chapters"><div class="shell chapter-links">
+    <a href="#start">Apple Health</a>
+    <a href="#day">Day timeline</a>
+    <a href="#workouts">Workout detail</a>
+    <a href="#training">Training</a>
+    <a href="#recovery">Recovery</a>
+    <a href="#navigation">Calendar &amp; settings</a>
+  </div></nav>
+  <div class="story-layout shell">
+    <figure class="story-device" id="story-device" hidden>
+      <div class="story-phone"><img id="story-screen" src="screenshots/01-welcome.png" width="644" height="1400" alt="Rhythm Log welcome screen"></div>
+      <figcaption><span>iPhone simulator · Sample data</span><a id="story-image-link" href="screenshots/01-welcome.png" target="_blank" rel="noopener">View full size <span aria-hidden="true">↗</span></a></figcaption>
     </figure>
-    <nav class="tour-controls" aria-label="Step navigation">
-        <button type="button" id="previous" disabled>Back</button>
-        <button type="button" id="next">Next step <span aria-hidden="true">→</span></button>
-      </nav>
-    <div class="visually-hidden" id="announcement" role="status"></div>
+    <div class="story-scenes">
+      <section class="story-chapter" id="start" aria-labelledby="start-title">
+        <header class="chapter-intro"><p>Apple Health</p><h2 id="start-title">Your data, your choice.</h2><p>The experience begins with the records you already have.</p></header>
+        <article class="story-scene" id="01-welcome">
+          <div><h3>A starting point for your own data</h3><p>Rhythm Log reads the Apple Health records you choose to share. A daytime profile can start with heart readings, workouts, and steps. Sleep is optional.</p><a class="scene-original" href="screenshots/01-welcome.png" aria-label="View screen: A starting point for your own data">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/01-welcome.png" width="644" height="1400" loading="lazy" alt="A starting point for your own data in Rhythm Log">
+        </article>
+      </section>
+      <section class="story-chapter" id="day" aria-labelledby="day-title">
+        <header class="chapter-intro"><p>Day timeline</p><h2 id="day-title">One day, in context.</h2><p>A single number means more when you can see the day around it.</p></header>
+        <article class="story-scene" id="02-day-timeline">
+          <div><h3>Twenty-four hours on one dial</h3><p>Hourly HRV estimates sit beside sleep and workout arcs. In this sample, the dial reads 47%, and hours without observations stay blank.</p><a class="scene-original" href="screenshots/02-day-timeline.png" aria-label="View screen: Twenty-four hours on one dial">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/02-day-timeline.png" width="644" height="1400" loading="lazy" alt="Twenty-four hours on one dial in Rhythm Log">
+        </article>
+        <article class="story-scene" id="03-score-guide">
+          <div><h3>What 47% actually means</h3><p>About 47% of the person’s eligible historical daily medians were higher. It’s a position within their recent history, with a separate comparison for overnight data.</p><a class="scene-original" href="screenshots/03-score-guide.png" aria-label="View screen: What 47% actually means">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/03-score-guide.png" width="644" height="1400" loading="lazy" alt="What 47% actually means in Rhythm Log">
+        </article>
+        <article class="story-scene" id="04-day-hrv">
+          <div><h3>The measurements underneath</h3><p>Individual dots show SDNN in milliseconds. The shaded band is the person’s daytime reference range, and the bars below summarize available readings by hour.</p><a class="scene-original" href="screenshots/04-day-hrv.png" aria-label="View screen: The measurements underneath">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/04-day-hrv.png" width="644" height="1400" loading="lazy" alt="The measurements underneath in Rhythm Log">
+        </article>
+        <article class="story-scene" id="05-hrv-history">
+          <div><h3>A day becomes a month</h3><p>The history view puts daily medians on the same axis, so a single day can be seen alongside the past month and the number of days that contributed.</p><a class="scene-original" href="screenshots/05-hrv-history.png" aria-label="View screen: A day becomes a month">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/05-hrv-history.png" width="644" height="1400" loading="lazy" alt="A day becomes a month in Rhythm Log">
+        </article>
+        <article class="story-scene" id="06-raw-readings">
+          <div><h3>Every dot has a source</h3><p>The underlying records show the time, value, and source. An unusual point can be traced back to the measurement that produced it.</p><a class="scene-original" href="screenshots/06-raw-readings.png" aria-label="View screen: Every dot has a source">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/06-raw-readings.png" width="644" height="1400" loading="lazy" alt="Every dot has a source in Rhythm Log">
+        </article>
+        <article class="story-scene" id="07-day-steps">
+          <div><h3>When movement happened</h3><p>A daily step total hides the shape of the day. The hourly chart makes this sample’s short burst of activity visible.</p><a class="scene-original" href="screenshots/07-day-steps.png" aria-label="View screen: When movement happened">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/07-day-steps.png" width="644" height="1400" loading="lazy" alt="When movement happened in Rhythm Log">
+        </article>
+        <article class="story-scene" id="08-sleep-stages">
+          <div><h3>The shape of a night</h3><p>Recorded stages give the sleep arc more detail. The expanded list shows where each interval began and ended.</p><a class="scene-original" href="screenshots/08-sleep-stages.png" aria-label="View screen: The shape of a night">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/08-sleep-stages.png" width="644" height="1400" loading="lazy" alt="The shape of a night in Rhythm Log">
+        </article>
+        <article class="story-scene" id="09-day-workouts">
+          <div><h3>A run appears in the day</h3><p>The running entry brings time, duration, and available active energy into the same timeline as heart readings.</p><a class="scene-original" href="screenshots/09-day-workouts.png" aria-label="View screen: A run appears in the day">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/09-day-workouts.png" width="644" height="1400" loading="lazy" alt="A run appears in the day in Rhythm Log">
+        </article>
+      </section>
+      <section class="story-chapter" id="workouts" aria-labelledby="workouts-title">
+        <header class="chapter-intro"><p>Workout detail</p><h2 id="workouts-title">Inside a 35-minute run.</h2><p>The summary, heart-rate trace, and monthly calendar tell different parts of the same workout story.</p></header>
+        <article class="story-scene" id="10-workout-overview">
+          <div><h3>The run at a glance</h3><p>This sample run lasted just over 35 minutes and averaged 145 BPM. Its header shows where the session falls among runs that month.</p><a class="scene-original" href="screenshots/10-workout-overview.png" aria-label="View screen: The run at a glance">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/10-workout-overview.png" width="644" height="1400" loading="lazy" alt="The run at a glance in Rhythm Log">
+        </article>
+        <article class="story-scene" id="11-workout-zones">
+          <div><h3>Most of the time fell in Zones 3 and 4</h3><p>The bars show where the accounted-for time went. The note identifies whether those times came from recorded zones or estimates from heart-rate samples.</p><a class="scene-original" href="screenshots/11-workout-zones.png" aria-label="View screen: Most of the time fell in Zones 3 and 4">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/11-workout-zones.png" width="644" height="1400" loading="lazy" alt="Most of the time fell in Zones 3 and 4 in Rhythm Log">
+        </article>
+        <article class="story-scene" id="12-workout-heart-rate">
+          <div><h3>Intensity over the course of the run</h3><p>The time axis shows how heart rate changed during the session. Raw and color-coded views offer two ways to see the same available readings.</p><a class="scene-original" href="screenshots/12-workout-heart-rate.png" aria-label="View screen: Intensity over the course of the run">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/12-workout-heart-rate.png" width="644" height="1400" loading="lazy" alt="Intensity over the course of the run in Rhythm Log">
+        </article>
+        <article class="story-scene" id="13-workout-calendar">
+          <div><h3>One session in a longer habit</h3><p>The workout calendar highlights other days with the same activity, giving this run a place in the month.</p><a class="scene-original" href="screenshots/13-workout-calendar.png" aria-label="View screen: One session in a longer habit">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/13-workout-calendar.png" width="644" height="1400" loading="lazy" alt="One session in a longer habit in Rhythm Log">
+        </article>
+      </section>
+      <section class="story-chapter" id="training" aria-labelledby="training-title">
+        <header class="chapter-intro"><p>Training</p><h2 id="training-title">A lighter week. But where?</h2><p>A seven-day comparison leads back to the sessions that made up the total.</p></header>
+        <article class="story-scene" id="14-week-training">
+          <div><h3>147 minutes, down 75</h3><p>The sample week is lighter than the preceding seven-day block. Strength training accounts for the largest drop, visible in the sport-level comparison.</p><a class="scene-original" href="screenshots/14-week-training.png" aria-label="View screen: 147 minutes, down 75">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/14-week-training.png" width="644" height="1400" loading="lazy" alt="147 minutes, down 75 in Rhythm Log">
+        </article>
+        <article class="story-scene" id="15-week-workouts">
+          <div><h3>The sessions behind the bars</h3><p>The weekly list shows the individual runs and strength sessions that contributed to the selected block.</p><a class="scene-original" href="screenshots/15-week-workouts.png" aria-label="View screen: The sessions behind the bars">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/15-week-workouts.png" width="644" height="1400" loading="lazy" alt="The sessions behind the bars in Rhythm Log">
+        </article>
+        <article class="story-scene" id="16-training-performance">
+          <div><h3>Pace and recovery tell different stories</h3><p>The upper plot compares heart rate at similar paces. The lower one shows how far heart rate dropped a minute after exercise, where a matched reading exists.</p><a class="scene-original" href="screenshots/16-training-performance.png" aria-label="View screen: Pace and recovery tell different stories">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/16-training-performance.png" width="644" height="1400" loading="lazy" alt="Pace and recovery tell different stories in Rhythm Log">
+        </article>
+        <article class="story-scene" id="17-training-calendar">
+          <div><h3>The spacing between workouts</h3><p>A monthly view makes clusters and gaps easier to see. Each workout day can show its main activity and total recorded minutes.</p><a class="scene-original" href="screenshots/17-training-calendar.png" aria-label="View screen: The spacing between workouts">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/17-training-calendar.png" width="644" height="1400" loading="lazy" alt="The spacing between workouts in Rhythm Log">
+        </article>
+      </section>
+      <section class="story-chapter" id="recovery" aria-labelledby="recovery-title">
+        <header class="chapter-intro"><p>Recovery</p><h2 id="recovery-title">Recovery without overnight wear.</h2><p>The first two screens use a sample profile with zero sleep records. The rest show what appears when overnight data is available.</p></header>
+        <article class="story-scene" id="18-recovery-no-sleep">
+          <div><h3>A daytime baseline still takes shape</h3><p>With no nights recorded, the daytime HRV series still shows measured days, a seven-day median, and the person’s recent range.</p><a class="scene-original" href="screenshots/18-recovery-no-sleep.png" aria-label="View screen: A daytime baseline still takes shape">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/18-recovery-no-sleep.png" width="644" height="1400" loading="lazy" alt="A daytime baseline still takes shape in Rhythm Log">
+        </article>
+        <article class="story-scene" id="19-recovery-activity">
+          <div><h3>Resting heart rate and steps add context</h3><p>The same profile can compare resting heart rate and movement across periods. Coverage counts show how many days each comparison represents.</p><a class="scene-original" href="screenshots/19-recovery-activity.png" aria-label="View screen: Resting heart rate and steps add context">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/19-recovery-activity.png" width="644" height="1400" loading="lazy" alt="Resting heart rate and steps add context in Rhythm Log">
+        </article>
+        <article class="story-scene" id="20-sleep-timing">
+          <div><h3>When a night crosses midnight</h3><p>For a profile with sleep records, the wake date keeps the session together. Each row can pair its sleep timing with overnight HRV and wake-day resting heart rate.</p><a class="scene-original" href="screenshots/20-sleep-timing.png" aria-label="View screen: When a night crosses midnight">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/20-sleep-timing.png" width="644" height="1400" loading="lazy" alt="When a night crosses midnight in Rhythm Log">
+        </article>
+        <article class="story-scene" id="21-overnight-hrv">
+          <div><h3>A separate overnight comparison</h3><p>Daytime and overnight readings have their own reference histories. The night series keeps gaps where there aren’t enough measurements.</p><a class="scene-original" href="screenshots/21-overnight-hrv.png" aria-label="View screen: A separate overnight comparison">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/21-overnight-hrv.png" width="644" height="1400" loading="lazy" alt="A separate overnight comparison in Rhythm Log">
+        </article>
+        <article class="story-scene" id="22-overnight-vitals">
+          <div><h3>One night, several measurements</h3><p>Sleep heart rate and respiratory rate share a date axis. Each uses its own units and recent personal range.</p><a class="scene-original" href="screenshots/22-overnight-vitals.png" aria-label="View screen: One night, several measurements">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/22-overnight-vitals.png" width="644" height="1400" loading="lazy" alt="One night, several measurements in Rhythm Log">
+        </article>
+        <article class="story-scene" id="23-oxygen-and-wrist-temperature">
+          <div><h3>What changed relative to recent nights</h3><p>Blood oxygen and wrist temperature have separate bands. A highlight signals a difference from recent records, while a gap shows that a usable measurement was unavailable.</p><a class="scene-original" href="screenshots/23-oxygen-and-wrist-temperature.png" aria-label="View screen: What changed relative to recent nights">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/23-oxygen-and-wrist-temperature.png" width="644" height="1400" loading="lazy" alt="What changed relative to recent nights in Rhythm Log">
+        </article>
+      </section>
+      <section class="story-chapter" id="navigation" aria-labelledby="navigation-title">
+        <header class="chapter-intro"><p>Calendar &amp; settings</p><h2 id="navigation-title">From a single day to a year.</h2><p>Calendars and preferences give the same records a different scale.</p></header>
+        <article class="story-scene" id="24-recovery-calendar">
+          <div><h3>A month of daily context</h3><p>The recovery calendar places each day’s HRV score or selected heart metric in the month, with a direct route back to its daily records.</p><a class="scene-original" href="screenshots/24-recovery-calendar.png" aria-label="View screen: A month of daily context">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/24-recovery-calendar.png" width="644" height="1400" loading="lazy" alt="A month of daily context in Rhythm Log">
+        </article>
+        <article class="story-scene" id="25-year-trends">
+          <div><h3>Patterns that take longer to emerge</h3><p>Monthly summaries bring heart rate, HRV, and resting heart rate into a wider view. A shorter time range can supply more context for any month that stands out.</p><a class="scene-original" href="screenshots/25-year-trends.png" aria-label="View screen: Patterns that take longer to emerge">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/25-year-trends.png" width="644" height="1400" loading="lazy" alt="Patterns that take longer to emerge in Rhythm Log">
+        </article>
+        <article class="story-scene" id="26-date-picker">
+          <div><h3>The date stays at the center</h3><p>Day, Week, Month, and Year change the view around a selected date. Today brings the timeline back to the present.</p><a class="scene-original" href="screenshots/26-date-picker.png" aria-label="View screen: The date stays at the center">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/26-date-picker.png" width="644" height="1400" loading="lazy" alt="The date stays at the center in Rhythm Log">
+        </article>
+        <article class="story-scene" id="27-settings">
+          <div><h3>Preferences and access in one place</h3><p>Language, appearance, and Apple Health access can be revisited as tracking habits change.</p><a class="scene-original" href="screenshots/27-settings.png" aria-label="View screen: Preferences and access in one place">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/27-settings.png" width="644" height="1400" loading="lazy" alt="Preferences and access in one place in Rhythm Log">
+        </article>
+        <article class="story-scene" id="28-manual-zones">
+          <div><h3>Zones can reflect your own boundaries</h3><p>Four example thresholds show how custom BPM boundaries determine the zones assigned to eligible heart-rate readings.</p><a class="scene-original" href="screenshots/28-manual-zones.png" aria-label="View screen: Zones can reflect your own boundaries">View this screen <span aria-hidden="true">↗</span></a></div>
+          <img class="scene-image" src="screenshots/28-manual-zones.png" width="644" height="1400" loading="lazy" alt="Zones can reflect your own boundaries in Rhythm Log">
+        </article>
+      </section>
+    </div>
   </div>
-  <noscript><p>Turn on JavaScript for the guided tour, or open the <a href="README.md">screen descriptions and original images</a>.</p></noscript>
+  <section class="story-end shell">
+    <h2>Make it your own.</h2>
+    <p>Start with the records you already have. The setup guide takes you from the project to your first day in the app.</p>
+    <a class="button" href="../#setup">Open the setup guide</a>
+  </section>
 </main>
-<footer class="tour-shell"><a href="../">Back to onboarding</a> · <a href="../methods.html">How the metrics are calculated</a></footer>
+<footer class="shell"><a href="../">Back to onboarding</a> · <a href="../methods.html">How the metrics are calculated</a> · <a href="README.md">Screenshot index</a></footer>
 </body>
 </html>

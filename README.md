@@ -7,7 +7,7 @@ A native iPhone app for exploring heart rate, heart rate variability (HRV), trai
 - **Recovery** — Explore daytime HRV, resting heart rate, and steps. With sleep data, view sleep timing by wake date, overnight HRV, and four overnight vitals.
 - **Month and Year** — Use monthly calendars to open a specific day and yearly charts to see monthly averages.
 
-[Onboarding](https://yihui-xiong.github.io/rhythm-log/) · [Guided walkthrough](https://yihui-xiong.github.io/rhythm-log/portfolio/) · [Evidence and methods](https://yihui-xiong.github.io/rhythm-log/methods.html) · [简体中文说明](README.zh-Hans.md)
+[Onboarding](https://yihui-xiong.github.io/rhythm-log/) · [App story](https://yihui-xiong.github.io/rhythm-log/portfolio/) · [Evidence and methods](https://yihui-xiong.github.io/rhythm-log/methods.html) · [简体中文说明](README.zh-Hans.md)
 
 ## Run the app
 

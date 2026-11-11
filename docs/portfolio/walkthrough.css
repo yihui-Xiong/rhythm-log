@@ -1,222 +1,128 @@
-.tour-shell {
-  width: min(1240px, 100% - 3rem);
-  margin-inline: auto;
+.story-page { --story-nav-height: 3.35rem; }
+.story-hero {
+  overflow: clip;
+  background: radial-gradient(ellipse at 75% 55%, #493563, #211833 66%);
+  color: #fffaf6;
 }
-.tour-intro {
-  display: flex;
-  gap: 1rem 2.2rem;
-  align-items: baseline;
-  flex-wrap: wrap;
-  padding-block: 1.45rem 1.25rem;
-}
-.tour-intro h1 { font-size: clamp(2.65rem, 4.6vw, 4.4rem); }
-.tour-intro p { max-width: 42ch; color: var(--muted); }
-.tour {
+.story-hero-inner {
+  min-height: min(680px, 78svh);
   display: grid;
-  grid-template-columns: minmax(166px, .7fr) minmax(310px, 1.38fr) minmax(280px, 1.1fr);
-  grid-template-areas: "sidebar stage guide" "sidebar stage controls";
-  grid-template-rows: auto 1fr;
-  gap: 1.25rem clamp(1.05rem, 2.8vw, 2.4rem);
-  align-items: start;
-  padding-block: 0 2.3rem;
+  grid-template-columns: 1fr .8fr;
+  gap: 3rem;
+  align-items: center;
+  padding-block: 3.5rem;
 }
-.tour-sidebar { grid-area: sidebar; min-width: 0; }
-.tour-sidebar nav { display: block; }
-.tour-sidebar h2 {
-  font: 600 .74rem var(--sans);
+.story-hero h1 { font-size: clamp(4.2rem, 9vw, 8.15rem); }
+.story-hero p { max-width: 39ch; color: #e0d5ec; font-size: clamp(1rem, 2.15vw, 1.26rem); margin-block: 1.25rem; }
+.story-hero a { display: inline-block; color: #fffaf6; font-weight: 700; }
+.story-hero a span { padding-inline-start: .35rem; }
+.story-hero a:focus-visible { outline-color: #fffaf6; }
+.hero-phone {
+  width: clamp(190px, 24vw, 289px);
+  justify-self: center;
+  transform: rotate(-9deg) translateY(12%);
+  border: 7px solid #171021;
+  border-radius: 2.3rem;
+  box-shadow: 0 2rem 5rem #0c08179c;
+}
+.hero-phone img { border-radius: calc(2.3rem - 7px); }
+.chapter-nav {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: #f8f7f4f2;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.chapter-links { display: flex; align-items: stretch; gap: clamp(1rem, 4vw, 3.4rem); overflow-x: auto; scrollbar-width: none; }
+.chapter-links a {
+  flex: none;
+  display: grid;
+  place-items: center;
+  min-height: var(--story-nav-height);
+  border-bottom: 2px solid transparent;
   color: var(--muted);
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  padding: .5rem .55rem;
-}
-.tour-sidebar ol {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-#chapters { display: grid; gap: .28rem; }
-#chapters a {
-  display: block;
-  min-height: 58px;
+  font-size: .9rem;
+  font-weight: 600;
   text-decoration: none;
-  border-radius: .62rem;
-  border-inline-start: 3px solid transparent;
-  padding: .55rem .65rem;
-  color: var(--ink);
-  font-size: .93rem;
-  line-height: 1.35;
 }
-#chapters a:hover { background: #f0ecf7; }
-#chapters a[aria-current] { background: var(--wash); border-color: var(--violet); color: var(--violet); }
-.chapter-title { display: block; font-weight: 700; }
-.chapter-goal { display: block; margin-top: .16rem; font-size: .77rem; color: var(--muted); }
-.step-index {
-  border-top: 1px solid var(--line);
-  margin-top: 1rem;
-  padding: .65rem .65rem 0;
-  font-size: .86rem;
+.chapter-links a[aria-current], .chapter-links a:hover { color: var(--violet); border-color: var(--violet); }
+.chapter-links a:focus-visible { outline-offset: -4px; }
+.story-layout { position: relative; padding-block: 2.6rem 4rem; }
+.story-layout.enhanced { display: grid; grid-template-columns: minmax(260px, 1.13fr) minmax(0, 1fr); align-items: start; gap: clamp(2.3rem, 7vw, 7rem); }
+.story-device {
+  position: sticky;
+  top: calc(var(--story-nav-height) + 1.4rem);
+  align-self: start;
+  background-color: #ede5f7;
+  background-image: radial-gradient(ellipse at 50% 38%, #ffffff96, #ffffff00 75%);
+  border-radius: 1.5rem;
+  padding: 1.4rem .8rem 1rem;
+  text-align: center;
+  transition: background-color .35s;
 }
-.step-index summary { cursor: pointer; font-weight: 600; min-height: 32px; }
-#step-index { display: grid; gap: .38rem; padding-bottom: .75rem; }
-#step-index a { display: block; line-height: 1.35; }
-#step-index a[aria-current] { font-weight: 700; }
-.chapter-select { display: none; }
-.tour-guide {
-  grid-area: guide;
-  display: grid;
-  min-width: 0;
-  gap: .55rem;
-  padding-top: .55rem;
-}
-.tour-location {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  font: 600 .76rem "IBM Plex Mono", ui-monospace, monospace;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-  color: var(--violet);
-}
-#step-count { white-space: nowrap; }
-#progress { width: 100%; height: 4px; accent-color: var(--violet); }
-.tour-copy { padding-top: 1rem; }
-.tour-copy h2 { font-size: clamp(2.55rem, 4.35vw, 4.1rem); text-wrap: balance; }
-.tour-instruction { margin-top: 1.45rem; }
-.tour-copy h3 { margin-bottom: .3rem; font-size: .94rem; }
-.tour-copy p { color: var(--muted); }
-.tour-insight {
-  margin-top: 1.2rem;
-  border-top: 1px solid var(--line);
-  padding-top: 1.2rem;
-}
-.sleep-choice { margin-top: .35rem; font-size: .92rem; }
-.tour-controls {
-  grid-area: controls;
-  display: flex;
-  align-items: center;
-  gap: .65rem;
-  min-width: 0;
-}
-.tour-controls button {
-  appearance: none;
-  font: 700 .91rem var(--sans);
-  min-height: 44px;
-  padding: .63rem .9rem;
-  border: 1px solid var(--line);
-  border-radius: .48rem;
-  color: var(--ink);
-  background: var(--surface);
-  cursor: pointer;
-}
-.tour-controls button:disabled { opacity: .55; cursor: default; }
-.tour-controls #next { background: var(--violet); border-color: var(--violet); color: white; }
-.tour-controls #next:not(:disabled):hover { background: #3f278b; }
-.tour-controls button:focus-visible, .hotspot:focus-visible, .chapter-select select:focus-visible {
-  outline: 3px solid var(--violet);
-  outline-offset: 3px;
-}
-.tour-stage {
-  grid-area: stage;
-  background: radial-gradient(ellipse at 50% 48%, var(--stage-center, #f4effb) 5%, var(--stage-edge, #ded5f2) 100%);
-  border: 1px solid #e1d8ee;
-  border-radius: 1.25rem;
-  min-width: 0;
-  padding: .95rem .7rem .72rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .7rem;
-}
-.tour[data-chapter="day"], .tour[data-chapter="navigation"] { --stage-center: #edf5fb; --stage-edge: #d7e5f4; }
-.tour[data-chapter="training"], .tour[data-chapter="workouts"] { --stage-center: #fcf3e8; --stage-edge: #f1dece; }
-.phone {
-  position: relative;
-  width: clamp(216px, calc((100dvh - 220px) * .45), 286px);
-  max-width: 100%;
+.story-device[data-chapter="day"], .story-device[data-chapter="navigation"] { background-color: #e0eaf6; }
+.story-device[data-chapter="training"], .story-device[data-chapter="workouts"] { background-color: #f1e3d6; }
+.story-device[data-chapter="recovery"] { background-color: #e6def6; }
+.story-phone {
+  width: clamp(165px, calc((100svh - 178px) * .43), 297px);
+  margin-inline: auto;
+  aspect-ratio: 644 / 1400;
+  overflow: hidden;
   border: 6px solid #241d32;
+  box-sizing: content-box;
   border-radius: 2rem;
   background: #f7f3fb;
   box-shadow: 0 13px 30px #3e26502e;
 }
-.phone img { width: 100%; border-radius: calc(2rem - 6px); }
-.hotspot {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  transform: translate(-50%, -50%);
+.story-phone img { width: 100%; height: 100%; }
+.story-device figcaption { display: flex; flex-wrap: wrap; justify-content: center; gap: .15rem .9rem; margin-top: .85rem; font-size: .79rem; color: var(--muted); }
+.story-chapter { scroll-margin-top: calc(var(--story-nav-height) + 1.6rem); }
+.story-chapter + .story-chapter { margin-top: clamp(2.5rem, 10vw, 7.5rem); }
+.chapter-intro { border-top: 1px solid var(--line); padding-block: 2rem 1.1rem; }
+.chapter-intro p:first-child { margin-bottom: .9rem; color: var(--violet); font-size: .82rem; font-weight: 700; }
+.chapter-intro h2 { font-size: clamp(2.9rem, 6vw, 5.5rem); text-wrap: balance; }
+.chapter-intro p:last-child { margin-top: .8rem; color: var(--muted); font-size: 1.05rem; }
+.story-scene {
   display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
+  align-items: center;
+  gap: 1.35rem;
+  grid-template-columns: minmax(0, 1fr) minmax(145px, 230px);
+  padding-block: 1.5rem;
+  scroll-margin-top: calc(var(--story-nav-height) + 1.6rem);
 }
-.hotspot span {
-  display: grid;
-  place-items: center;
-  width: 29px;
-  height: 29px;
-  border: 2px solid white;
-  border-radius: 50%;
-  background: var(--violet);
-  color: white;
-  box-shadow: 0 0 0 3px #5037a337, 0 3px 9px #30204438;
-  font: 700 .93rem var(--sans);
-}
-.hotspot[hidden] { display: none; }
-.hotspot:hover span { background: #3f278b; box-shadow: 0 0 0 5px #5037a33b; }
-.tour-stage figcaption {
+.enhanced .story-scene {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: .15rem .85rem;
-  color: #4e4462;
-  font-size: .78rem;
+  min-height: clamp(165px, 34svh, 275px);
+  border-top: 1px solid var(--line);
 }
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-@media (max-width: 980px) {
-  .tour {
-    grid-template-columns: minmax(245px, 1fr) minmax(260px, 1fr);
-    grid-template-areas: "sidebar sidebar" "stage guide" "stage controls";
-    grid-template-rows: auto auto 1fr;
+.story-scene h3 { font-size: clamp(1.25rem, 2.5vw, 1.9rem); letter-spacing: -.03em; text-wrap: balance; }
+.story-scene p { margin-top: .55rem; color: var(--muted); max-width: 42ch; }
+.scene-original { display: inline-block; margin-top: .65rem; font-size: .82rem; }
+.scene-image { border-radius: .9rem; border: 1px solid var(--line); }
+.enhanced .scene-image { display: none; }
+.story-end { padding: 3rem 0 4rem; border-top: 1px solid var(--line); }
+.story-end p { margin-block: .65rem 1.3rem; color: var(--muted); }
+@media (max-width: 700px) {
+  .story-hero-inner { min-height: 0; padding-block: 2.5rem; grid-template-columns: 1.2fr .8fr; gap: .8rem; }
+  .story-hero h1 { font-size: clamp(2.65rem, 9vw, 4rem); }
+  .hero-phone { width: min(96%, 185px); transform: rotate(-8deg) translateY(19%); border-width: 4px; border-radius: 1.2rem; }
+  .hero-phone img { border-radius: calc(1.2rem - 4px); }
+  .story-layout.enhanced { display: block; }
+  .story-layout { padding-top: 1rem; }
+  .story-device {
+    top: var(--story-nav-height);
+    z-index: 2;
+    margin-inline: -.1rem;
+    padding: .55rem .4rem .45rem;
+    border-radius: 0 0 1rem 1rem;
   }
-  .tour-sidebar { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; }
-  .tour-sidebar nav { display: none; }
-  .step-index { order: 1; border: 0; margin: 0; padding: 0; }
-  .chapter-select { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .6rem; font-size: .87rem; font-weight: 600; }
-  .chapter-select select {
-    min-height: 44px;
-    max-width: 100%;
-    font: inherit;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: .4rem;
-    padding: .4rem .55rem;
-  }
+  .story-phone { width: clamp(100px, 16svh, 155px); border-width: 4px; border-radius: 1.15rem; }
+  .story-device figcaption { margin-top: .4rem; font-size: .73rem; }
+  .story-chapter, .story-scene { scroll-margin-top: calc(var(--story-nav-height) + clamp(217px, 36svh, 335px) + 2.5rem); }
+  .story-scene { grid-template-columns: minmax(0, 1fr) minmax(100px, 31%); }
+  .enhanced .story-scene { min-height: 185px; }
 }
-@media (max-width: 590px) {
-  .tour-shell { width: calc(100% - 2rem); }
-  .tour { grid-template-columns: minmax(0, 1fr); grid-template-areas: "sidebar" "guide" "stage" "controls"; gap: 1.05rem; }
-  .tour-intro { display: block; }
-  .tour-intro p { margin-top: .5rem; }
-  .tour-copy { padding-top: .6rem; }
-  .tour-copy h2 { font-size: clamp(2.45rem, 10vw, 3.5rem); }
-  .tour-instruction, .tour-insight { margin-top: .85rem; }
-  .tour-insight { padding-top: .8rem; }
-  .tour-controls { justify-content: space-between; }
-  .tour-stage { padding: 1rem .85rem .8rem; }
-  .phone { width: min(75%, 260px); }
+@media (prefers-reduced-motion: reduce) {
+  .story-device { transition: none; }
 }

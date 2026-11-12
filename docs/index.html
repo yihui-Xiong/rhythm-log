@@ -184,6 +184,40 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
 .setup li b { font-size: 15px; }
 .setup li span { font-size: 14px; line-height: 1.65; color: var(--muted); }
 
+
+/* Chapters: one chart at a time, explained */
+.chapter { padding: 88px 0 24px; }
+.chapter-head { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 48px; align-items: end; padding-bottom: 36px; }
+.chapter-head .part { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
+.chapter-head h2 { margin: 10px 0 0; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.18; letter-spacing: -0.3px; }
+.chapter-head p { margin: 16px 0 0; font-size: 16px; line-height: 1.8; color: var(--muted); max-width: 34em; }
+.chapter-head .qs { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.chapter-head .qs li { display: flex; gap: 10px; }
+.chapter-head .qs li::before { content: "?"; flex: none; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.feature { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: center; padding: 52px 0; border-top: 1px dashed var(--grid); }
+.feature.flip .copy { order: 2; }
+.feature.wide { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+.feature.wide .copy { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: 56px; align-items: start; }
+.feature.wide .copy > .label, .feature.wide .copy > h3 { grid-column: 1; }
+.feature.wide .copy > p, .feature.wide .copy > ul { grid-column: 2; }
+.feature.wide .copy > h3 { grid-row: 2 / span 3; }
+.copy { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.copy .label { font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--muted); }
+.copy h3 { margin: 0; font-size: clamp(22px, 2.3vw, 27px); line-height: 1.3; letter-spacing: -0.2px; }
+.copy p { margin: 0; font-size: 15px; line-height: 1.8; color: var(--muted); max-width: 34em; }
+.copy p.hint { font-size: 12px; }
+.read { margin: 2px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.6; max-width: 34em; }
+.read li { display: flex; gap: 12px; align-items: flex-start; }
+.read li i { flex: none; width: 10px; height: 10px; border-radius: 3px; margin-top: 6px; }
+.read li i.none { background: transparent; border: 1.5px solid var(--faint); }
+.aside { font-size: 13px; line-height: 1.7; color: var(--muted); padding: 14px 16px; border-radius: 16px; background: var(--track); max-width: 46em; }
+@media (max-width: 880px) {
+  .chapter-head, .feature, .feature.wide .copy { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .feature.flip .copy { order: 0; }
+  .feature.wide .copy > * { grid-column: 1 !important; grid-row: auto !important; }
+  .feature { padding: 40px 0; }
+}
+
 /* Dial */
 .dial-card { align-items: center; }
 .dial-wrap { position: relative; width: min(100%, 360px); aspect-ratio: 1 / 1; touch-action: none; }
@@ -198,6 +232,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
 }
 @media (max-width: 560px) {
   .nav-links { gap: 14px; }
+  .nav-links a:not(.btn) { display: none; }
   .card { padding: 18px; border-radius: 22px; }
   .get { padding: 24px; }
   .zone .sum { width: 96px; }
@@ -269,101 +304,198 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
       </ol>
     </section>
 
-    <section class="block" id="day">
-      <div class="block-head">
-        <span class="kicker">A day</span>
-        <h2>One day, hour by hour</h2>
-        <p>The same charts as the app’s Day view. Switch the sample day at the top and every chart here follows it.</p>
-      </div>
-      <div class="grid2">
+    <section class="chapter" id="day">
+      <div class="chapter-head">
+        <div>
+          <span class="part">Part 1 · A day</span>
+          <h2>One day, from a single reading to the whole picture</h2>
+          <p>The Day view opens with the dial and four numbers. Each number opens into the chart it came from. Switch the sample day at the top of the page, and every chart in this part follows it.</p>
+          <ul class="qs">
+            <li>When was my body under pressure today?</li>
+            <li>Was it training, sleep or something else?</li>
+          </ul>
+        </div>
         <div class="card">
           <div class="card-title"><h3>Summary</h3><span class="unit" id="summaryDay"></span></div>
           <div class="rows" id="summaryRows"></div>
+        </div>
+      </div>
+
+      <article class="feature">
+        <div class="copy">
+          <span class="label">HRV through the day</span>
+          <h3>Every reading, coloured by how it compares with you</h3>
+          <p>While you’re still, your watch takes an HRV reading several times an hour. Each dot is one reading in milliseconds: the variation between your heartbeats. Its colour comes from ranking it against your own daytime readings from the past 30 days.</p>
+          <ul class="read"><li><i style="background:var(--sky)"></i><span>Blue and green dots sit within or above your usual: a calmer state for you.</span></li><li><i style="background:var(--tangerine)"></i><span>Orange and pink dots are lower than your usual, so the pressure estimate rises.</span></li><li><i class="none"></i><span>Grey dots were taken during sleep, a workout or the night. They’re shown, but not scored.</span></li></ul>
+          <p class="hint"><b>In the app</b> Day view → Heart Readings. Tap a dot for its time and value; View All Readings lists every sample with its source.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--sky)"></i>HRV through the day</h3><span class="unit">ms</span></div>
           <div class="readout" id="hrvReadout"></div>
           <div class="chart" id="hrvChart"></div>
-          <div class="legend"><span><b style="background:var(--lime)"></b>Low</span><span><b style="background:var(--sky)"></b>Usual</span><span><b style="background:var(--tangerine)"></b>Elevated</span><span><b style="background:var(--pink)"></b>High</span><span><b style="background:var(--faint)"></b>Not scored</span></div>
-          <p class="hint"><b>In the app</b> Day view → Heart Readings. Tap a dot for its time and value; View All Readings lists every sample with its source, and 30-Day Trend opens the history.</p>
+        </div>
+      </article>
+      <article class="feature flip">
+        <div class="copy">
+          <span class="label">Pressure through the day</span>
+          <h3>The same readings, smoothed into half hours</h3>
+          <p>Single readings are noisy. Averaging the estimates in each half hour shows the shape of the day: when pressure built up, and when it eased.</p>
+          <ul class="read"><li><i style="background:var(--tangerine)"></i><span>Taller, warmer bars mean HRV was further below your usual.</span></li><li><i class="none"></i><span>Gaps mean nothing was scored: asleep, training, or the watch wasn’t worn.</span></li><li><i style="background:var(--violet)"></i><span>The daily score is calculated separately, from the day’s median HRV.</span></li></ul>
+          <p class="hint"><b>In the app</b> Day view, directly below HRV through the day.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Pressure through the day</h3><span class="unit">%</span></div>
           <div class="readout" id="pressureReadout"></div>
           <div class="chart" id="pressureChart"></div>
-          <p class="note">One bar per half hour: the mean estimate of the readings in it. Workout time is left out.</p>
-          <p class="hint"><b>In the app</b> Day view, below HRV through the day.</p>
+        </div>
+      </article>
+      <article class="feature">
+        <div class="copy">
+          <span class="label">Heart rate</span>
+          <h3>Heart rate explains what the HRV dots can’t</h3>
+          <p>Each bar spans the lowest to the highest heart rate in one hour. Low, narrow bars at night are sleep; tall bars are exertion. On the training day, the orange band marks the run, which is why HRV during it isn’t scored.</p>
+          <ul class="read"><li><i style="background:var(--pink)"></i><span>A bar’s length is the hour’s range, from its lowest to its highest reading.</span></li><li><i style="background:var(--tangerine)"></i><span>The orange band is a recorded workout.</span></li></ul>
+          <p class="hint"><b>In the app</b> Day view → Heart Rate. Tap a bar to see that hour.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--pink)"></i>Heart rate</h3><span class="unit">bpm</span></div>
           <div class="readout" id="hrReadout"></div>
           <div class="chart" id="hrChart"></div>
-          <p class="note">Each bar is the low–high range for one hour. The orange band marks a workout.</p>
-          <p class="hint"><b>In the app</b> Day view → Heart Rate. Tap a bar to see that hour.</p>
+        </div>
+      </article>
+      <article class="feature flip">
+        <div class="copy">
+          <span class="label">Sleep</span>
+          <h3>The night before shapes the day after</h3>
+          <p>Recorded sleep stages, one row each. A short or broken night often comes before a day of lower HRV: compare the busy day with the calm day at the top of the page.</p>
+          <ul class="read"><li><i style="background:var(--violet)"></i><span>Deep sleep comes mostly early in the night.</span></li><li><i style="background:var(--pink)"></i><span>REM periods get longer towards the morning.</span></li><li><i style="background:var(--tangerine)"></i><span>Brief awakenings are normal; long ones break the night up.</span></li></ul>
+          <p class="hint"><b>In the app</b> Day view → Sleep. Open Sleep Details to see where each stage began and ended.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--violet)"></i>Sleep</h3><span class="unit" id="sleepUnit"></span></div>
           <div class="readout" id="sleepReadout"></div>
           <div class="chart" id="sleepChart"></div>
           <div class="legend"><span><b style="background:var(--tangerine)"></b>Awake</span><span><b style="background:var(--pink)"></b>REM</span><span><b style="background:var(--sky)"></b>Core</span><span><b style="background:var(--violet)"></b>Deep</span></div>
-          <p class="hint"><b>In the app</b> Day view → Sleep. Open Sleep Details to see where each stage began and ended.</p>
+        </div>
+      </article>
+      <article class="feature">
+        <div class="copy">
+          <span class="label">Hourly steps</span>
+          <h3>When you moved, not just how much</h3>
+          <p>A daily total hides the shape of the day. Hourly steps show the walks and the commute, and can explain a dip in HRV or a rise in heart rate in the same hour.</p>
+          
+          <p class="hint"><b>In the app</b> Day view → Hourly Steps.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--lime)"></i>Hourly steps</h3><span class="unit">steps</span></div>
           <div class="readout" id="stepsReadout"></div>
           <div class="chart" id="stepsChart"></div>
-          <p class="hint"><b>In the app</b> Day view → Hourly Steps.</p>
         </div>
-      </div>
+      </article>
     </section>
 
-    <section class="block" id="training">
-      <div class="block-head">
-        <span class="kicker">Training</span>
-        <h2>Every workout, in context</h2>
-        <p>Weekly volume by sport, a calendar of sessions, and each workout’s heart rate zones. Tap a week or a date.</p>
+    <section class="chapter" id="training">
+      <div class="chapter-head">
+        <div>
+          <span class="part">Part 2 · Training</span>
+          <h2>How much you trained, what each session did, and whether it’s working</h2>
+          <p>Training is read in three layers: weekly volume, single sessions, and fitness over time.</p>
+        </div>
+        <ul class="qs">
+          <li>Was this week heavier or lighter than usual?</li>
+          <li>How hard was that session, really?</li>
+          <li>Am I getting fitter?</li>
+        </ul>
       </div>
-      <div class="grid2">
-        <div class="card span2">
+
+      <article class="feature">
+        <div class="copy">
+          <span class="label">Training volume</span>
+          <h3>How much, by sport, week by week</h3>
+          <p>Each bar is a seven-day block of recorded workout minutes, stacked by activity. Tap a week to compare it with the one before. In the app, the latest block also compares with your typical week, the median of the earlier blocks.</p>
+          <ul class="read"><li><i style="background:var(--tangerine)"></i><span>Running</span></li><li><i style="background:var(--violet)"></i><span>Strength training</span></li><li><i style="background:var(--sky)"></i><span>Cycling</span></li><li><i class="none"></i><span>Minutes measure time, not effort: an hour of easy cycling and an hour of intervals look the same here.</span></li></ul>
+          <p class="hint"><b>In the app</b> Week → Training. Tap a bar, then expand the workout count to see the sessions behind it.</p>
+        </div>
+        <div class="card">
           <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Training volume</h3><span class="unit">min</span></div>
           <div class="readout" id="volReadout"></div>
           <div class="chart" id="volChart"></div>
-          <div class="legend"><span><b style="background:var(--tangerine)"></b>Running</span><span><b style="background:var(--violet)"></b>Strength training</span><span><b style="background:var(--sky)"></b>Cycling</span></div>
-          <p class="hint"><b>In the app</b> Week → Training. Tap a bar for its seven-day block, then expand the workout count to see the sessions behind it.</p>
         </div>
-        <div class="card">
-          <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Training calendar</h3><span class="unit">min</span></div>
-          <div class="readout" id="calTotal"></div>
-          <div class="cal-head" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
-          <div class="cal" id="trainCal"></div>
-          <div class="legend"><span><b style="background:var(--tangerine)"></b>Running</span><span><b style="background:var(--violet)"></b>Strength training</span><span style="margin-left:auto">Tap a date to open it.</span></div>
+      </article>
+      <article class="feature wide">
+        <div class="copy">
+          <span class="label">Training calendar and workout</span>
+          <h3>From a date to a single session</h3>
+          <p>The calendar shows each day’s main workout and its minutes. Tap a date to open it, then tap a session to see how hard it was: the time spent in each heart rate zone, and how heart rate moved through it.</p>
+          <ul class="read">
+            <li><i style="background:var(--sky)"></i><span>Zones 1–2 are easy, conversational effort.</span></li>
+            <li><i style="background:var(--straw)"></i><span>Zone 3 is steady, comfortably hard.</span></li>
+            <li><i style="background:var(--pink)"></i><span>Zones 4–5 are hard to very hard, hard to hold for long.</span></li>
+          </ul>
           <p class="hint"><b>In the app</b> Month → Training, then the calendar icon. Tap a date to open that day at its workouts.</p>
         </div>
-        <div class="card" id="workoutPanel" aria-live="polite"></div>
-        <div class="card">
-          <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Pace and average heart rate</h3><span class="unit">running · bpm</span></div>
-          <div class="readout" id="paceReadout"></div>
-          <div class="chart" id="paceChart"></div>
-          <p class="note">Each dot is one run. At a similar pace, a falling average heart rate suggests improving fitness. The dashed line is the trend.</p>
+        <div class="grid2">
+          <div class="card">
+            <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Training calendar</h3><span class="unit">min</span></div>
+            <div class="readout" id="calTotal"></div>
+            <div class="cal-head" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+            <div class="cal" id="trainCal"></div>
+            <div class="legend"><span><b style="background:var(--tangerine)"></b>Running</span><span><b style="background:var(--violet)"></b>Strength training</span></div>
+          </div>
+          <div class="card" id="workoutPanel" aria-live="polite"></div>
+        </div>
+      </article>
+      <article class="feature flip">
+        <div class="copy">
+          <span class="label">Pace and average heart rate</span>
+          <h3>Getting fitter shows up as a lower heart rate at the same pace</h3>
+          <p>Each dot is one run’s average heart rate. When runs at a similar pace need fewer beats per minute over the weeks, your aerobic fitness is likely improving. The dashed line is the trend.</p>
+          <ul class="read"><li><i style="background:var(--tangerine)"></i><span>Hover a dot to see its pace.</span></li><li><i class="none"></i><span>Heat, hills, hydration and the run’s structure change heart rate too, so compare similar runs.</span></li></ul>
           <p class="hint"><b>In the app</b> Training Performance. Pick an activity and indoor or outdoor, then compare runs at nearby paces.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--pink)"></i>One-minute heart-rate recovery</h3><span class="unit">bpm drop</span></div>
-          <div class="readout" id="hrrReadout"></div>
-          <div class="chart" id="hrrChart"></div>
-          <p class="note">How far heart rate fell in the first minute after each run. Shown only when the sample matches a workout by activity, source and timing.</p>
+          <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Pace and average heart rate</h3><span class="unit">bpm</span></div>
+          <div class="readout" id="paceReadout"></div>
+          <div class="chart" id="paceChart"></div>
+        </div>
+      </article>
+      <article class="feature">
+        <div class="copy">
+          <span class="label">One-minute heart-rate recovery</span>
+          <h3>How fast your heart settles after a run</h3>
+          <p>How far heart rate falls in the first minute after exercise. A bigger drop generally means quicker recovery, and it tends to grow as fitness improves.</p>
+          <ul class="read"><li><i style="background:var(--pink)"></i><span>Each dot is the drop after one run, in beats per minute.</span></li><li><i class="none"></i><span>Walking, standing still or sitting down changes the number, so compare runs with similar cool-downs.</span></li></ul>
           <p class="hint"><b>In the app</b> Training Performance, the lower chart.</p>
         </div>
-      </div>
+        <div class="card">
+          <div class="card-title"><h3><i style="background:var(--pink)"></i>One-minute recovery</h3><span class="unit">bpm drop</span></div>
+          <div class="readout" id="hrrReadout"></div>
+          <div class="chart" id="hrrChart"></div>
+        </div>
+      </article>
     </section>
 
-    <section class="block" id="recovery">
-      <div class="block-head">
-        <span class="kicker">Recovery</span>
-        <h2>How well you slept it off</h2>
-        <p>Overnight HRV, sleep timing and resting heart rate, read as a 7-day trend against your own usual range.</p>
+    <section class="chapter" id="recovery">
+      <div class="chapter-head">
+        <div>
+          <span class="part">Part 3 · Recovery</span>
+          <h2>How well you slept it off, night by night and across weeks</h2>
+          <p>Recovery reads the hours you can’t feel: sleep timing, overnight HRV and vitals, and how your numbers are trending against your own usual range. It still works without sleep data, from daytime HRV and resting heart rate.</p>
+        </div>
+        <ul class="qs">
+          <li>Am I recovering as well as usual?</li>
+          <li>Is this a bad night, or a trend?</li>
+        </ul>
       </div>
-      <div class="grid2">
+
+      <article class="feature">
+        <div class="copy">
+          <span class="label">Recovery calendar</span>
+          <h3>A month of daily scores at a glance</h3>
+          <p>Each date shows that day’s HRV score; switch to daily HRV or resting heart rate. A run of warm colours points to a stretch worth looking into, and tapping a date shows all three numbers for that day.</p>
+          <ul class="read"><li><i style="background:var(--lime)"></i><span>Low</span></li><li><i style="background:var(--sky)"></i><span>Usual</span></li><li><i style="background:var(--tangerine)"></i><span>Elevated</span></li><li><i style="background:var(--pink)"></i><span>High</span></li></ul>
+          <p class="hint"><b>In the app</b> Month → Recovery, then the calendar icon. Choose a metric from the menu and tap a date.</p>
+        </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--sky)"></i>Recovery calendar</h3><span class="unit">Nov 2026</span></div>
           <div class="seg" id="metricSeg" role="group" aria-label="Calendar metric"></div>
@@ -371,37 +503,75 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <div class="cal-head" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
           <div class="cal" id="recCal"></div>
           <div class="legend" id="recLegend"></div>
-          <p class="hint"><b>In the app</b> Month → Recovery, then the calendar icon. Choose a metric from the menu and tap a date.</p>
+        </div>
+      </article>
+      <article class="feature flip">
+        <div class="copy">
+          <span class="label">Sleep and recovery</span>
+          <h3>When you slept, grouped by the morning you woke</h3>
+          <p>Each row is one night on an evening-to-evening axis, so a night that crosses midnight stays in one piece. Tap a night to see its overnight HRV and the resting heart rate of the day that followed.</p>
+          <ul class="read"><li><i style="background:var(--violet)"></i><span>Bar length is time asleep; position shows bedtime and wake time.</span></li><li><i class="none"></i><span>A night without HRV readings stays blank rather than guessed.</span></li></ul>
+          <p class="hint"><b>In the app</b> Week or Month → Recovery → Sleep &amp; Recovery.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--violet)"></i>Sleep &amp; recovery</h3><span class="unit">by wake date</span></div>
+          <div class="card-title"><h3><i style="background:var(--violet)"></i>Sleep timing</h3><span class="unit">by wake date</span></div>
           <div class="readout" id="nightReadout"></div>
           <div class="chart" id="nightChart"></div>
           <div class="rows" id="nightRows"></div>
-          <p class="hint"><b>In the app</b> Week or Month → Recovery → Sleep &amp; Recovery. Nights are grouped by the date you woke up.</p>
         </div>
-        <div class="card span2">
+      </article>
+      <article class="feature wide">
+        <div class="copy">
+          <span class="label">HRV trend</span>
+          <h3>Is your HRV holding within your usual range?</h3>
+          <p>One day’s HRV says little; a week says more. This is how training studies read HRV: a 7-day average compared with a band of normal day-to-day variation for you.</p>
+          <ul class="read">
+            <li><i style="background:var(--violet)"></i><span>The purple line is the 7-day average, drawn once at least 3 of the 7 days have a value.</span></li>
+            <li><i style="background:var(--sky)"></i><span>The blue band is your usual range, from the 30 days before this month.</span></li>
+            <li><i style="background:var(--tangerine)"></i><span>Several days below the band is worth noticing. One day isn’t.</span></li>
+          </ul>
+          <p class="hint"><b>In the app</b> Recovery → HRV Trend. Tap Overnight when sleep records exist; tap a day for its activity context.</p>
+        </div>
+        <div class="card">
           <div class="card-title"><h3><i style="background:var(--sky)"></i>HRV trend</h3><span class="unit">ms</span></div>
           <div class="seg" id="trendSeg" role="group" aria-label="HRV period" style="max-width:420px"></div>
           <div class="readout" id="trendReadout"></div>
           <div class="chart" id="trendChart"></div>
-          <p class="note">Purple line: 7-day average, drawn when at least 3 of the 7 days have HRV. Blue band: your usual range from the 30 days before, average ± 0.5 SD. A few days below the band is worth noticing; one day isn’t.</p>
-          <p class="hint"><b>In the app</b> Recovery → HRV Trend. Tap Overnight when sleep records exist; tap a day for its activity context.</p>
         </div>
-        <div class="card span2">
+      </article>
+      <article class="feature">
+        <div class="copy">
+          <span class="label">Resting heart rate</span>
+          <h3>Slow to change, so changes are worth noticing</h3>
+          <p>Resting heart rate moves less than HRV from day to day. When it climbs a few beats over several days, it often moves with heavy training, short sleep or getting ill. The dashed line is the month’s median.</p>
+          <ul class="read"><li><i style="background:var(--sky)"></i><span>Hover a day to see how far it sits from the median.</span></li></ul>
+          <p class="hint"><b>In the app</b> Recovery, below the HRV trend, with daily steps beside it.</p>
+        </div>
+        <div class="card">
           <div class="card-title"><h3><i style="background:var(--sky)"></i>Resting heart rate</h3><span class="unit">bpm</span></div>
           <div class="readout" id="rhrReadout"></div>
           <div class="chart" id="rhrChart"></div>
-          <p class="hint"><b>In the app</b> Recovery, below the HRV trend, with daily steps beside it.</p>
         </div>
-        <div class="card span2">
+      </article>
+      <article class="feature wide">
+        <div class="copy">
+          <span class="label">Overnight vitals</span>
+          <h3>What your body did while you slept</h3>
+          <p>Four measurements from the night, each against its own band from your previous 30 nights. One point outside its band is common. Several moving together on the same nights is the pattern to notice: in this sample, sleep heart rate, breathing rate and wrist temperature all rise over the last few nights.</p>
+          <ul class="read">
+            <li><i style="background:var(--violet)"></i><span>Purple points are within your usual range.</span></li>
+            <li><i style="background:var(--tangerine)"></i><span>Orange points fall outside it.</span></li>
+            <li><i class="none"></i><span>A gap means no usable measurement that night.</span></li>
+          </ul>
+          <p class="hint"><b>In the app</b> Recovery → Overnight Vitals → Show overnight measurements.</p>
+        </div>
+        <div class="card">
           <div class="card-title"><h3><i style="background:var(--violet)"></i>Overnight vitals</h3><span class="unit">last 14 nights</span></div>
           <div class="readout" id="vitalsReadout"></div>
           <div class="chart" id="vitalsChart"></div>
-          <p class="note">Each band is the 10th–90th percentile of that measurement over the prior 30 nights, with at least 7 nights. Orange points fall outside it; a gap means no usable measurement that night.</p>
-          <p class="hint"><b>In the app</b> Recovery → Overnight Vitals → Show overnight measurements.</p>
         </div>
-      </div>
+      </article>
+      <p class="aside" style="margin-top:28px">None of this is a diagnosis. These charts describe how your numbers compare with your own recent history; if something concerns you, talk to a doctor.</p>
     </section>
 
     <section class="block" id="evidence">

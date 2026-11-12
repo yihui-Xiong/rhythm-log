@@ -6,11 +6,14 @@
 <title>Rhythm Log — your HRV, back in the context of your day</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --canvas: #F4F1FD; --canvas-mid: #EEF5FD; --canvas-end: #FDF3EC;
-  --card: rgba(255,255,255,0.82); --card-edge: rgba(24,21,31,0.07);
+  --canvas: #F8F6FF; --canvas-mid: #EFF7FF; --canvas-end: #FFF5EE;
+  --card: rgba(255,255,255,0.82); --card-edge: #FFFFFF;
+  --rule: rgba(24,21,31,0.16);
+  --body: #3D3A48;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --ink: #18151F; --muted: #57546A; --faint: #8C899A;
   --grid: rgba(24,21,31,0.09); --track: rgba(24,21,31,0.06); --thumb: #FFFFFF;
   --accent: #7C3AED; --accent-fill: #8B5CF6; --on-accent: #FFFFFF;
@@ -23,22 +26,24 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --canvas: #110F18; --canvas-mid: #0F131B; --canvas-end: #17120F;
-    --card: rgba(30,27,40,0.82); --card-edge: rgba(255,255,255,0.08);
+    --canvas: #0B0A10; --canvas-mid: #0A0F14; --canvas-end: #120C0B;
+    --card: rgba(255,255,255,0.07); --card-edge: rgba(255,255,255,0.08);
     --ink: #F3F1F8; --muted: #B3AFC2; --faint: #858197;
-    --grid: rgba(255,255,255,0.1); --track: rgba(255,255,255,0.08); --thumb: #3A3548;
+    --grid: rgba(255,255,255,0.1); --track: rgba(255,255,255,0.08); --thumb: #2A2833;
     --accent: #A78BFA; --accent-fill: #8B5CF6; --on-accent: #FFFFFF;
-    --empty: #3A3647;
+    --empty: #3A3647; --rule: rgba(255,255,255,0.16); --body: #D8D5E2;
+    --lime: #A3E635; --sky: #38BDF8; --tangerine: #FB923C; --pink: #F472B6; --violet: #A78BFA;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --canvas: #110F18; --canvas-mid: #0F131B; --canvas-end: #17120F;
-  --card: rgba(30,27,40,0.82); --card-edge: rgba(255,255,255,0.08);
+  --canvas: #0B0A10; --canvas-mid: #0A0F14; --canvas-end: #120C0B;
+  --card: rgba(255,255,255,0.07); --card-edge: rgba(255,255,255,0.08);
   --ink: #F3F1F8; --muted: #B3AFC2; --faint: #858197;
-  --grid: rgba(255,255,255,0.1); --track: rgba(255,255,255,0.08); --thumb: #3A3548;
+  --grid: rgba(255,255,255,0.1); --track: rgba(255,255,255,0.08); --thumb: #2A2833;
   --accent: #A78BFA; --accent-fill: #8B5CF6; --on-accent: #FFFFFF;
-  --empty: #3A3647;
+  --empty: #3A3647; --rule: rgba(255,255,255,0.16); --body: #D8D5E2;
+  --lime: #A3E635; --sky: #38BDF8; --tangerine: #FB923C; --pink: #F472B6; --violet: #A78BFA;
   color-scheme: dark;
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -76,8 +81,8 @@ button { font: inherit; color: inherit; }
 /* Cards and sections */
 .card { background: var(--card); border: 1px solid var(--card-edge); border-radius: 26px; padding: 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .card-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.card-title h3 { margin: 0; display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
-.card-title h3 i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; flex: none; }
+.card-title h3, .card-title h4 { margin: 0; display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+.card-title h3 i, .card-title h4 i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; flex: none; }
 .unit { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 .readout { display: flex; flex-direction: column; gap: 2px; min-height: 58px; }
 .readout .cap { font-size: 12px; color: var(--muted); }
@@ -220,11 +225,15 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
 
 /* Dial */
 .dial-card { align-items: center; }
-.dial-wrap { position: relative; width: min(100%, 360px); aspect-ratio: 1 / 1; touch-action: none; }
-.dial-wrap svg { width: 100%; height: 100%; display: block; }
-.dial-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 30%; aspect-ratio: 1; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; pointer-events: none; }
-.dial-center b { font-size: clamp(24px, 3vw, 32px); font-variant-numeric: tabular-nums; }
-.dial-center span { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.dial-wrap { position: relative; width: min(100%, 330px); aspect-ratio: 1 / 1; touch-action: none; cursor: pointer; }
+.dial-wrap svg { position: relative; width: 100%; height: 100%; display: block; }
+.dial-glow { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; transition: background .28s, opacity .28s; }
+.dial-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: none; white-space: nowrap; }
+.dial-center b { font-size: 40px; font-weight: 600; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.dial-center span { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.dial-center em { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 2px; font-style: normal; font-size: 11px; color: var(--muted); }
+/* Letter spacing adds space after the last letter; balance it so the word is optically centred. */
+.dial-center span { padding-left: 1px; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -237,10 +246,41 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
   .get { padding: 24px; }
   .zone .sum { width: 96px; }
 }
+
+/* ---------- Readability, emphasis and access ---------- */
+.hero p.lead, .block-head p, .chapter-head p, .copy p, .read, .notes, .method .body, .cards4 p,
+.steps li span, .setup li span, .aside, .note, .get p, .hint, .kbd-tip { font-family: var(--sans); }
+.hero p.lead { font-size: 18px; line-height: 1.65; color: var(--body); }
+.chapter-head p, .block-head p { font-size: 17px; line-height: 1.7; color: var(--body); }
+.copy p { font-size: 16px; line-height: 1.7; color: var(--body); }
+.copy .label { color: var(--accent); }
+.read { font-size: 15px; line-height: 1.6; color: var(--ink); }
+.note { font-size: 13px; line-height: 1.6; }
+.hint, .copy p.hint { font-size: 13px; }
+.method .body { font-size: 15px; color: var(--body); }
+.steps li span, .setup li span, .cards4 p { font-size: 15px; line-height: 1.6; color: var(--body); }
+.notes { font-family: var(--sans); font-size: 16px; color: var(--body); }
+.seg button { min-height: 44px; }
+.kbd-tip { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+.chart { border-radius: 12px; }
+.chart:focus-visible, .dial-wrap:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 12px; }
+.skip { position: absolute; left: 12px; top: -80px; z-index: 50; padding: 12px 18px; border-radius: 999px; background: var(--accent-fill); color: var(--on-accent); text-decoration: none; font-weight: 600; }
+.skip:focus { top: calc(env(safe-area-inset-top, 0px) + 10px); }
+/* Sticky top bar with the current part highlighted */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--canvas) 84%, transparent); -webkit-backdrop-filter: saturate(1.4) blur(14px); backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid transparent; transition: border-color .2s; }
+.topbar.scrolled { border-bottom-color: var(--grid); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 21; background: color-mix(in srgb, var(--canvas) 84%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.nav { padding: 12px 0; }
+.nav-links a[aria-current="true"] { color: var(--ink); font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; text-decoration-color: var(--accent); }
+html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
+@media (prefers-contrast: more) {
+  :root { --muted: #34313F; --body: #1F1C28; --faint: #5E5A6C; --card-edge: rgba(24,21,31,0.35); --grid: rgba(24,21,31,0.25); }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
+<a class="skip" href="#top">Skip to content</a>
+<div class="topbar" id="topbar"><div class="wrap">
   <header class="nav">
     <a class="brand" href="#top" aria-label="Rhythm Log home">
       <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#FFFFFF" stroke="#E7E3F0"/><g stroke-linecap="round" stroke-width="2.4"><line x1="16" y1="9" x2="16" y2="4.5" stroke="#0EA5E9"/><line x1="21" y1="11" x2="24.5" y2="7.5" stroke="#84CC16"/><line x1="23" y1="16" x2="27" y2="16" stroke="#F97316"/><line x1="21" y1="21" x2="23.5" y2="23.5" stroke="#EC4899"/><line x1="11" y1="21" x2="8" y2="24" stroke="#0EA5E9"/><line x1="9" y1="16" x2="6" y2="16" stroke="#84CC16"/></g><path d="M16 4.5 A11.5 11.5 0 0 0 7.9 7.9" fill="none" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="16" r="2.2" fill="#0EA5E9"/></svg>
@@ -255,8 +295,9 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
       <a class="btn btn-primary" href="#get">Get the code</a>
     </nav>
   </header>
-
-  <main id="top">
+</div></div>
+<div class="wrap">
+  <main id="top" tabindex="-1">
     <section class="hero">
       <div class="hero-copy">
         <h1>Put every HRV reading back into your day.</h1>
@@ -269,23 +310,25 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
       </div>
 
       <div class="card dial-card">
-        <div class="card-title" style="width:100%"><h3>Daily HRV score</h3><span class="unit">Sample data</span></div>
+        <div class="card-title" style="width:100%"><h4>Daily HRV score</h4><span class="unit">Sample data</span></div>
         <div class="seg" id="daySeg" role="group" aria-label="Sample day" style="width:100%"></div>
-        <div class="dial-wrap" id="dial" role="img" aria-label="24-hour dial for the sample day">
-          <svg id="dialSvg" viewBox="0 0 360 360" aria-hidden="true"></svg>
-          <div class="dial-center" id="dialCenter"><b id="dialValue">—</b><span id="dialLabel"></span></div>
+        <div class="dial-wrap" id="dial" role="group" tabindex="0" aria-label="24-hour dial for the sample day. Use the arrow keys to step through the hours, Escape to return to the day." aria-describedby="scoreMeaning">
+          <div class="dial-glow" id="dialGlow" aria-hidden="true"></div>
+          <svg id="dialSvg" viewBox="0 0 330 330" aria-hidden="true"></svg>
+          <div class="dial-center" id="dialCenter" aria-live="polite" aria-atomic="true"><b id="dialValue">—</b><span id="dialLabel"></span><em id="dialHour"></em></div>
         </div>
         <div class="legend" style="justify-content:center">
           <span><b style="background:var(--lime)"></b>Low</span>
           <span><b style="background:var(--sky)"></b>Usual</span>
           <span><b style="background:var(--tangerine)"></b>Elevated</span>
           <span><b style="background:var(--pink)"></b>High</span>
-          <span><b class="bar" style="background:var(--violet)"></b>Sleep</span>
-          <span><b class="bar" style="background:var(--tangerine)"></b>Workout</span>
+          <span><b style="background:var(--violet)"></b>Sleep</span>
+          <span><b style="background:var(--tangerine)"></b>Workout</span>
         </div>
         <p class="note" id="dayCaption" style="text-align:center"></p>
-        <p class="note" id="scoreMeaning" style="text-align:center;color:var(--ink)"></p>
-        <p class="note" style="text-align:center">Hover or tap an hour. Each ray is one hour; longer and warmer means lower HRV than your usual.</p>
+        <p class="note" id="scoreMeaning" style="font-size:14px;line-height:1.6;color:var(--ink);align-self:stretch"></p>
+        <p class="note" style="align-self:stretch">Reference days: 30</p>
+        <p class="note" style="text-align:center">Hover or tap an hour, or focus the dial and use the arrow keys. Each ray is one hour; longer and warmer means lower HRV than your usual.</p>
       </div>
     </section>
 
@@ -314,9 +357,10 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
             <li>When was my body under pressure today?</li>
             <li>Was it training, sleep or something else?</li>
           </ul>
+          <p class="kbd-tip">Every chart responds to hover and tap. With a keyboard, Tab to a chart and use the arrow keys.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3>Summary</h3><span class="unit" id="summaryDay"></span></div>
+          <div class="card-title"><h4>Summary</h4><span class="unit" id="summaryDay"></span></div>
           <div class="rows" id="summaryRows"></div>
         </div>
       </div>
@@ -330,7 +374,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Day view → Heart Readings. Tap a dot for its time and value; View All Readings lists every sample with its source.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--sky)"></i>HRV through the day</h3><span class="unit">ms</span></div>
+          <div class="card-title"><h4><i style="background:var(--sky)"></i>HRV through the day</h4><span class="unit">ms</span></div>
           <div class="readout" id="hrvReadout"></div>
           <div class="chart" id="hrvChart"></div>
         </div>
@@ -344,7 +388,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Day view, directly below HRV through the day.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Pressure through the day</h3><span class="unit">%</span></div>
+          <div class="card-title"><h4><i style="background:var(--tangerine)"></i>Pressure through the day</h4><span class="unit">%</span></div>
           <div class="readout" id="pressureReadout"></div>
           <div class="chart" id="pressureChart"></div>
         </div>
@@ -358,7 +402,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Day view → Heart Rate. Tap a bar to see that hour.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--pink)"></i>Heart rate</h3><span class="unit">bpm</span></div>
+          <div class="card-title"><h4><i style="background:var(--pink)"></i>Heart rate</h4><span class="unit">bpm</span></div>
           <div class="readout" id="hrReadout"></div>
           <div class="chart" id="hrChart"></div>
         </div>
@@ -372,7 +416,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Day view → Sleep. Open Sleep Details to see where each stage began and ended.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--violet)"></i>Sleep</h3><span class="unit" id="sleepUnit"></span></div>
+          <div class="card-title"><h4><i style="background:var(--violet)"></i>Sleep</h4><span class="unit" id="sleepUnit"></span></div>
           <div class="readout" id="sleepReadout"></div>
           <div class="chart" id="sleepChart"></div>
           <div class="legend"><span><b style="background:var(--tangerine)"></b>Awake</span><span><b style="background:var(--pink)"></b>REM</span><span><b style="background:var(--sky)"></b>Core</span><span><b style="background:var(--violet)"></b>Deep</span></div>
@@ -387,7 +431,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Day view → Hourly Steps.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--lime)"></i>Hourly steps</h3><span class="unit">steps</span></div>
+          <div class="card-title"><h4><i style="background:var(--lime)"></i>Hourly steps</h4><span class="unit">steps</span></div>
           <div class="readout" id="stepsReadout"></div>
           <div class="chart" id="stepsChart"></div>
         </div>
@@ -417,7 +461,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Week → Training. Tap a bar, then expand the workout count to see the sessions behind it.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Training volume</h3><span class="unit">min</span></div>
+          <div class="card-title"><h4><i style="background:var(--tangerine)"></i>Training volume</h4><span class="unit">min</span></div>
           <div class="readout" id="volReadout"></div>
           <div class="chart" id="volChart"></div>
         </div>
@@ -436,7 +480,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
         </div>
         <div class="grid2">
           <div class="card">
-            <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Training calendar</h3><span class="unit">min</span></div>
+            <div class="card-title"><h4><i style="background:var(--tangerine)"></i>Training calendar</h4><span class="unit">min</span></div>
             <div class="readout" id="calTotal"></div>
             <div class="cal-head" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
             <div class="cal" id="trainCal"></div>
@@ -454,7 +498,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Training Performance. Pick an activity and indoor or outdoor, then compare runs at nearby paces.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Pace and average heart rate</h3><span class="unit">bpm</span></div>
+          <div class="card-title"><h4><i style="background:var(--tangerine)"></i>Pace and average heart rate</h4><span class="unit">bpm</span></div>
           <div class="readout" id="paceReadout"></div>
           <div class="chart" id="paceChart"></div>
         </div>
@@ -468,7 +512,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Training Performance, the lower chart.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--pink)"></i>One-minute recovery</h3><span class="unit">bpm drop</span></div>
+          <div class="card-title"><h4><i style="background:var(--pink)"></i>One-minute recovery</h4><span class="unit">bpm drop</span></div>
           <div class="readout" id="hrrReadout"></div>
           <div class="chart" id="hrrChart"></div>
         </div>
@@ -497,7 +541,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Month → Recovery, then the calendar icon. Choose a metric from the menu and tap a date.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--sky)"></i>Recovery calendar</h3><span class="unit">Nov 2026</span></div>
+          <div class="card-title"><h4><i style="background:var(--sky)"></i>Recovery calendar</h4><span class="unit">Nov 2026</span></div>
           <div class="seg" id="metricSeg" role="group" aria-label="Calendar metric"></div>
           <div class="readout" id="recCalReadout"></div>
           <div class="cal-head" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
@@ -514,7 +558,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Week or Month → Recovery → Sleep &amp; Recovery.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--violet)"></i>Sleep timing</h3><span class="unit">by wake date</span></div>
+          <div class="card-title"><h4><i style="background:var(--violet)"></i>Sleep timing</h4><span class="unit">by wake date</span></div>
           <div class="readout" id="nightReadout"></div>
           <div class="chart" id="nightChart"></div>
           <div class="rows" id="nightRows"></div>
@@ -533,7 +577,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Recovery → HRV Trend. Tap Overnight when sleep records exist; tap a day for its activity context.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--sky)"></i>HRV trend</h3><span class="unit">ms</span></div>
+          <div class="card-title"><h4><i style="background:var(--sky)"></i>HRV trend</h4><span class="unit">ms</span></div>
           <div class="seg" id="trendSeg" role="group" aria-label="HRV period" style="max-width:420px"></div>
           <div class="readout" id="trendReadout"></div>
           <div class="chart" id="trendChart"></div>
@@ -548,7 +592,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Recovery, below the HRV trend, with daily steps beside it.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--sky)"></i>Resting heart rate</h3><span class="unit">bpm</span></div>
+          <div class="card-title"><h4><i style="background:var(--sky)"></i>Resting heart rate</h4><span class="unit">bpm</span></div>
           <div class="readout" id="rhrReadout"></div>
           <div class="chart" id="rhrChart"></div>
         </div>
@@ -566,7 +610,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <p class="hint"><b>In the app</b> Recovery → Overnight Vitals → Show overnight measurements.</p>
         </div>
         <div class="card">
-          <div class="card-title"><h3><i style="background:var(--violet)"></i>Overnight vitals</h3><span class="unit">last 14 nights</span></div>
+          <div class="card-title"><h4><i style="background:var(--violet)"></i>Overnight vitals</h4><span class="unit">last 14 nights</span></div>
           <div class="readout" id="vitalsReadout"></div>
           <div class="chart" id="vitalsChart"></div>
         </div>
@@ -744,10 +788,10 @@ function rng(seed) {
 const BANDS = [
   { max: 20, name: "Low", color: "--lime", ink: "#4D7C0F" },
   { max: 60, name: "Usual", color: "--sky", ink: "#0369A1" },
-  { max: 85, name: "Elevated", color: "--tangerine", ink: "#C2410C" },
-  { max: 101, name: "High", color: "--pink", ink: "#BE185D" }
+  { max: 80, name: "Elevated", color: "--tangerine", ink: "#C2410C" },
+  { max: 100, name: "High", color: "--pink", ink: "#BE185D" }
 ];
-const band = (s) => BANDS.find((b) => s < b.max) || BANDS[3];
+const band = (s) => BANDS.find((b) => s <= b.max) || BANDS[3];
 const isDark = () => css("color-scheme") === "dark";
 const bandInk = (b) => isDark() ? css(b.color) : b.ink;
 
@@ -765,7 +809,27 @@ function chart(id, height, draw, opts = {}) {
   };
   charts.push(c);
   new ResizeObserver(() => c.render()).observe(host);
+  bindKeys(c, opts.label || "Chart");
   return c;
+}
+/* Keyboard: focus a chart, then arrow keys, Home and End move through it; Escape clears. */
+function bindKeys(c, label) {
+  const host = c.host;
+  host.tabIndex = 0;
+  host.setAttribute("role", "group");
+  host.setAttribute("aria-label", `${label}. Use the left and right arrow keys to move through it.`);
+  host.addEventListener("keydown", (e) => {
+    if (!c.count) return;
+    let i = c.sel;
+    if (e.key === "ArrowRight") i = i === null ? 0 : Math.min(c.count - 1, i + 1);
+    else if (e.key === "ArrowLeft") i = i === null ? c.count - 1 : Math.max(0, i - 1);
+    else if (e.key === "Home") i = 0;
+    else if (e.key === "End") i = c.count - 1;
+    else if (e.key === "Escape") i = null;
+    else return;
+    e.preventDefault();
+    c.sel = i; c.onPick(i); c.render();
+  });
 }
 function axisY(svg, x0, x1, y, label) {
   el("line", { x1: x0, x2: x1, y1: y, y2: y, stroke: css("--grid"), "stroke-dasharray": "3 4" }, svg);
@@ -776,6 +840,7 @@ function axisX(svg, x, y, label, anchor = "middle") {
 }
 /* An invisible layer that turns pointer position into an index and back. */
 function hoverLayer(svg, x0, y0, w, h, count, onPick, c) {
+  c.count = count; c.onPick = onPick;
   const r = el("rect", { x: x0, y: y0, width: w, height: h, fill: "transparent", style: "cursor:crosshair" }, svg);
   const pick = (e) => {
     const box = svg.getBoundingClientRect();
@@ -884,36 +949,64 @@ let dayIndex = 1;
 const today = () => built[dayIndex];
 const dayDef = () => DAYS[dayIndex];
 
-/* ---------- Dial ---------- */
-const dial = { svg: $("dialSvg"), rays: [], current: new Array(24).fill(0), from: null, target: null, start: 0, hour: null, arcs: [] };
+/* ---------- Dial: same geometry as DayDial in the app ---------- */
+const SIDE = 330, C = SIDE / 2;
+const G = { inner: SIDE * 0.27, reach: SIDE * 0.14, width: SIDE * 0.026, stub: SIDE * 0.012,
+            arcR: SIDE * 0.27 - SIDE * 0.05, arcW: SIDE * 0.03, label: SIDE * 0.27 + SIDE * 0.14 + SIDE * 0.05 };
+const dial = { svg: $("dialSvg"), rays: [], current: new Array(24).fill(0), hour: null, progress: 0 };
+const angle = (hour) => hour / 24 * 2 * Math.PI - Math.PI / 2;
+const at = (hour, radius) => [C + radius * Math.cos(angle(hour)), C + radius * Math.sin(angle(hour))];
 (function setupDial() {
-  const svg = dial.svg, c = 180;
-  el("circle", { cx: c, cy: c, r: 168, fill: "none", stroke: "transparent" }, svg);
+  const svg = dial.svg;
+  dial.rayLayer = el("g", {}, svg);
+  for (let h = 0; h < 24; h++) dial.rays.push(el("line", { "stroke-linecap": "round" }, dial.rayLayer));
   dial.arcLayer = el("g", {}, svg);
-  for (let h = 0; h < 24; h++) dial.rays.push(el("line", { "stroke-linecap": "round", "stroke-width": 10 }, svg));
-  [["00", c, 14], ["06", 352, c + 4], ["12", c, 356], ["18", 8, c + 4]].forEach(([t, x, y]) => {
-    const n = el("text", { x, y, "font-size": 12, "text-anchor": t === "06" ? "end" : t === "18" ? "start" : "middle", fill: css("--muted") }, svg); n.textContent = t; n.dataset.axis = "1";
+  dial.labels = [0, 6, 12, 18].map((hour) => {
+    const [x, y] = at(hour, G.label);
+    const t = el("text", { x, y, "font-size": 10, "font-weight": 500, "text-anchor": "middle", "dominant-baseline": "central" }, svg);
+    t.textContent = pad(hour);
+    return t;
   });
   const wrap = $("dial");
+  // Like selectHour(at:in:): outside 0.2 of the size, take the hour under the finger,
+  // snapping to the nearest scored neighbour.
   const pickHour = (e) => {
     const box = wrap.getBoundingClientRect();
-    const x = (e.clientX - box.left) / box.width * 360 - c, y = (e.clientY - box.top) / box.height * 360 - c;
-    const dist = Math.hypot(x, y);
-    if (dist < 60 || dist > 175) { setHour(null); return; }
-    let ang = Math.atan2(x, -y) * 180 / Math.PI; if (ang < 0) ang += 360;
-    setHour(Math.floor(ang / 15));
+    const dx = (e.clientX - box.left) / box.width * SIDE - C, dy = (e.clientY - box.top) / box.height * SIDE - C;
+    let next = null;
+    if (Math.hypot(dx, dy) > SIDE * 0.2) {
+      let turn = (Math.atan2(dy, dx) + Math.PI / 2) / (2 * Math.PI);
+      if (turn < 0) turn += 1;
+      const hour = Math.min(Math.floor(turn * 24), 23);
+      const scored = dayDef().scores;
+      next = [hour, hour - 1, hour + 1].find((h) => scored[h] !== undefined);
+      if (next === undefined) next = null;
+    }
+    setHour(next);
   };
-  wrap.addEventListener("pointermove", pickHour);
-  wrap.addEventListener("pointerdown", pickHour);
+  wrap.addEventListener("pointermove", (e) => { if (e.pointerType === "mouse" || e.buttons) pickHour(e); });
+  wrap.addEventListener("pointerdown", (e) => { wrap.setPointerCapture(e.pointerId); pickHour(e); });
+  // Lifting the finger, or leaving with the mouse, returns to the day score.
+  wrap.addEventListener("pointerup", (e) => { if (e.pointerType !== "mouse") setHour(null); });
   wrap.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") setHour(null); });
+  wrap.addEventListener("keydown", (e) => {
+    const hours = Object.keys(dayDef().scores).map(Number).sort((a, b) => a - b);
+    let i = dial.hour === null ? -1 : hours.indexOf(dial.hour);
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") i = Math.min(hours.length - 1, i + 1);
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") i = i < 0 ? hours.length - 1 : Math.max(0, i - 1);
+    else if (e.key === "Home") i = 0;
+    else if (e.key === "End") i = hours.length - 1;
+    else if (e.key === "Escape") { setHour(null); return; }
+    else return;
+    e.preventDefault();
+    setHour(hours[i]);
+  });
 })();
 function rayTargets() {
   const d = dayDef();
   return Array.from({ length: 24 }, (_, h) => d.scores[h] !== undefined ? d.scores[h] / 100 : -1);
 }
 function setHour(h) {
-  const d = dayDef();
-  if (h !== null && d.scores[h] === undefined) h = null;
   if (dial.hour === h) return;
   dial.hour = h; paintDial(); paintCenter();
 }
@@ -921,60 +1014,70 @@ function paintCenter() {
   const d = dayDef();
   const s = dial.hour !== null ? d.scores[dial.hour] : d.score;
   const b = band(s);
-  const col = bandInk(b);
+  const col = css(b.color);
   $("dialValue").textContent = s + "%";
   $("dialValue").style.color = col;
-  $("dialLabel").textContent = dial.hour !== null ? `${pad(dial.hour)}:00 · ${b.name}` : b.name;
+  $("dialLabel").textContent = b.name;
   $("dialLabel").style.color = col;
-  $("dialCenter").style.background = `radial-gradient(circle, color-mix(in srgb, ${css(b.color)} 18%, transparent) 0%, transparent 70%)`;
+  $("dialHour").textContent = dial.hour !== null ? `${pad(dial.hour)}:00` : "";
+  // A faint glow of the level colour: 16% at the centre, gone at 0.3 of the size.
+  $("dialGlow").style.background = `radial-gradient(circle closest-side, color-mix(in srgb, ${col} 16%, transparent) 0%, transparent 60%)`;
+  $("dialGlow").style.opacity = dial.progress;
   $("scoreMeaning").textContent = dial.hour !== null
     ? `At ${pad(dial.hour)}:00, about ${s}% of your daytime readings from the past 30 days were higher.`
-    : `${s}% means about ${s}% of your previous 30 days had a higher daytime HRV median than this day.`;
+    : `Compared with your previous 30 days, daytime HRV was lower than on about ${s}% of them.`;
 }
-function paintDial(progress = 1) {
-  const c = 180, inner = 64, reach = 74;
+function paintDial() {
+  const progress = dial.progress;
   const targets = rayTargets();
-  dial.rays.forEach((line, h) => {
-    const a = (h + 0.5) / 24 * Math.PI * 2;
-    const value = dial.current[h];
-    const grown = reduceMotion ? 1 : clamp(progress * 1.7 - h / 24 * 0.7, 0, 1);
-    const has = targets[h] >= 0;
-    const len = has ? (reach * (0.14 + 0.86 * value)) * grown : 4;
-    const sx = c + inner * Math.sin(a), sy = c - inner * Math.cos(a);
-    line.setAttribute("x1", sx); line.setAttribute("y1", sy);
-    line.setAttribute("x2", c + (inner + len) * Math.sin(a)); line.setAttribute("y2", c - (inner + len) * Math.cos(a));
-    const s = dayDef().scores[h];
-    line.setAttribute("stroke", has ? css(band(s).color) : css("--empty"));
-    line.setAttribute("opacity", dial.hour !== null && dial.hour !== h ? 0.22 : 1);
-    line.setAttribute("stroke-width", dial.hour === h ? 13 : 10);
-  });
-  // Arcs: sleep and workout on an outer ring
-  dial.arcLayer.innerHTML = "";
-  const R = 152;
-  const arc = (s, e, color) => {
-    const a0 = s / 24 * Math.PI * 2, a1 = e / 24 * Math.PI * 2;
-    const p = (a) => `${c + R * Math.sin(a)} ${c - R * Math.cos(a)}`;
-    el("path", { d: `M ${p(a0)} A ${R} ${R} 0 ${e - s > 12 ? 1 : 0} 1 ${p(a1)}`, fill: "none", stroke: color, "stroke-width": 7, "stroke-linecap": "round", opacity: progress < 1 ? progress : 1 }, dial.arcLayer);
-  };
   const d = dayDef();
-  if (d.sleepStart < 0) { arc(24 + d.sleepStart, 24, css("--violet")); arc(0, d.wake, css("--violet")); } else arc(d.sleepStart, d.wake, css("--violet"));
-  if (d.workout) arc(d.workout[0], d.workout[1], css("--tangerine"));
-  dial.svg.querySelectorAll("[data-axis]").forEach((n) => n.setAttribute("fill", css("--muted")));
+  dial.rays.forEach((line, h) => {
+    const mid = h + 0.5;
+    const [x1, y1] = at(mid, G.inner);
+    line.setAttribute("x1", x1); line.setAttribute("y1", y1);
+    if (targets[h] >= 0) {
+      const grown = clamp(progress * 1.7 - h / 24 * 0.7, 0, 1);
+      const len = G.reach * (0.14 + 0.86 * clamp(dial.current[h], 0, 1)) * grown;
+      const [x2, y2] = at(mid, G.inner + len);
+      line.setAttribute("x2", x2); line.setAttribute("y2", y2);
+      line.setAttribute("stroke", css(band(d.scores[h]).color));
+      line.setAttribute("stroke-opacity", dial.hour !== null && dial.hour !== h ? 0.22 : 1);
+      line.setAttribute("stroke-width", dial.hour === h ? G.width * 1.4 : G.width);
+    } else {
+      const [x2, y2] = at(mid, G.inner + G.stub);
+      line.setAttribute("x2", x2); line.setAttribute("y2", y2);
+      line.setAttribute("stroke", css("--rule"));
+      line.setAttribute("stroke-opacity", 1);
+      line.setAttribute("stroke-width", G.width);
+    }
+  });
+  // Arcs inside the rays: sleep from the start of the day to waking, then any workout.
+  dial.arcLayer.innerHTML = "";
+  const arcs = [[Math.max(0, d.sleepStart), d.wake, "--violet"]];
+  if (d.workout) arcs.push([d.workout[0], d.workout[1], "--tangerine"]);
+  arcs.forEach(([s, e, color]) => {
+    const end = s + (e - s) * Math.min(progress * 1.3, 1);
+    if (end <= s) return;
+    const [x0, y0] = at(s, G.arcR), [x1, y1] = at(end, G.arcR);
+    el("path", { d: `M ${x0} ${y0} A ${G.arcR} ${G.arcR} 0 ${end - s > 12 ? 1 : 0} 1 ${x1} ${y1}`, fill: "none", stroke: css(color), "stroke-width": G.arcW, "stroke-linecap": "round" }, dial.arcLayer);
+  });
+  dial.labels.forEach((t) => t.setAttribute("fill", css("--muted")));
 }
 function animateDial(intro) {
   const from = dial.current.slice();
   const to = rayTargets().map((v) => Math.max(v, 0));
-  const t0 = performance.now(), dur = intro ? 1200 : 500;
-  if (reduceMotion) { dial.current = to; paintDial(1); paintCenter(); return; }
+  if (reduceMotion) { dial.current = to; dial.progress = 1; paintDial(); paintCenter(); return; }
+  // Opening: the sweep (a 1.2 s spring in the app). Switching days: lengths ease to the new day.
+  const t0 = performance.now(), dur = intro ? 1200 : 450;
+  if (intro) { dial.current = to; dial.progress = 0; }
   const step = (now) => {
     const k = clamp((now - t0) / dur, 0, 1);
-    const e = 1 - Math.pow(1 - k, 3);
-    dial.current = from.map((f, i) => f + (to[i] - f) * (intro ? 1 : e));
-    paintDial(intro ? e : 1);
-    if (k < 1) requestAnimationFrame(step);
+    const e = intro ? 1 - Math.pow(1 - k, 3) * Math.cos(k * 2.2) : 1 - Math.pow(1 - k, 3);
+    if (intro) dial.progress = e; else dial.current = from.map((f, i) => f + (to[i] - f) * e);
+    paintDial(); paintCenter();
+    if (k < 1) requestAnimationFrame(step); else { dial.progress = 1; paintDial(); paintCenter(); }
   };
   requestAnimationFrame(step);
-  paintCenter();
 }
 
 /* ---------- Day charts ---------- */
@@ -1032,7 +1135,7 @@ const pressureChart = chart("pressureChart", 190, (svg, w, h, c) => {
   const x = (slot) => slot / 48 * iw, y = (v) => M.t + ih - v / 100 * ih;
   [0, 50, 100].forEach((v) => axisY(svg, 0, iw, y(v), v));
   hourAxis(svg, w, h);
-  const bw = Math.max(2.5, iw / 48 * 0.42);
+  const bw = 3.5;
   d.pressure.forEach((p) => {
     const active = c.sel === null || c.sel === p.slot;
     el("rect", { x: x(p.slot + 0.5) - bw / 2, y: y(p.score), width: bw, height: y(0) - y(p.score), rx: bw / 2, fill: css(band(p.score).color), opacity: active ? 1 : 0.25 }, svg);
@@ -1102,6 +1205,7 @@ const sleepChart = chart("sleepChart", 170, (svg, w, h, c) => {
   };
   r.addEventListener("pointermove", pick); r.addEventListener("pointerdown", pick);
   r.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") { c.sel = null; updateSleepReadout(null); c.render(); } });
+  c.count = d.stages.length; c.onPick = updateSleepReadout;
 }, { label: "Sleep stages" });
 function updateSleepReadout(i) {
   const d = today(), def = dayDef();
@@ -1193,6 +1297,8 @@ const volChart = chart("volChart", 220, (svg, w, h, c) => {
   const r = el("rect", { x: 0, y: 0, width: iw, height: h, fill: "transparent", style: "cursor:pointer" }, svg);
   const pick = (e) => { const box = svg.getBoundingClientRect(); const i = clamp(Math.floor((e.clientX - box.left) / iw * WEEKS.length), 0, WEEKS.length - 1); if (i !== weekSel) { weekSel = i; updateVolReadout(); c.render(); } };
   r.addEventListener("pointerdown", pick); r.addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") pick(e); });
+  c.sel = weekSel; c.count = WEEKS.length;
+  c.onPick = (i) => { weekSel = i === null ? WEEKS.length - 1 : i; updateVolReadout(); };
 }, { label: "Weekly training minutes by sport" });
 function updateVolReadout() {
   const wk = WEEKS[weekSel], prev = WEEKS[weekSel - 1];
@@ -1248,14 +1354,14 @@ function renderWorkout() {
       <div><span>Average heart rate</span><b>${w.avg} <small>bpm</small></b></div>
       <div><span>Maximum heart rate</span><b>${w.max} <small>bpm</small></b></div>
     </div>
-    <div class="card-title"><h3><i style="background:var(--pink)"></i>Time in zones</h3></div>
+    <div class="card-title"><h4><i style="background:var(--pink)"></i>Time in zones</h4></div>
     <div class="zones">${[4, 3, 2, 1, 0].map((z) => {
       const f = w.zones[z] / total;
       const pct = f > 0 && f < 0.01 ? "<1%" : Math.round(f * 100) + "%";
-      const text = w.zones[z] ? (z === 2 ? "rgba(0,0,0,0.72)" : "#FFFFFF") : css("--muted");
+      const text = w.zones[z] ? "rgba(0,0,0,0.8)" : css("--muted");
       return `<div class="zone"><div class="bar"><div class="fill" data-w="${w.zones[z] ? Math.max(12, f * 100) : 0}" style="background:var(${ZONE_COLORS[z]})"></div><span class="id" style="color:${text}">${z + 1}</span></div><span class="sum">${pct} · ${w.zones[z]} min</span></div>`;
     }).join("")}</div>
-    <div class="card-title"><h3><i style="background:var(--pink)"></i>Workout heart rate</h3><span class="unit">bpm</span></div>
+    <div class="card-title"><h4><i style="background:var(--pink)"></i>Workout heart rate</h4><span class="unit">bpm</span></div>
     <div class="readout" id="whrReadout"></div>
     <div class="chart" id="whrChart"></div>
     <p class="hint"><b>In the app</b> Open a workout from the day’s list. Switch Raw and Color-coded above the chart; in This Month, tap another highlighted date.</p>`;
@@ -1293,6 +1399,8 @@ function renderWorkout() {
     }, c);
   };
   readout("whrReadout", "Range", `${Math.min(...buckets.map((b) => b.lo))}–${Math.max(...buckets.map((b) => b.hi))}`, "bpm");
+  bindKeys(c, "Workout heart rate by zone");
+  $("whrReadout").setAttribute("aria-live", "polite");
   c.render();
 }
 
@@ -1385,6 +1493,8 @@ const nightChart = chart("nightChart", 210, (svg, w, h, c) => {
     const i = clamp(Math.floor((e.clientY - box.top) / rowH), 0, NIGHTS.length - 1);
     nightSel = i; updateNight(); c.render();
   });
+  c.sel = nightSel; c.count = NIGHTS.length;
+  c.onPick = (i) => { nightSel = i === null ? NIGHTS.length - 1 : i; updateNight(); };
 }, { label: "Sleep timing for the last seven nights" });
 function updateNight() {
   const n = NIGHTS[nightSel];
@@ -1535,7 +1645,7 @@ function updateVitalsReadout(i) {
 /* ---------- Start ---------- */
 function renderAll() {
   charts.forEach((c) => c.render());
-  paintDial(1); paintCenter();
+  paintDial(); paintCenter();
   renderTrainCal(); renderWorkout(); renderRecCal();
 }
 renderDayCharts();
@@ -1547,6 +1657,22 @@ paintCenter();
 animateDial(true);
 window.addEventListener("resize", () => whrChart && whrChart.render());
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => requestAnimationFrame(renderAll));
+document.querySelectorAll(".readout").forEach((r) => r.setAttribute("aria-live", "polite"));
+const navLinks = [...document.querySelectorAll('.nav-links a[href^="#"]:not(.btn)')];
+const parts = navLinks.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+if ("IntersectionObserver" in window) {
+  const seen = new Map();
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => seen.set(e.target.id, e.isIntersecting ? e.intersectionRatio : 0));
+    let best = null, ratio = 0;
+    seen.forEach((r, id) => { if (r > ratio) { ratio = r; best = id; } });
+    navLinks.forEach((a) => a.setAttribute("aria-current", String(a.getAttribute("href") === "#" + best)));
+  }, { rootMargin: "-80px 0px -45% 0px", threshold: [0, 0.1, 0.3, 0.6] });
+  parts.forEach((p) => io.observe(p));
+}
+const topbar = $("topbar");
+const onScroll = () => topbar.classList.toggle("scrolled", window.scrollY > 8);
+window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
 })();
 </script>
 </body>

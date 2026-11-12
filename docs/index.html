@@ -165,6 +165,25 @@ section.block { padding: 64px 0; }
 .get { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; padding: 36px; }
 footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); border-top: 1px dashed var(--grid); padding: 24px 0 40px; }
 
+.hint { margin: 0; padding-top: 12px; border-top: 1px dashed var(--grid); font-size: 12px; line-height: 1.6; color: var(--muted); }
+.hint b { color: var(--ink); font-weight: 700; margin-right: 6px; }
+.method { background: var(--card); border: 1px solid var(--card-edge); border-radius: 22px; }
+.method + .method { margin-top: 10px; }
+.method summary { list-style: none; cursor: pointer; min-height: 56px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 15px; font-weight: 700; }
+.method summary::-webkit-details-marker { display: none; }
+.method summary::after { content: "+"; font-size: 18px; color: var(--muted); transition: transform .2s; }
+.method[open] summary::after { transform: rotate(45deg); }
+.method .body { padding: 0 20px 18px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 1.75; max-width: 46em; }
+.method .body p { margin: 0; }
+.method .body .calc { padding: 12px 14px; border-radius: 14px; background: var(--track); }
+.method .body .src { font-size: 12px; color: var(--muted); }
+.refs { margin: 22px 0 0; padding-left: 24px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 1.6; color: var(--muted); }
+.refs a { word-break: break-word; }
+.setup { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.setup li { background: var(--card); border: 1px solid var(--card-edge); border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+.setup li b { font-size: 15px; }
+.setup li span { font-size: 14px; line-height: 1.65; color: var(--muted); }
+
 /* Dial */
 .dial-card { align-items: center; }
 .dial-wrap { position: relative; width: min(100%, 360px); aspect-ratio: 1 / 1; touch-action: none; }
@@ -197,7 +216,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
       <a href="#day">A day</a>
       <a href="#training">Training</a>
       <a href="#recovery">Recovery</a>
-      <a href="#research">Research</a>
+      <a href="#evidence">Evidence</a>
       <a class="btn btn-primary" href="#get">Get the code</a>
     </nav>
   </header>
@@ -230,6 +249,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <span><b class="bar" style="background:var(--tangerine)"></b>Workout</span>
         </div>
         <p class="note" id="dayCaption" style="text-align:center"></p>
+        <p class="note" id="scoreMeaning" style="text-align:center;color:var(--ink)"></p>
         <p class="note" style="text-align:center">Hover or tap an hour. Each ray is one hour; longer and warmer means lower HRV than your usual.</p>
       </div>
     </section>
@@ -265,29 +285,34 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <div class="readout" id="hrvReadout"></div>
           <div class="chart" id="hrvChart"></div>
           <div class="legend"><span><b style="background:var(--lime)"></b>Low</span><span><b style="background:var(--sky)"></b>Usual</span><span><b style="background:var(--tangerine)"></b>Elevated</span><span><b style="background:var(--pink)"></b>High</span><span><b style="background:var(--faint)"></b>Not scored</span></div>
+          <p class="hint"><b>In the app</b> Day view → Heart Readings. Tap a dot for its time and value; View All Readings lists every sample with its source, and 30-Day Trend opens the history.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Pressure through the day</h3><span class="unit">%</span></div>
           <div class="readout" id="pressureReadout"></div>
           <div class="chart" id="pressureChart"></div>
           <p class="note">One bar per half hour: the mean estimate of the readings in it. Workout time is left out.</p>
+          <p class="hint"><b>In the app</b> Day view, below HRV through the day.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--pink)"></i>Heart rate</h3><span class="unit">bpm</span></div>
           <div class="readout" id="hrReadout"></div>
           <div class="chart" id="hrChart"></div>
           <p class="note">Each bar is the low–high range for one hour. The orange band marks a workout.</p>
+          <p class="hint"><b>In the app</b> Day view → Heart Rate. Tap a bar to see that hour.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--violet)"></i>Sleep</h3><span class="unit" id="sleepUnit"></span></div>
           <div class="readout" id="sleepReadout"></div>
           <div class="chart" id="sleepChart"></div>
           <div class="legend"><span><b style="background:var(--tangerine)"></b>Awake</span><span><b style="background:var(--pink)"></b>REM</span><span><b style="background:var(--sky)"></b>Core</span><span><b style="background:var(--violet)"></b>Deep</span></div>
+          <p class="hint"><b>In the app</b> Day view → Sleep. Open Sleep Details to see where each stage began and ended.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--lime)"></i>Hourly steps</h3><span class="unit">steps</span></div>
           <div class="readout" id="stepsReadout"></div>
           <div class="chart" id="stepsChart"></div>
+          <p class="hint"><b>In the app</b> Day view → Hourly Steps.</p>
         </div>
       </div>
     </section>
@@ -304,6 +329,7 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <div class="readout" id="volReadout"></div>
           <div class="chart" id="volChart"></div>
           <div class="legend"><span><b style="background:var(--tangerine)"></b>Running</span><span><b style="background:var(--violet)"></b>Strength training</span><span><b style="background:var(--sky)"></b>Cycling</span></div>
+          <p class="hint"><b>In the app</b> Week → Training. Tap a bar for its seven-day block, then expand the workout count to see the sessions behind it.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Training calendar</h3><span class="unit">min</span></div>
@@ -311,13 +337,22 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <div class="cal-head" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
           <div class="cal" id="trainCal"></div>
           <div class="legend"><span><b style="background:var(--tangerine)"></b>Running</span><span><b style="background:var(--violet)"></b>Strength training</span><span style="margin-left:auto">Tap a date to open it.</span></div>
+          <p class="hint"><b>In the app</b> Month → Training, then the calendar icon. Tap a date to open that day at its workouts.</p>
         </div>
         <div class="card" id="workoutPanel" aria-live="polite"></div>
-        <div class="card span2">
+        <div class="card">
           <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Pace and average heart rate</h3><span class="unit">running · bpm</span></div>
           <div class="readout" id="paceReadout"></div>
           <div class="chart" id="paceChart"></div>
           <p class="note">Each dot is one run. At a similar pace, a falling average heart rate suggests improving fitness. The dashed line is the trend.</p>
+          <p class="hint"><b>In the app</b> Training Performance. Pick an activity and indoor or outdoor, then compare runs at nearby paces.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><h3><i style="background:var(--pink)"></i>One-minute heart-rate recovery</h3><span class="unit">bpm drop</span></div>
+          <div class="readout" id="hrrReadout"></div>
+          <div class="chart" id="hrrChart"></div>
+          <p class="note">How far heart rate fell in the first minute after each run. Shown only when the sample matches a workout by activity, source and timing.</p>
+          <p class="hint"><b>In the app</b> Training Performance, the lower chart.</p>
         </div>
       </div>
     </section>
@@ -336,12 +371,14 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <div class="cal-head" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
           <div class="cal" id="recCal"></div>
           <div class="legend" id="recLegend"></div>
+          <p class="hint"><b>In the app</b> Month → Recovery, then the calendar icon. Choose a metric from the menu and tap a date.</p>
         </div>
         <div class="card">
           <div class="card-title"><h3><i style="background:var(--violet)"></i>Sleep &amp; recovery</h3><span class="unit">by wake date</span></div>
           <div class="readout" id="nightReadout"></div>
           <div class="chart" id="nightChart"></div>
           <div class="rows" id="nightRows"></div>
+          <p class="hint"><b>In the app</b> Week or Month → Recovery → Sleep &amp; Recovery. Nights are grouped by the date you woke up.</p>
         </div>
         <div class="card span2">
           <div class="card-title"><h3><i style="background:var(--sky)"></i>HRV trend</h3><span class="unit">ms</span></div>
@@ -349,26 +386,132 @@ footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12
           <div class="readout" id="trendReadout"></div>
           <div class="chart" id="trendChart"></div>
           <p class="note">Purple line: 7-day average, drawn when at least 3 of the 7 days have HRV. Blue band: your usual range from the 30 days before, average ± 0.5 SD. A few days below the band is worth noticing; one day isn’t.</p>
+          <p class="hint"><b>In the app</b> Recovery → HRV Trend. Tap Overnight when sleep records exist; tap a day for its activity context.</p>
         </div>
         <div class="card span2">
           <div class="card-title"><h3><i style="background:var(--sky)"></i>Resting heart rate</h3><span class="unit">bpm</span></div>
           <div class="readout" id="rhrReadout"></div>
           <div class="chart" id="rhrChart"></div>
+          <p class="hint"><b>In the app</b> Recovery, below the HRV trend, with daily steps beside it.</p>
+        </div>
+        <div class="card span2">
+          <div class="card-title"><h3><i style="background:var(--violet)"></i>Overnight vitals</h3><span class="unit">last 14 nights</span></div>
+          <div class="readout" id="vitalsReadout"></div>
+          <div class="chart" id="vitalsChart"></div>
+          <p class="note">Each band is the 10th–90th percentile of that measurement over the prior 30 nights, with at least 7 nights. Orange points fall outside it; a gap means no usable measurement that night.</p>
+          <p class="hint"><b>In the app</b> Recovery → Overnight Vitals → Show overnight measurements.</p>
         </div>
       </div>
     </section>
 
-    <section class="block" id="research">
+    <section class="block" id="evidence">
       <div class="block-head">
-        <span class="kicker">Research</span>
-        <h2>Why it works this way</h2>
+        <span class="kicker">Evidence and methods</span>
+        <h2>How each number is made, and where the evidence ends</h2>
+        <p>The four bands and the minimum counts are app design choices. They describe a position in your own data and have no validated cutoff for stress, readiness or disease.</p>
       </div>
-      <div class="cards4">
-        <article><h3>Apple Watch HRV is reliable enough</h3><p>Against a chest strap, reliability and agreement were above 0.9, and the watch picked up changes from mild mental stress.</p><cite>Hernando et al., Sensors, 2018</cite></article>
-        <article><h3>The numbers run low, so compare with yourself</h3><p>Series 9 and Ultra 2 underestimated HRV by about 8 ms on average. A personal baseline cancels that offset.</p><cite>Sensors, 2024</cite></article>
-        <article><h3>HRV reflects stress, but it isn’t a diagnosis</h3><p>A review supports HRV for objective stress assessment and notes there is no accepted standard, so the app calls it an estimate.</p><cite>Kim et al., Psychiatry Investigation, 2018</cite></article>
-        <article><h3>Read the 7-day trend, not one day</h3><p>Sports science compares a 7-day rolling average with each person’s smallest worthwhile change, using at least 3 valid days a week.</p><cite>Plews et al., 2013 and 2014</cite></article>
+      <div class="cards4" style="margin-bottom:18px">
+        <article><h3>Apple Watch HRV is usable</h3><p>Against a chest strap, reliability and agreement were above 0.9, and the watch picked up mild mental stress.</p><cite>Source 4</cite></article>
+        <article><h3>Compare with yourself</h3><p>Series 9 and Ultra 2 underestimated HRV by about 8 ms on average. A personal baseline cancels that offset.</p><cite>Source 14</cite></article>
+        <article><h3>An estimate, not a diagnosis</h3><p>A review supports HRV for objective stress assessment and notes there is no accepted standard.</p><cite>Source 15</cite></article>
+        <article><h3>Trends over single days</h3><p>Training studies read a 7-day rolling average against each person’s smallest worthwhile change, with at least 3 valid days a week.</p><cite>Sources 16–17</cite></article>
       </div>
+
+      <details class="method">
+        <summary>Heart rate variability and the daily score</summary>
+        <div class="body">
+          <p>HealthKit stores HRV as SDNN in milliseconds: the standard deviation of intervals between normal heartbeats. The ESC/NASPE Task Force stresses comparable recording length and circumstances, and agreement on short recordings improves with longer windows, especially for SDNN. An Apple Watch validation in 20 healthy volunteers compared HRV during controlled rest and mild cognitive stress and found gaps in the watch’s interval series. These studies support comparing HRV under similar conditions. They did not test Rhythm Log’s score or everyday passive sampling.</p>
+          <p class="calc">The daily score ranks the median of eligible daytime readings (local 06:00–22:00, outside recorded sleep and workouts) against the same source’s daily medians from the previous 30 days, with at least 7 reference days. Higher historical values count toward the rank and ties count half; the result maps to 1–100. A higher score means today’s HRV was lower than more of your own history. The hourly rays and dot colours use a separate comparison with individual historical readings.</p>
+          <p class="src">Sources 1–4, 14–15</p>
+        </div>
+      </details>
+      <details class="method">
+        <summary>Recovery trend</summary>
+        <div class="body">
+          <p class="calc">Each day’s HRV is the median of at least two eligible readings from one source. The trend line is a 7-day rolling average computed on log values, drawn when at least 3 of the 7 days have a value. The usual range comes from the 30 days before the period: the mean of the log values ± 0.5 standard deviations, the smallest worthwhile change, with at least 7 days. Daytime and overnight are separate series.</p>
+          <p>Changes in when readings are taken, a new watch or another source can change what enters the trend, even with a personal baseline.</p>
+          <p class="src">Sources 16–17</p>
+        </div>
+      </details>
+      <details class="method">
+        <summary>Training volume</summary>
+        <div class="body">
+          <p class="calc">Recorded workout minutes are grouped by activity over eight rolling seven-day blocks. For an ongoing period the latest block ends yesterday. The typical week is the median of the earlier blocks after leading empty ones are dropped, with at least three blocks.</p>
+          <p>Minutes describe duration. Effort, intensity and mechanical load can differ between workouts of the same length.</p>
+        </div>
+      </details>
+      <details class="method">
+        <summary>Pace and heart rate</summary>
+        <div class="body">
+          <p class="calc">Each point is workout duration divided by recorded distance, paired with the workout’s HealthKit average heart rate. Points are grouped by activity and indoor or outdoor, when known, and the latest run is compared with the median of earlier runs within 15 seconds per kilometre. That tolerance is an app choice.</p>
+          <p>A similar pace is a starting point. Gradient, weather, hydration, workout structure and sensor accuracy still affect the result: heat and dehydration changed cardiovascular responses in a controlled study, and wrist-monitor accuracy varied by activity against ECG.</p>
+          <p class="src">Sources 5–6</p>
+        </div>
+      </details>
+      <details class="method">
+        <summary>Heart rate zones</summary>
+        <div class="body">
+          <p class="calc">Zone times recorded with a workout are used when present. Otherwise, with zone thresholds available, the app credits the time between consecutive heart-rate samples to the zone of the first, up to two minutes per gap. Percentages are shares of the time accounted for. The workout page’s average and maximum come from heart-rate readings within the workout, and can differ from the recorded average used in the pace chart.</p>
+          <p class="src">Source 7</p>
+        </div>
+      </details>
+      <details class="method">
+        <summary>One-minute heart-rate recovery</summary>
+        <div class="body">
+          <p class="calc">HealthKit’s value is the drop from peak exercise heart rate to the reading one minute after exercise. Rhythm Log shows a sample only when it matches a workout unambiguously by activity, source and timing; missing or ambiguous matches stay blank.</p>
+          <p>Research links heart-rate recovery to post-exercise physiology, and active versus passive recovery and posture change the result. Clinical treadmill protocols differ from everyday workouts, so compare trends within similar activities and cool-downs.</p>
+          <p class="src">Sources 8–10</p>
+        </div>
+      </details>
+      <details class="method">
+        <summary>Overnight vitals, and recovery without them</summary>
+        <div class="body">
+          <p>Daytime HRV, resting heart rate, steps and workouts work without any sleep data. With overnight records, asleep segments are grouped by the main session’s wake date.</p>
+          <p class="calc">Sleep heart rate, breathing rate, blood oxygen and wrist temperature use samples that overlap those segments. Each band is the 10th–90th percentile of that metric over the prior 30 nights, with at least 7 nights measured.</p>
+          <p>The calculation is Rhythm Log’s own. Apple’s Vitals app also shows personal ranges, and its availability varies by model and region. A value outside the band describes a difference from your recorded history.</p>
+          <p class="src">Sources 11–12</p>
+        </div>
+      </details>
+      <details class="method">
+        <summary>Blanks and permissions</summary>
+        <div class="body">
+          <p>HealthKit read permissions are per data type, and an app can’t tell denied read access from an empty result. Before reading a blank or a change, check the coverage counts and the underlying records in Apple Health.</p>
+          <p class="src">Source 13</p>
+        </div>
+      </details>
+
+      <ol class="refs">
+        <li><a href="https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartratevariabilitysdnn">Apple Developer. HealthKit SDNN definition.</a></li>
+        <li><a href="https://www.escardio.org/static-file/Escardio/Guidelines/Scientific-Statements/guidelines-Heart-Rate-Variability-FT-1996.pdf">ESC/NASPE Task Force (1996). Heart rate variability: standards of measurement and interpretation.</a></li>
+        <li><a href="https://doi.org/10.1371/journal.pone.0138921">Muñoz et al. (2015). Validity of (ultra-)short recordings for HRV measurements.</a></li>
+        <li><a href="https://doi.org/10.3390/s18082619">Hernando et al. (2018). Apple Watch HRV validation during rest and mild cognitive stress.</a></li>
+        <li><a href="https://doi.org/10.1152/jappl.1997.82.4.1229">González-Alonso et al. (1997). Dehydration and cardiovascular function during exercise in the heat.</a></li>
+        <li><a href="https://pubmed.ncbi.nlm.nih.gov/28709155/">Gillinov et al. (2017). Variable accuracy of wearable heart-rate monitors during aerobic exercise.</a></li>
+        <li><a href="https://support.apple.com/en-gb/guide/watch/apd897dccddf/watchos">Apple Watch User Guide. View and edit heart-rate zones.</a></li>
+        <li><a href="https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/heartraterecoveryoneminute">Apple Developer. HealthKit one-minute heart-rate recovery definition.</a></li>
+        <li><a href="https://doi.org/10.1056/NEJM199910283411804">Cole et al. (1999). Heart-rate recovery after graded exercise in a clinical cohort.</a></li>
+        <li><a href="https://pubmed.ncbi.nlm.nih.gov/24149885/">Barak et al. (2011). Heart-rate recovery across four post-exercise protocols.</a></li>
+        <li><a href="https://support.apple.com/en-ie/120142">Apple Support. Overnight vitals and typical ranges.</a></li>
+        <li><a href="https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier/applesleepingwristtemperature">Apple Developer. Sleeping wrist temperature samples.</a></li>
+        <li><a href="https://developer.apple.com/documentation/healthkit/authorizing-access-to-health-data">Apple Developer. Authorizing access to health data.</a></li>
+        <li><a href="https://doi.org/10.3390/s24196220">Sensors (2024). Validity of Apple Watch Series 9 and Ultra 2 for serial measurements of HRV and resting heart rate.</a></li>
+        <li><a href="https://pubmed.ncbi.nlm.nih.gov/29486547/">Kim et al. (2018). Stress and heart rate variability: a meta-analysis and review of the literature.</a></li>
+        <li><a href="https://doi.org/10.1007/s40279-013-0071-8">Plews et al. (2013). Training adaptation and heart rate variability in elite endurance athletes.</a></li>
+        <li><a href="https://doi.org/10.1123/ijspp.2013-0455">Plews et al. (2014). Monitoring training with heart-rate variability: how much compliance is needed?</a></li>
+      </ol>
+    </section>
+
+    <section class="block" id="setup">
+      <div class="block-head">
+        <span class="kicker">Setup</span>
+        <h2>Start with Apple Health</h2>
+      </div>
+      <ol class="setup">
+        <li><b>1. Open Rhythm Log</b><span>Run the Xcode project on an iPhone, or explore the same screens with sample records in the simulator.</span></li>
+        <li><b>2. Choose what to share</b><span>Tap Connect Apple Health and allow the records you want, such as heart rate, HRV, steps and workouts. Sleep and overnight readings are optional.</span></li>
+        <li><b>3. Open a day with records</b><span>Tap the date to pick a day, ideally one with a workout or several heart readings. Use Week or Month to look for a pattern.</span></li>
+      </ol>
+      <p class="note" style="margin-top:14px;font-size:13px;max-width:46em">You can review or change access later in Settings → Update Apple Health Access. A gap can mean there are no matching records or that the app can’t read that type.</p>
     </section>
 
     <section class="block" id="notes">
@@ -614,6 +757,9 @@ function paintCenter() {
   $("dialLabel").textContent = dial.hour !== null ? `${pad(dial.hour)}:00 · ${b.name}` : b.name;
   $("dialLabel").style.color = col;
   $("dialCenter").style.background = `radial-gradient(circle, color-mix(in srgb, ${css(b.color)} 18%, transparent) 0%, transparent 70%)`;
+  $("scoreMeaning").textContent = dial.hour !== null
+    ? `At ${pad(dial.hour)}:00, about ${s}% of your daytime readings from the past 30 days were higher.`
+    : `${s}% means about ${s}% of your previous 30 days had a higher daytime HRV median than this day.`;
 }
 function paintDial(progress = 1) {
   const c = 180, inner = 64, reach = 74;
@@ -941,7 +1087,8 @@ function renderWorkout() {
     }).join("")}</div>
     <div class="card-title"><h3><i style="background:var(--pink)"></i>Workout heart rate</h3><span class="unit">bpm</span></div>
     <div class="readout" id="whrReadout"></div>
-    <div class="chart" id="whrChart"></div>`;
+    <div class="chart" id="whrChart"></div>
+    <p class="hint"><b>In the app</b> Open a workout from the day’s list. Switch Raw and Color-coded above the chart; in This Month, tap another highlighted date.</p>`;
   host.querySelectorAll(".wrow").forEach((b) => b.addEventListener("click", () => { workoutSel = +b.dataset.i; renderWorkout(); }));
   requestAnimationFrame(() => requestAnimationFrame(() => host.querySelectorAll(".fill").forEach((f, i) => { f.style.transitionDelay = (i * 60) + "ms"; f.style.width = f.dataset.w + "%"; })));
   // Workout heart rate: 18 range bars coloured by zone
@@ -1151,6 +1298,70 @@ const rhrChart = chart("rhrChart", 180, (svg, w, h, c) => {
   }, c);
 }, { label: "Daily resting heart rate" });
 
+/* ---------- One-minute recovery and overnight vitals ---------- */
+const HRR = [22, 21, 20, 23, 24, 23, 25, 24, 26, 27, 28, 25];
+const hrrChart = chart("hrrChart", 200, (svg, w, h, c) => {
+  const iw = w - M.r, ih = h - M.t - M.b, lo = 15, hi = 35;
+  const x = (i) => (i + 0.5) / HRR.length * iw, y = (v) => M.t + ih - (v - lo) / (hi - lo) * ih;
+  [20, 25, 30, 35].forEach((v) => axisY(svg, 0, iw, y(v), v));
+  el("polyline", { points: HRR.map((v, i) => `${x(i)},${y(v)}`).join(" "), fill: "none", stroke: css("--pink"), "stroke-opacity": 0.35, "stroke-width": 1.5 }, svg);
+  HRR.forEach((v, i) => {
+    const active = c.sel === null || c.sel === i;
+    el("circle", { cx: x(i), cy: y(v), r: c.sel === i ? 7 : 5.5, fill: css("--pink"), opacity: active ? 1 : 0.3 }, svg);
+  });
+  [0, Math.floor(HRR.length / 2), HRR.length - 1].forEach((i) => axisX(svg, x(i), h - 6, RUNS[i][0]));
+  hoverLayer(svg, 0, M.t, iw, ih, HRR.length, updateHrrReadout, c);
+}, { label: "One-minute heart-rate recovery after each run" });
+function updateHrrReadout(i) {
+  if (i === null) { readout("hrrReadout", `Latest · ${RUNS[RUNS.length - 1][0]} · running`, HRR[HRR.length - 1], "bpm drop"); return; }
+  readout("hrrReadout", `${RUNS[i][0]} · running`, HRR[i], "bpm drop", ` <small>in the first minute</small>`);
+}
+
+const VITALS = [
+  { name: "Sleep heart rate", unit: "bpm", band: [51, 55], fmt: (v) => String(v), values: [52, 53, 51, 52, 54, 53, 52, 55, 56, 54, 57, 55, 56, 58] },
+  { name: "Breathing rate", unit: "br/min", band: [13.8, 14.6], fmt: (v) => v.toFixed(1), values: [14.2, 14.0, 14.4, 14.1, 14.3, 14.0, 14.2, 14.6, 14.8, null, 15.1, 14.7, 14.9, 15.3] },
+  { name: "Blood oxygen", unit: "%", band: [95.5, 97.5], fmt: (v) => String(v), values: [97, 96, 97, 97, 96, 97, 97, 96, 96, null, 95, 96, 96, 95] },
+  { name: "Wrist temperature", unit: "°C vs. baseline", band: [-0.3, 0.3], fmt: (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1), values: [0.0, -0.1, 0.1, 0.0, -0.2, 0.1, 0.0, 0.2, 0.3, 0.1, 0.5, 0.3, 0.4, 0.6] }
+];
+const VITAL_DATES = Array.from({ length: 14 }, (_, i) => { const d = new Date(2026, 9, 30 + i); return d.toLocaleDateString("en-US", { month: "short", day: "numeric" }); });
+const vitalsChart = chart("vitalsChart", 4 * 74 + 26, (svg, w, h, c) => {
+  const lab = 132, iw = w - lab - 12, rowH = 74, n = VITAL_DATES.length;
+  const x = (i) => lab + (i + 0.5) / n * iw;
+  if (c.sel !== null) el("line", { x1: x(c.sel), x2: x(c.sel), y1: 0, y2: 4 * rowH, stroke: css("--muted"), "stroke-opacity": 0.4 }, svg);
+  VITALS.forEach((m, r) => {
+    const top = r * rowH + 8, ih = rowH - 22;
+    const vals = m.values.filter((v) => v !== null);
+    const lo = Math.min(m.band[0], ...vals), hi = Math.max(m.band[1], ...vals), padv = (hi - lo) * 0.15;
+    const y = (v) => top + ih - (v - (lo - padv)) / ((hi + padv) - (lo - padv)) * ih;
+    const name = el("text", { x: 0, y: top + ih / 2, "font-size": 11, "font-weight": 700, fill: css("--ink") }, svg); name.textContent = m.name;
+    const unit = el("text", { x: 0, y: top + ih / 2 + 15, "font-size": 11, fill: css("--muted") }, svg); unit.textContent = m.unit;
+    el("rect", { x: lab, y: y(m.band[1]), width: iw, height: y(m.band[0]) - y(m.band[1]), fill: css("--sky"), opacity: 0.13, rx: 4 }, svg);
+    let path = "", started = false;
+    m.values.forEach((v, i) => { if (v === null) { started = false; return; } path += `${started ? "L" : "M"}${x(i)} ${y(v)} `; started = true; });
+    el("path", { d: path, fill: "none", stroke: css("--violet"), "stroke-opacity": 0.45, "stroke-width": 1.5 }, svg);
+    m.values.forEach((v, i) => {
+      if (v === null) return;
+      const out = v < m.band[0] || v > m.band[1];
+      const active = c.sel === null || c.sel === i;
+      el("circle", { cx: x(i), cy: y(v), r: c.sel === i ? 5.5 : 4, fill: out ? css("--tangerine") : css("--violet"), opacity: active ? 1 : 0.3 }, svg);
+    });
+    if (r < 3) el("line", { x1: lab, x2: w, y1: (r + 1) * rowH, y2: (r + 1) * rowH, stroke: css("--grid"), "stroke-dasharray": "3 4" }, svg);
+  });
+  [0, 7, 13].forEach((i) => axisX(svg, x(i), h - 6, VITAL_DATES[i]));
+  hoverLayer(svg, lab, 0, iw, 4 * rowH, n, updateVitalsReadout, c);
+}, { label: "Overnight vitals for the last 14 nights" });
+function updateVitalsReadout(i) {
+  const night = i === null ? VITAL_DATES.length - 1 : i;
+  const parts = VITALS.map((m) => {
+    const v = m.values[night];
+    if (v === null) return `${m.name}: no measurement`;
+    const out = v < m.band[0] || v > m.band[1];
+    return `${m.name} ${m.fmt(v)} ${m.unit.split(" ")[0]}${out ? " (outside range)" : ""}`;
+  });
+  const outside = VITALS.filter((m) => { const v = m.values[night]; return v !== null && (v < m.band[0] || v > m.band[1]); }).length;
+  readout("vitalsReadout", `Night ending ${VITAL_DATES[night]} · ${parts.join(" · ")}`, outside, outside === 1 ? "measurement outside its range" : "measurements outside their range");
+}
+
 /* ---------- Start ---------- */
 function renderAll() {
   charts.forEach((c) => c.render());
@@ -1161,6 +1372,7 @@ renderDayCharts();
 updateVolReadout(); renderTrainCal(); renderWorkout(); updatePaceReadout(null);
 renderRecCal(); updateNight(); updateTrendReadout();
 readout("rhrReadout", "Median · November", (() => { const v = Object.values(RHR).sort((a, b) => a - b); return v[Math.floor(v.length / 2)]; })(), "bpm", ` <small>dashed line</small>`);
+updateHrrReadout(null); updateVitalsReadout(null);
 paintCenter();
 animateDial(true);
 window.addEventListener("resize", () => whrChart && whrChart.render());

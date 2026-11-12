@@ -40,7 +40,7 @@ struct SleepRecoveryView: View {
             if !report.visible.isEmpty {
                 sleepTiming
             }
-            hrvCard
+            hrvCard.id("hrvTrend")
             dailyContext(title: "Resting Heart Rate", unit: "BPM", values: report.resting, color: RhythmStyle.readingBlue)
             dailyContext(title: "Daily Steps", unit: "steps", values: report.steps, color: RhythmStyle.activity)
             if !report.visible.isEmpty {
@@ -224,17 +224,76 @@ struct SleepRecoveryView: View {
                 Text("Daytime").font(.subheadline.weight(.semibold))
             }
             let comparison = periodComparison(hrvValues)
-            if let median = RecoveryReport.median(comparison.current) {
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(median, format: .number.precision(.fractionLength(0...1)))
-                        .font(RhythmStyle.display(29))
-                    Text("Median").font(.caption).foregroundStyle(.secondary)
-                }
+            trendSummary(values: hrvValues)
+            if comparison.current.count >= RecoveryReport.trendMinimumDays {
                 change("Median vs. previous period", current: comparison.current,
                        previous: comparison.earlier, unit: "ms").font(.caption)
+            } else {
+                Text("Fewer than 3 days with HRV in this period, so there’s no period comparison.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             hrvChart(values: hrvValues)
         }
+    }
+
+    /// The day the trend is read for: the selected day, or the last day of the period up to today.
+    private var trendDate: Date {
+        if let selectedHRV { return calendar.startOfDay(for: selectedHRV) }
+        let last = calendar.date(byAdding: .day, value: -1, to: report.interval.end) ?? report.interval.start
+        return calendar.startOfDay(for: min(last, Date()))
+    }
+
+    @ViewBuilder private func trendSummary(values: [Date: Double]) -> some View {
+        let rolling = RecoveryReport.rollingAverage(values, endingOn: trendDate, calendar: calendar)
+        let usual = RecoveryReport.usualRange(values, before: report.interval.start, calendar: calendar)
+        let format = FloatingPointFormatStyle<Double>.number.precision(.fractionLength(0)).locale(locale)
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 6) {
+                Text("7-day average")
+                Text(verbatim: "·")
+                Text(trendDate, format: .dateTime.month(.abbreviated).day())
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            if let value = rolling.value {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(value, format: .number.precision(.fractionLength(0)))
+                        .font(RhythmStyle.display(29))
+                        .contentTransition(.numericText())
+                    Text("ms").font(.caption).foregroundStyle(.secondary)
+                    if let usual { trendBadge(value, usual: usual) }
+                }
+                if let usual {
+                    Text("Usual range \(usual.lowerBound.formatted(format))–\(usual.upperBound.formatted(format)) ms")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("A usual range needs at least 7 days of HRV in the 30 days before this period.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                Text("Not enough data")
+                    .font(RhythmStyle.display(22))
+                Text("\(rolling.days) of the last 7 days have HRV; at least 3 are needed.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .animation(RhythmMotion.select, value: trendDate)
+    }
+
+    private func trendBadge(_ value: Double, usual: ClosedRange<Double>) -> some View {
+        let (label, color): (LocalizedStringKey, Color) = value < usual.lowerBound
+            ? ("Below usual range", RhythmStyle.activity)
+            : value > usual.upperBound ? ("Above usual range", RhythmStyle.sage) : ("Within usual range", RhythmStyle.readingBlue)
+        return Text(label)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(color)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(color.opacity(0.12), in: Capsule())
     }
 
     @ViewBuilder private func hrvChart(values: [Date: Double]) -> some View {
@@ -245,33 +304,30 @@ struct SleepRecoveryView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         } else {
-            let ranges = Dictionary(uniqueKeysWithValues: points.compactMap { date in
-                RecoveryReport.reference(values.filter { precedingDates(30, before: date).contains($0.key) }.map(\.value))
-                    .map { (date, $0) }
-            })
+            let usual = RecoveryReport.usualRange(values, before: report.interval.start, calendar: calendar)
             Chart {
-                ForEach(dates, id: \.self) { date in
-                    if let range = ranges[date],
-                       let end = calendar.date(byAdding: .day, value: 1, to: date) {
-                        RectangleMark(xStart: .value("Day", date), xEnd: .value("Day", end),
-                                      yStart: .value("Low", range.lowerBound), yEnd: .value("High", range.upperBound))
-                            .foregroundStyle(RhythmStyle.readingBlue.opacity(0.12))
-                    }
+                if let usual {
+                    RectangleMark(xStart: .value("Day", report.interval.start), xEnd: .value("Day", report.interval.end),
+                                  yStart: .value("Low", usual.lowerBound), yEnd: .value("High", usual.upperBound))
+                        .foregroundStyle(RhythmStyle.readingBlue.opacity(0.12))
+                        .accessibilityLabel("Usual range")
                 }
                 ForEach(points, id: \.self) { date in
                     if let value = values[date] {
                         PointMark(x: .value("Day", date, unit: .day), y: .value("HRV (ms)", value))
-                            .foregroundStyle(RhythmStyle.readingBlue)
+                            .foregroundStyle(RhythmStyle.readingBlue.opacity(0.6))
+                            .symbolSize(28)
                     }
-                    if let end = calendar.date(byAdding: .day, value: 1, to: date) {
-                        let pool = values.filter { precedingDates(7, before: end).contains($0.key) }.map(\.value)
-                        if pool.count >= 4, let median = RecoveryReport.median(pool) {
-                            RectangleMark(xStart: .value("Day", date), xEnd: .value("Day", end),
-                                          yStart: .value("Median", median - 0.2), yEnd: .value("Median", median + 0.2))
-                                .foregroundStyle(RhythmStyle.sleep)
-                                .accessibilityLabel("7-day median")
-                                .accessibilityValue(Text("\(median.formatted(.number.precision(.fractionLength(0...1)))) ms"))
-                        }
+                }
+                ForEach(dates.filter { $0 <= Date() }, id: \.self) { date in
+                    if let average = RecoveryReport.rollingAverage(values, endingOn: date, calendar: calendar).value {
+                        LineMark(x: .value("Day", date, unit: .day), y: .value("7-day average", average),
+                                 series: .value("Series", "7-day"))
+                            .foregroundStyle(RhythmStyle.sleep)
+                            .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
+                            .interpolationMethod(.monotone)
+                            .accessibilityLabel("7-day average")
+                            .accessibilityValue(Text("\(average.formatted(.number.precision(.fractionLength(0)))) ms"))
                     }
                 }
                 if let selected {
@@ -305,7 +361,7 @@ struct SleepRecoveryView: View {
                     .foregroundStyle(.secondary)
                 }
             }
-            Text("\(points.count) of \(dates.filter { $0 <= Date() }.count) days · Purple: 7-day median · Shading: prior 30-day range")
+            Text("\(points.count) of \(dates.filter { $0 <= Date() }.count) days · Line: 7-day average (needs 3 of 7 days) · Band: your usual range from the 30 days before")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

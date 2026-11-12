@@ -425,7 +425,7 @@ final class HealthStore {
     ) async throws -> (buckets: [MetricBucket], dailyHRV: [Date: HRVDailyScore]) {
         let day = DateComponents(day: 1)
         #if DEBUG
-        if DemoData.enabled {
+        if DemoData.enabled { 
             let report = DemoData.trends(interval, by: day, calendar: calendar)
             return (metric == .hrv ? report.hrv : report.restingHeartRate, metric == .hrv ? report.dailyHRV : [:])
         }

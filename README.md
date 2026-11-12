@@ -7,6 +7,8 @@ A native iPhone app for exploring heart rate, heart rate variability (HRV), trai
 - **Recovery** — Explore daytime HRV, resting heart rate, and steps. With sleep data, view sleep timing by wake date, overnight HRV, and four overnight vitals.
 - **Month and Year** — Use monthly calendars to open a specific day and yearly charts to see monthly averages.
 
+**Website:** [https://yihui-xiong.github.io/rhythm-log/](https://yihui-xiong.github.io/rhythm-log/) — interactive demo of every chart, with sample data.
+
 [简体中文说明](README.zh-Hans.md)
 
 ## Run the app
@@ -16,6 +18,8 @@ Open `HealthTimeline.xcodeproj` with an Xcode version that includes the iOS 27 S
 **Simulator.** In **Product → Scheme → Edit Scheme → Run → Arguments**, add `-rhythmDemo` or `-rhythmDemoNoSleep` under **Arguments Passed On Launch**. Run on an iPhone simulator. Tap **Connect Apple Health** to enter the sample experience. These flags use synthetic records and are available in Debug builds.
 
 **iPhone.** Under **Signing & Capabilities**, choose your development team and a unique bundle identifier. Keep the HealthKit capability enabled. Run on a supported iPhone and choose the data types to share when Apple Health prompts. To revisit access, open **Settings → Update Apple Health Access** in Rhythm Log. If a chart is empty, check Apple Health for both the underlying records and the app’s read permissions.
+
+**Without a paid developer account.** Rhythm Log isn’t on the App Store. A free Apple account works as a Personal Team in Xcode; apps installed this way stop opening after 7 days, so run the project from Xcode again to renew.
 
 ## Data and interpretation
 

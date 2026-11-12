@@ -160,7 +160,7 @@ struct HealthTimelineView: View {
                         description: Text("Open Rhythm Log on an iPhone that supports Apple Health.")
                     )
                 } else if !didRequestAccess {
-                    WelcomeView(authorizing: authorizing, connect: connect)
+                    OnboardingView(authorizing: authorizing, connect: connect)
                 } else {
                     dayScreen
                 }
@@ -483,7 +483,7 @@ struct HealthTimelineView: View {
                 if !force && cached.isFresh(for: interval) { prefetch(around: interval, period: .day); return }
             }
             let next = await health.readDay(interval, calendar: calendar)
-            cache.days[interval] = .init(next)
+            if !Task.isCancelled { cache.days[interval] = .init(next) }
             guard current() else { return }
             report = next
         } else {
@@ -504,11 +504,11 @@ struct HealthTimelineView: View {
             async let nextRecovery = needsSide ? health.readRecovery(interval, calendar: calendar) : nil
             async let nextTraining = needsSide ? health.readTraining(interval, calendar: calendar) : nil
             let next = await nextTrends
-            cache.trends[interval] = .init(next)
+            if !Task.isCancelled { cache.trends[interval] = .init(next) }
             guard current() else { return }
             trends = next
             if let updatedTraining = await nextTraining {
-                cache.training[interval] = .init(updatedTraining)
+                if !Task.isCancelled { cache.training[interval] = .init(updatedTraining) }
                 guard current() else { return }
                 training = updatedTraining
             }
@@ -517,7 +517,7 @@ struct HealthTimelineView: View {
                 guard current() else { return }
                 if cachedRecovery == nil { recovery = updatedRecovery }
                 let complete = await health.readRecoveryVitals(updatedRecovery, calendar: calendar)
-                cache.recovery[interval] = .init(complete)
+                if !Task.isCancelled { cache.recovery[interval] = .init(complete) }
                 guard current() else { return }
                 recovery = complete
             }
@@ -554,23 +554,23 @@ struct HealthTimelineView: View {
         if period == .day {
             guard cache.days[interval] == nil else { return }
             let report = await health.readDay(interval, calendar: calendar)
-            cache.days[interval] = .init(report)
+            if !Task.isCancelled { cache.days[interval] = .init(report) }
             return
         }
         if cache.trends[interval] == nil {
             let next = await health.readTrends(interval, by: period.bucketSize, calendar: calendar)
-            cache.trends[interval] = .init(next)
+            if !Task.isCancelled { cache.trends[interval] = .init(next) }
         }
         guard period != .year, !Task.isCancelled else { return }
         if cache.training[interval] == nil {
             let next = await health.readTraining(interval, calendar: calendar)
-            cache.training[interval] = .init(next)
+            if !Task.isCancelled { cache.training[interval] = .init(next) }
         }
         guard !Task.isCancelled else { return }
         if cache.recovery[interval] == nil {
             let base = await health.readRecovery(interval, calendar: calendar)
             let next = await health.readRecoveryVitals(base, calendar: calendar)
-            cache.recovery[interval] = .init(next)
+            if !Task.isCancelled { cache.recovery[interval] = .init(next) }
         }
     }
 }
@@ -603,71 +603,362 @@ struct HealthTimelineView: View {
     }
 }
 
-private struct WelcomeView: View {
+/// First run: five short pages that explain how the app reads your data, ending with the Apple Health request.
+private struct OnboardingView: View {
     let authorizing: Bool
     let connect: () -> Void
+    @State private var page = 0
+    private let count = 5
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Spacer()
+                if page < count - 1 {
+                    Button("Skip") {
+                        withAnimation(RhythmMotion.select) { page = count - 1 }
+                    }
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .transition(.opacity)
+                }
+            }
+            .frame(height: 44)
+            .padding(.horizontal, 24)
+
+            TabView(selection: $page) {
+                OnboardingPage(kicker: "Rhythm Log", title: "Your day on a 24-hour dial",
+                               detail: "Each ray is an hour. Its length and color show how your HRV compared with your usual. Arcs on the outer ring mark sleep (violet) and workouts (orange).") {
+                    OnboardingDial()
+                }
+                .tag(0)
+                OnboardingPage(kicker: "How it reads", title: "Compared only with you",
+                               detail: "Every reading is ranked against your own daytime HRV from the past 30 days, from the same watch. There are no population averages, so a number that is low for someone else can be normal for you.",
+                               notes: ["Lower HRV than usual reads as higher pressure.",
+                                       "Sleep, workouts and night-time hours are left out of the daytime score."]) {
+                    OnboardingBaseline()
+                }
+                .tag(1)
+                OnboardingPage(kicker: "Two lines", title: "Daytime pressure, overnight recovery",
+                               detail: "The day view shows how the day went for your body. Recovery shows how well you slept it off. Training sits alongside, so you can see why.") {
+                    OnboardingLines()
+                }
+                .tag(2)
+                OnboardingPage(kicker: "Navigate", title: "The calendar is the index",
+                               detail: "Pick Week or Month, choose Training or Recovery, then tap any date to open that day. From there, tap a workout to see its heart rate zones.") {
+                    OnboardingCalendar()
+                }
+                .tag(3)
+                OnboardingPage(kicker: "Before you start", title: "What to expect",
+                               detail: "A few honest notes.",
+                               notes: ["It's an estimate of relative pressure, not a diagnosis or medical advice.",
+                                       "Wear your watch to sleep; overnight recovery needs it.",
+                                       "A usual range appears after about a week of readings.",
+                                       "Rhythm Log reads Apple Health on this iPhone. You choose what to share."]) {
+                    OnboardingPrivacy()
+                }
+                .tag(4)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+
+            footer
+        }
+        .frame(maxWidth: 560)
+        .frame(maxWidth: .infinity)
+        .sensoryFeedback(.selection, trigger: page)
+        .toolbar(.hidden, for: .navigationBar)
+        #if DEBUG
+        .onAppear {
+            // `-rhythmOnboardingPage 2` opens a later page, for simulator screenshots.
+            let start = UserDefaults.standard.integer(forKey: "rhythmOnboardingPage")
+            if start > 0 { page = min(start, count - 1) }
+        }
+        #endif
+    }
+
+    private var footer: some View {
+        VStack(spacing: 18) {
+            HStack(spacing: 6) {
+                ForEach(0..<count, id: \.self) { index in
+                    Capsule()
+                        .fill(index == page ? RhythmStyle.accent : RhythmStyle.track)
+                        .frame(width: index == page ? 20 : 6, height: 6)
+                }
+            }
+            .animation(RhythmMotion.select, value: page)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Page \(page + 1) of \(count)"))
+
+            Button {
+                if page < count - 1 {
+                    withAnimation(RhythmMotion.select) { page += 1 }
+                } else {
+                    connect()
+                }
+            } label: {
+                Group {
+                    if authorizing {
+                        ProgressView().accessibilityLabel("Connecting to Apple Health")
+                    } else if page < count - 1 {
+                        Text("Next")
+                    } else {
+                        Text("Connect Apple Health")
+                    }
+                }
+                .font(.headline)
+                .frame(maxWidth: .infinity, minHeight: 50)
+                .contentTransition(.opacity)
+            }
+            .rhythmProminentButton()
+            .buttonBorderShape(.capsule)
+            .disabled(authorizing)
+        }
+        .padding(.horizontal, 24)
+        .padding(.top, 6)
+        .padding(.bottom, 18)
+    }
+}
+
+private struct OnboardingPage<Art: View>: View {
+    let kicker: LocalizedStringKey
+    let title: LocalizedStringKey
+    let detail: LocalizedStringKey
+    var notes: [LocalizedStringKey] = []
+    @ViewBuilder let art: Art
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Image(systemName: "waveform.path.ecg")
-                    .font(.system(size: 30, weight: .semibold))
-                    .foregroundStyle(RhythmStyle.accent)
-                    .frame(width: 66, height: 66)
-                    .background(RhythmStyle.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 22))
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 9) {
-                    Text("Get to know your rhythm")
-                        .font(.largeTitle.weight(.bold))
+                art
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 270)
+                    .modifier(CardReveal())
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(kicker)
+                        .font(RhythmStyle.kicker)
+                        .textCase(.uppercase)
+                        .tracking(1.2)
+                        .foregroundStyle(RhythmStyle.accent)
+                    Text(title)
+                        .font(RhythmStyle.display(28, weight: .bold))
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
-                    Text("See how your heart readings, training, and daily activity change over time.")
+                    Text(detail)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                VStack(alignment: .leading, spacing: 17) {
-                    feature("Day timeline", detail: "See heart readings, workouts, and steps in the context of your day.",
-                            icon: "clock", color: RhythmStyle.readingBlue)
-                    feature("Training patterns", detail: "Compare weekly minutes, heart rate zones, and workouts at similar paces.",
-                            icon: "figure.run", color: RhythmStyle.activity)
-                    feature("Recovery, with or without sleep", detail: "Start with daytime HRV and resting heart rate. Overnight charts appear when records are available.",
-                            icon: "heart.text.clipboard", color: RhythmStyle.sleep)
-                }
-                .rhythmCard()
-                VStack(alignment: .leading, spacing: 14) {
-                    Label("Choose what to share. Rhythm Log reads Apple Health records on this iPhone.", systemImage: "lock.shield")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                    Button(action: connect) {
-                        if authorizing {
-                            ProgressView().frame(maxWidth: .infinity, minHeight: 50)
-                                .accessibilityLabel("Connecting to Apple Health")
-                        } else {
-                            Text("Connect Apple Health")
-                                .font(.headline)
-                                .frame(maxWidth: .infinity, minHeight: 50)
+                if !notes.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach(notes.indices, id: \.self) { index in
+                            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                                Circle().fill(RhythmStyle.accent).frame(width: 5, height: 5)
+                                    .accessibilityHidden(true)
+                                Text(notes[index])
+                                    .font(.footnote)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
                     }
-                    .rhythmProminentButton()
-                    .buttonBorderShape(.capsule)
-                    .disabled(authorizing)
                 }
             }
             .padding(.horizontal, 24)
-            .padding(.vertical, 22)
-            .frame(maxWidth: 520)
-            .frame(maxWidth: .infinity)
+            .padding(.bottom, 12)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+    }
+}
+
+/// Page 1: the real dial, drawn with a sample day.
+private struct OnboardingDial: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var progress = 0.0
+
+    private let scores = [22, 30, 41, 55, 48, 36, 62, 74, 58, 44, 33, 28, 40, 51, 37]
+
+    var body: some View {
+        let rays = scores.enumerated().map { index, score in
+            DialRay(hour: index + 7, length: Double(score) / 100, color: PressureBand(score: score).color)
+        }
+        ZStack {
+            DayDial(rays: rays,
+                    arcs: [DialArc(start: 0, end: 6.8, color: RhythmStyle.sleep),
+                           DialArc(start: 17, end: 17.8, color: RhythmStyle.activity)],
+                    now: 21.5, progress: progress)
+                .frame(width: 250, height: 250)
+            VStack(spacing: 2) {
+                Text(PressureBand.percent(44))
+                    .font(RhythmStyle.display(30, weight: .bold))
+                Text(PressureBand(score: 44).title)
+                    .font(.caption.weight(.semibold))
+                    .textCase(.uppercase)
+            }
+            .foregroundStyle(PressureBand(score: 44).color)
+            .opacity(progress)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("A sample day on the 24-hour dial")
+        .onAppear {
+            if reduceMotion {
+                progress = 1
+            } else {
+                progress = 0
+                withAnimation(.spring(duration: 1.2, bounce: 0.25).delay(0.2)) { progress = 1 }
+            }
         }
     }
+}
 
-    private func feature(_ title: LocalizedStringKey, detail: LocalizedStringKey, icon: String, color: Color) -> some View {
-        Label {
+/// Page 2: thirty days of your own readings, a usual-range band, and today against it.
+private struct OnboardingBaseline: View {
+    private let values: [Double] = [44, 47, 41, 45, 50, 43, 46, 39, 44, 48, 42, 45, 47, 43, 40,
+                                    46, 49, 44, 42, 45, 48, 41, 44, 46, 43, 47, 45, 42, 44, 36]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Your last 30 days").font(.caption.weight(.semibold)).textCase(.uppercase).tracking(0.8)
+                Spacer()
+                Text(verbatim: "ms").font(.caption).foregroundStyle(.secondary)
+            }
+            Chart {
+                RectangleMark(xStart: .value("Day", 0), xEnd: .value("Day", 29),
+                              yStart: .value("Low", 42), yEnd: .value("High", 47))
+                    .foregroundStyle(RhythmStyle.readingBlue.opacity(0.13))
+                ForEach(values.indices, id: \.self) { index in
+                    let today = index == values.count - 1
+                    PointMark(x: .value("Day", index), y: .value("HRV", values[index]))
+                        .foregroundStyle(today ? RhythmStyle.activity : RhythmStyle.readingBlue.opacity(0.55))
+                        .symbolSize(today ? 110 : 30)
+                        .annotation(position: .bottom, spacing: 4) {
+                            if today {
+                                Text("Today").font(.caption2.weight(.semibold)).foregroundStyle(RhythmStyle.activity)
+                            }
+                        }
+                }
+            }
+            .chartXAxis(.hidden)
+            .chartYScale(domain: 32...54)
+            .chartYAxis { AxisMarks(values: [35, 45]) }
+            HStack(spacing: 14) {
+                ColorKeyItem(color: RhythmStyle.readingBlue, title: "Usual range")
+                ColorKeyItem(color: RhythmStyle.activity, title: "Today")
+            }
+            .font(.caption)
+        }
+        .rhythmCard()
+        .padding(.horizontal, 4)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Today's reading sits below your usual range from the last 30 days")
+    }
+}
+
+/// Page 3: what each part of the app answers.
+private struct OnboardingLines: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            row("sun.max", color: RhythmStyle.readingBlue, title: "Daytime pressure",
+                detail: "HRV vs. your usual, hour by hour")
+            DashedRule()
+            row("moon.stars", color: RhythmStyle.sleep, title: "Overnight recovery",
+                detail: "Sleep HRV, resting heart rate, vitals")
+            DashedRule()
+            row("figure.run", color: RhythmStyle.activity, title: "Training",
+                detail: "Workouts, zones, weekly minutes")
+        }
+        .rhythmCard()
+        .padding(.horizontal, 4)
+        .frame(maxHeight: .infinity)
+    }
+
+    private func row(_ icon: String, color: Color, title: LocalizedStringKey, detail: LocalizedStringKey) -> some View {
+        HStack(spacing: 14) {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(color.opacity(0.14))
+                .frame(width: 44, height: 44)
+                .overlay {
+                    Image(systemName: icon).font(.system(size: 19, weight: .semibold)).foregroundStyle(color)
+                }
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 3) {
                 Text(title).font(.subheadline.weight(.semibold))
-                Text(detail).font(.footnote).foregroundStyle(.secondary)
+                Text(detail).font(.caption).foregroundStyle(.secondary)
             }
-        } icon: {
-            Image(systemName: icon).foregroundStyle(color)
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// Page 4: a month of days, one tapped.
+private struct OnboardingCalendar: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var pulse = false
+
+    private let tinted: [Int: Color] = [
+        2: RhythmStyle.activity, 4: RhythmStyle.sleep, 6: RhythmStyle.activity, 9: RhythmStyle.readingBlue,
+        11: RhythmStyle.activity, 13: RhythmStyle.sleep, 16: RhythmStyle.activity, 18: RhythmStyle.readingBlue,
+        20: RhythmStyle.activity, 23: RhythmStyle.sleep, 25: RhythmStyle.activity, 27: RhythmStyle.readingBlue
+    ]
+    private let tapped = 16
+
+    var body: some View {
+        let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
+        LazyVGrid(columns: columns, spacing: 6) {
+            ForEach(1...28, id: \.self) { day in
+                let color = tinted[day]
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(color.map { $0.opacity(0.16) } ?? RhythmStyle.track)
+                    .aspectRatio(1, contentMode: .fit)
+                    .overlay {
+                        Text(verbatim: "\(day)")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(color ?? .secondary)
+                    }
+                    .overlay {
+                        if day == tapped {
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .stroke(RhythmStyle.accent, lineWidth: 2)
+                                .padding(-3)
+                                .scaleEffect(pulse ? 1.08 : 1)
+                                .opacity(pulse ? 0.6 : 1)
+                        }
+                    }
+                    .overlay(alignment: .bottomTrailing) {
+                        if day == tapped {
+                            Image(systemName: "hand.tap.fill")
+                                .font(.system(size: 20))
+                                .foregroundStyle(RhythmStyle.accent)
+                                .offset(x: 12, y: 14)
+                        }
+                    }
+            }
+        }
+        .rhythmCard()
+        .padding(.horizontal, 4)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("A month calendar with one date tapped")
+        .onAppear {
+            guard !reduceMotion else { return }
+            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) { pulse = true }
+        }
+    }
+}
+
+/// Page 5: a quiet symbol for the notes.
+private struct OnboardingPrivacy: View {
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(RhythmStyle.accent.opacity(0.10))
+                .frame(width: 190, height: 190)
+            Circle()
+                .fill(RhythmStyle.accent.opacity(0.10))
+                .frame(width: 130, height: 130)
+            Image(systemName: "heart.text.clipboard")
+                .font(.system(size: 52, weight: .semibold))
+                .foregroundStyle(RhythmStyle.accent)
+        }
+        .accessibilityHidden(true)
     }
 }
 
@@ -1482,6 +1773,12 @@ private struct DayDetails: View {
         }
         if readingsOutsideScoringWindow {
             return "HRV was recorded outside scoring hours or during sleep or a workout."
+        }
+        if case let .insufficientHistory(days)? = report.dailyHRV?.assessment {
+            return "This watch has \(days) earlier days of daytime HRV; a daily score needs at least 7."
+        }
+        if report.dailyHRV == nil {
+            return "The previous 30 days of HRV couldn’t be read. Pull down to refresh."
         }
         return "HRV was recorded. The data needed to calculate a daily score is unavailable."
     }

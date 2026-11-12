@@ -2,6 +2,8 @@
 
 [英文说明](README.md)
 
+**网站：** [https://yihui-xiong.github.io/rhythm-log/](https://yihui-xiong.github.io/rhythm-log/) —— 用示例数据交互演示 app 的所有图表。
+
 一个使用 SwiftUI、Swift Charts 和 HealthKit 的 iPhone App。选择日期，就能回看 Apple「健康」里已保存的心率、心率变异性（SDNN）、静息心率、步数、睡眠和体能训练。
 
 界面支持英文和简体中文。点右上角齿轮可选择语言和浅色／深色外观，语言默认跟随 iPhone，外观默认使用纯白浅色。

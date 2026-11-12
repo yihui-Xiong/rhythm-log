@@ -99,6 +99,42 @@ struct RecoveryReport {
     }
 }
 
+/// HRV trend read the way training studies read it (Plews et al. 2013, 2014): a 7-day rolling average,
+/// shown only when at least 3 of the 7 days have a value, against a usual range of the baseline mean
+/// ± the smallest worthwhile change (0.5 × SD). Computed on log values because HRV is right-skewed.
+extension RecoveryReport {
+    static let trendWindow = 7
+    static let trendMinimumDays = 3
+    static let baselineDays = 30
+    static let baselineMinimumDays = 7
+
+    /// Geometric mean of the daily values in the 7 days ending on `date`, and how many days had one.
+    static func rollingAverage(_ values: [Date: Double], endingOn date: Date,
+                               calendar: Calendar) -> (value: Double?, days: Int) {
+        let logs = (0..<trendWindow).compactMap { offset -> Double? in
+            guard let day = calendar.date(byAdding: .day, value: -offset, to: calendar.startOfDay(for: date)),
+                  let value = values[day], value.isFinite, value > 0 else { return nil }
+            return Foundation.log(value)
+        }
+        guard logs.count >= trendMinimumDays else { return (nil, logs.count) }
+        return (Foundation.exp(logs.reduce(0, +) / Double(logs.count)), logs.count)
+    }
+
+    /// Baseline ± smallest worthwhile change from the 30 days before `date`; nil with fewer than 7 days.
+    static func usualRange(_ values: [Date: Double], before date: Date, calendar: Calendar) -> ClosedRange<Double>? {
+        let logs = (1...baselineDays).compactMap { offset -> Double? in
+            guard let day = calendar.date(byAdding: .day, value: -offset, to: calendar.startOfDay(for: date)),
+                  let value = values[day], value.isFinite, value > 0 else { return nil }
+            return Foundation.log(value)
+        }
+        guard logs.count >= baselineMinimumDays else { return nil }
+        let mean = logs.reduce(0, +) / Double(logs.count)
+        let variance = logs.map { ($0 - mean) * ($0 - mean) }.reduce(0, +) / Double(logs.count - 1)
+        let change = 0.5 * variance.squareRoot()
+        return Foundation.exp(mean - change)...Foundation.exp(mean + change)
+    }
+}
+
 extension HealthInterval {
     var isAsleep: Bool {
         switch sleepStage {

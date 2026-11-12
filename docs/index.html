@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rhythm Log — your HRV, back in the context of your day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --canvas: #F4F1FD; --canvas-mid: #EEF5FD; --canvas-end: #FDF3EC;
+  --card: rgba(255,255,255,0.82); --card-edge: rgba(24,21,31,0.07);
+  --ink: #18151F; --muted: #57546A; --faint: #8C899A;
+  --grid: rgba(24,21,31,0.09); --track: rgba(24,21,31,0.06); --thumb: #FFFFFF;
+  --accent: #7C3AED; --accent-fill: #8B5CF6; --on-accent: #FFFFFF;
+  --lime: #84CC16; --sky: #0EA5E9; --tangerine: #F97316; --pink: #EC4899; --violet: #8B5CF6; --straw: #FACC15;
+  --empty: #E4E0EC;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #110F18; --canvas-mid: #0F131B; --canvas-end: #17120F;
+    --card: rgba(30,27,40,0.82); --card-edge: rgba(255,255,255,0.08);
+    --ink: #F3F1F8; --muted: #B3AFC2; --faint: #858197;
+    --grid: rgba(255,255,255,0.1); --track: rgba(255,255,255,0.08); --thumb: #3A3548;
+    --accent: #A78BFA; --accent-fill: #8B5CF6; --on-accent: #FFFFFF;
+    --empty: #3A3647;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --canvas: #110F18; --canvas-mid: #0F131B; --canvas-end: #17120F;
+  --card: rgba(30,27,40,0.82); --card-edge: rgba(255,255,255,0.08);
+  --ink: #F3F1F8; --muted: #B3AFC2; --faint: #858197;
+  --grid: rgba(255,255,255,0.1); --track: rgba(255,255,255,0.08); --thumb: #3A3548;
+  --accent: #A78BFA; --accent-fill: #8B5CF6; --on-accent: #FFFFFF;
+  --empty: #3A3647;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0; min-height: 100%;
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--canvas) 0%, var(--canvas-mid) 45%, var(--canvas-end) 100%) fixed, var(--canvas);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+/* Nav */
+.nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 22px 0; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-weight: 700; letter-spacing: 3px; font-size: 14px; }
+.nav-links { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; font-size: 13px; }
+.nav-links a { color: var(--muted); text-decoration: none; }
+.nav-links a:hover { color: var(--ink); }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 22px; border-radius: 999px; font-size: 14px; font-weight: 500; text-decoration: none; border: 1px solid transparent; cursor: pointer; }
+.btn-primary { background: var(--accent-fill); color: var(--on-accent) !important; }
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-quiet { background: var(--card); border-color: var(--card-edge); color: var(--ink) !important; }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 48px; align-items: center; padding: 36px 0 80px; }
+.hero h1 { margin: 0; font-size: clamp(32px, 4.4vw, 50px); line-height: 1.15; letter-spacing: -0.5px; font-weight: 700; }
+.hero p.lead { margin: 0; font-size: 16px; line-height: 1.75; color: var(--muted); max-width: 34em; }
+.hero-copy { display: flex; flex-direction: column; gap: 22px; }
+.fine { font-size: 12px; color: var(--muted); margin: 0; }
+
+/* Cards and sections */
+.card { background: var(--card); border: 1px solid var(--card-edge); border-radius: 26px; padding: 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.card-title h3 { margin: 0; display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+.card-title h3 i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; flex: none; }
+.unit { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.readout { display: flex; flex-direction: column; gap: 2px; min-height: 58px; }
+.readout .cap { font-size: 12px; color: var(--muted); }
+.readout .val { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
+.readout .val small { font-size: 13px; font-weight: 400; color: var(--muted); }
+.note { font-size: 12px; line-height: 1.65; color: var(--muted); margin: 0; }
+section.block { padding: 64px 0; }
+.block-head { display: flex; flex-direction: column; gap: 10px; max-width: 44em; margin-bottom: 26px; }
+.block-head .kicker { font-size: 12px; font-weight: 700; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
+.block-head h2 { margin: 0; font-size: clamp(26px, 3vw, 34px); line-height: 1.25; }
+.block-head p { margin: 0; font-size: 15px; line-height: 1.75; color: var(--muted); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 18px; align-items: start; }
+.span2 { grid-column: 1 / -1; }
+.chart { position: relative; width: 100%; touch-action: pan-y; }
+.chart svg { display: block; overflow: visible; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend b { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.legend b.bar { width: 14px; height: 4px; border-radius: 2px; }
+
+/* Segmented control (the app's switcher) */
+.seg { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); padding: 3px; border-radius: 999px; background: var(--track); }
+.seg .thumb { position: absolute; top: 3px; bottom: 3px; left: 3px; border-radius: 999px; background: var(--thumb); box-shadow: 0 1px 2px rgba(0,0,0,0.1); transition: transform .28s cubic-bezier(.2,.8,.2,1); }
+.seg button { position: relative; min-height: 38px; border: 0; background: transparent; cursor: pointer; font-size: 12px; letter-spacing: .6px; color: var(--muted); text-transform: uppercase; }
+.seg button[aria-pressed="true"] { color: var(--ink); font-weight: 700; }
+
+/* Steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.steps li { background: var(--card); border: 1px solid var(--card-edge); border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+.steps li b { font-size: 12px; color: var(--accent); }
+.steps li span { font-size: 14px; line-height: 1.6; }
+
+/* Stat rows */
+.rows { display: flex; flex-direction: column; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px dashed var(--grid); }
+.row:last-child { border-bottom: 0; }
+.row .k { display: flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.row .k i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.row .v { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.row .v small { font-size: 12px; color: var(--muted); font-weight: 400; margin-left: 4px; }
+
+/* Calendars */
+.cal-head { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; text-align: center; font-size: 11px; color: var(--muted); }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+.cal button { min-height: 58px; border-radius: 9px; border: 1px solid transparent; background: transparent; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 0; transition: transform .15s; }
+.cal button:active { transform: scale(.96); }
+.cal button[disabled] { cursor: default; opacity: .38; }
+.cal button[aria-pressed="true"] { border: 1.5px solid var(--accent); }
+.cal button.today { border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.cal .d { font-size: 12px; font-weight: 700; }
+.cal .m { font-size: 11px; font-weight: 500; color: var(--muted); }
+.cal svg { width: 14px; height: 14px; }
+
+/* Workout panel */
+.wlist { display: flex; flex-direction: column; gap: 4px; }
+.wrow { min-height: 56px; display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 14px; border: 0; background: transparent; cursor: pointer; text-align: left; width: 100%; }
+.wrow[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+.wrow .tile { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex: none; }
+.wrow .t { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.wrow .t b { font-size: 14px; }
+.wrow .t span, .wrow .kc { font-size: 12px; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.stats div { display: flex; flex-direction: column; gap: 2px; }
+.stats span { font-size: 11px; letter-spacing: .8px; color: var(--muted); text-transform: uppercase; }
+.stats b { font-size: 22px; font-variant-numeric: tabular-nums; }
+.stats b small { font-size: 12px; font-weight: 400; color: var(--muted); }
+.zones { display: flex; flex-direction: column; gap: 9px; }
+.zone { display: flex; align-items: center; gap: 12px; }
+.zone .bar { position: relative; flex: 1; height: 26px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.zone .fill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; width: 0; transition: width .7s cubic-bezier(.2,.8,.2,1); }
+.zone .id { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 700; }
+.zone .sum { width: 112px; text-align: right; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.kicker-sm { font-size: 11px; font-weight: 700; letter-spacing: 1.4px; color: var(--muted); text-transform: uppercase; }
+.badge { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+
+/* Research, notes */
+.cards4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.cards4 article { background: var(--card); border: 1px solid var(--card-edge); border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.cards4 h3 { margin: 0; font-size: 15px; line-height: 1.5; }
+.cards4 p { margin: 0; font-size: 13px; line-height: 1.7; color: var(--muted); }
+.cards4 cite { font-style: normal; font-size: 11px; color: var(--muted); }
+.notes { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; font-size: 14px; line-height: 1.7; }
+.notes li { display: flex; gap: 12px; }
+.notes li::before { content: ""; flex: none; width: 6px; height: 6px; margin-top: 10px; border-radius: 50%; background: var(--violet); }
+.get { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; padding: 36px; }
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); border-top: 1px dashed var(--grid); padding: 24px 0 40px; }
+
+/* Dial */
+.dial-card { align-items: center; }
+.dial-wrap { position: relative; width: min(100%, 360px); aspect-ratio: 1 / 1; touch-action: none; }
+.dial-wrap svg { width: 100%; height: 100%; display: block; }
+.dial-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 30%; aspect-ratio: 1; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; pointer-events: none; }
+.dial-center b { font-size: clamp(24px, 3vw, 32px); font-variant-numeric: tabular-nums; }
+.dial-center span { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .seg .thumb, .zone .fill, .cal button { transition: none; }
+}
+@media (max-width: 560px) {
+  .nav-links { gap: 14px; }
+  .card { padding: 18px; border-radius: 22px; }
+  .get { padding: 24px; }
+  .zone .sum { width: 96px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="Rhythm Log home">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#FFFFFF" stroke="#E7E3F0"/><g stroke-linecap="round" stroke-width="2.4"><line x1="16" y1="9" x2="16" y2="4.5" stroke="#0EA5E9"/><line x1="21" y1="11" x2="24.5" y2="7.5" stroke="#84CC16"/><line x1="23" y1="16" x2="27" y2="16" stroke="#F97316"/><line x1="21" y1="21" x2="23.5" y2="23.5" stroke="#EC4899"/><line x1="11" y1="21" x2="8" y2="24" stroke="#0EA5E9"/><line x1="9" y1="16" x2="6" y2="16" stroke="#84CC16"/></g><path d="M16 4.5 A11.5 11.5 0 0 0 7.9 7.9" fill="none" stroke="#8B5CF6" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="16" r="2.2" fill="#0EA5E9"/></svg>
+      RHYTHM LOG
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#how">How it reads</a>
+      <a href="#day">A day</a>
+      <a href="#training">Training</a>
+      <a href="#recovery">Recovery</a>
+      <a href="#research">Research</a>
+      <a class="btn btn-primary" href="#get">Get the code</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Put every HRV reading back into your day.</h1>
+        <p class="lead">Rhythm Log reads what your Apple Watch writes to Apple Health and compares it only with your own last 30 days. It shows when your body was under pressure, how well you recovered overnight, and where training fits in.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <a class="btn btn-primary" href="https://github.com/yihui-Xiong/rhythm-log">View on GitHub</a>
+          <a class="btn btn-quiet" href="#day">Explore a sample day</a>
+        </div>
+        <p class="fine">For iPhone with Apple Watch. Open source; build it with Xcode.</p>
+      </div>
+
+      <div class="card dial-card">
+        <div class="card-title" style="width:100%"><h3>Daily HRV score</h3><span class="unit">Sample data</span></div>
+        <div class="seg" id="daySeg" role="group" aria-label="Sample day" style="width:100%"></div>
+        <div class="dial-wrap" id="dial" role="img" aria-label="24-hour dial for the sample day">
+          <svg id="dialSvg" viewBox="0 0 360 360" aria-hidden="true"></svg>
+          <div class="dial-center" id="dialCenter"><b id="dialValue">—</b><span id="dialLabel"></span></div>
+        </div>
+        <div class="legend" style="justify-content:center">
+          <span><b style="background:var(--lime)"></b>Low</span>
+          <span><b style="background:var(--sky)"></b>Usual</span>
+          <span><b style="background:var(--tangerine)"></b>Elevated</span>
+          <span><b style="background:var(--pink)"></b>High</span>
+          <span><b class="bar" style="background:var(--violet)"></b>Sleep</span>
+          <span><b class="bar" style="background:var(--tangerine)"></b>Workout</span>
+        </div>
+        <p class="note" id="dayCaption" style="text-align:center"></p>
+        <p class="note" style="text-align:center">Hover or tap an hour. Each ray is one hour; longer and warmer means lower HRV than your usual.</p>
+      </div>
+    </section>
+
+    <section class="block" id="how">
+      <div class="block-head">
+        <span class="kicker">How it reads</span>
+        <h2>Compared only with you</h2>
+        <p>No population averages. An HRV that’s low for someone else can be normal for you, so Rhythm Log only asks how today compares with your own recent past.</p>
+      </div>
+      <ol class="steps">
+        <li><b>1. Collect</b><span>Reads HRV, heart rate, resting heart rate, sleep, workouts and steps from Apple Health.</span></li>
+        <li><b>2. Exclude</b><span>Leaves out readings taken during sleep, workouts and night-time hours. The daytime score uses waking hours only.</span></li>
+        <li><b>3. Baseline</b><span>Your own daytime readings from the same watch over the past 30 days, with at least 7 days.</span></li>
+        <li><b>4. Estimate</b><span>Lower HRV than your usual reads as higher pressure: one ray per hour, one score per day.</span></li>
+        <li><b>5. Context</b><span>Sleep and training sit alongside, so daytime pressure, overnight recovery and training read together.</span></li>
+      </ol>
+    </section>
+
+    <section class="block" id="day">
+      <div class="block-head">
+        <span class="kicker">A day</span>
+        <h2>One day, hour by hour</h2>
+        <p>The same charts as the app’s Day view. Switch the sample day at the top and every chart here follows it.</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><h3>Summary</h3><span class="unit" id="summaryDay"></span></div>
+          <div class="rows" id="summaryRows"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><h3><i style="background:var(--sky)"></i>HRV through the day</h3><span class="unit">ms</span></div>
+          <div class="readout" id="hrvReadout"></div>
+          <div class="chart" id="hrvChart"></div>
+          <div class="legend"><span><b style="background:var(--lime)"></b>Low</span><span><b style="background:var(--sky)"></b>Usual</span><span><b style="background:var(--tangerine)"></b>Elevated</span><span><b style="background:var(--pink)"></b>High</span><span><b style="background:var(--faint)"></b>Not scored</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Pressure through the day</h3><span class="unit">%</span></div>
+          <div class="readout" id="pressureReadout"></div>
+          <div class="chart" id="pressureChart"></div>
+          <p class="note">One bar per half hour: the mean estimate of the readings in it. Workout time is left out.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><h3><i style="background:var(--pink)"></i>Heart rate</h3><span class="unit">bpm</span></div>
+          <div class="readout" id="hrReadout"></div>
+          <div class="chart" id="hrChart"></div>
+          <p class="note">Each bar is the low–high range for one hour. The orange band marks a workout.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><h3><i style="background:var(--violet)"></i>Sleep</h3><span class="unit" id="sleepUnit"></span></div>
+          <div class="readout" id="sleepReadout"></div>
+          <div class="chart" id="sleepChart"></div>
+          <div class="legend"><span><b style="background:var(--tangerine)"></b>Awake</span><span><b style="background:var(--pink)"></b>REM</span><span><b style="background:var(--sky)"></b>Core</span><span><b style="background:var(--violet)"></b>Deep</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><h3><i style="background:var(--lime)"></i>Hourly steps</h3><span class="unit">steps</span></div>
+          <div class="readout" id="stepsReadout"></div>
+          <div class="chart" id="stepsChart"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="training">
+      <div class="block-head">
+        <span class="kicker">Training</span>
+        <h2>Every workout, in context</h2>
+        <p>Weekly volume by sport, a calendar of sessions, and each workout’s heart rate zones. Tap a week or a date.</p>
+      </div>
+      <div class="grid2">
+        <div class="card span2">
+          <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Training volume</h3><span class="unit">min</span></div>
+          <div class="readout" id="volReadout"></div>
+          <div class="chart" id="volChart"></div>
+          <div class="legend"><span><b style="background:var(--tangerine)"></b>Running</span><span><b style="background:var(--violet)"></b>Strength training</span><span><b style="background:var(--sky)"></b>Cycling</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Training calendar</h3><span class="unit">min</span></div>
+          <div class="readout" id="calTotal"></div>
+          <div class="cal-head" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="cal" id="trainCal"></div>
+          <div class="legend"><span><b style="background:var(--tangerine)"></b>Running</span><span><b style="background:var(--violet)"></b>Strength training</span><span style="margin-left:auto">Tap a date to open it.</span></div>
+        </div>
+        <div class="card" id="workoutPanel" aria-live="polite"></div>
+        <div class="card span2">
+          <div class="card-title"><h3><i style="background:var(--tangerine)"></i>Pace and average heart rate</h3><span class="unit">running · bpm</span></div>
+          <div class="readout" id="paceReadout"></div>
+          <div class="chart" id="paceChart"></div>
+          <p class="note">Each dot is one run. At a similar pace, a falling average heart rate suggests improving fitness. The dashed line is the trend.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="recovery">
+      <div class="block-head">
+        <span class="kicker">Recovery</span>
+        <h2>How well you slept it off</h2>
+        <p>Overnight HRV, sleep timing and resting heart rate, read as a 7-day trend against your own usual range.</p>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><h3><i style="background:var(--sky)"></i>Recovery calendar</h3><span class="unit">Nov 2026</span></div>
+          <div class="seg" id="metricSeg" role="group" aria-label="Calendar metric"></div>
+          <div class="readout" id="recCalReadout"></div>
+          <div class="cal-head" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="cal" id="recCal"></div>
+          <div class="legend" id="recLegend"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><h3><i style="background:var(--violet)"></i>Sleep &amp; recovery</h3><span class="unit">by wake date</span></div>
+          <div class="readout" id="nightReadout"></div>
+          <div class="chart" id="nightChart"></div>
+          <div class="rows" id="nightRows"></div>
+        </div>
+        <div class="card span2">
+          <div class="card-title"><h3><i style="background:var(--sky)"></i>HRV trend</h3><span class="unit">ms</span></div>
+          <div class="seg" id="trendSeg" role="group" aria-label="HRV period" style="max-width:420px"></div>
+          <div class="readout" id="trendReadout"></div>
+          <div class="chart" id="trendChart"></div>
+          <p class="note">Purple line: 7-day average, drawn when at least 3 of the 7 days have HRV. Blue band: your usual range from the 30 days before, average ± 0.5 SD. A few days below the band is worth noticing; one day isn’t.</p>
+        </div>
+        <div class="card span2">
+          <div class="card-title"><h3><i style="background:var(--sky)"></i>Resting heart rate</h3><span class="unit">bpm</span></div>
+          <div class="readout" id="rhrReadout"></div>
+          <div class="chart" id="rhrChart"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="research">
+      <div class="block-head">
+        <span class="kicker">Research</span>
+        <h2>Why it works this way</h2>
+      </div>
+      <div class="cards4">
+        <article><h3>Apple Watch HRV is reliable enough</h3><p>Against a chest strap, reliability and agreement were above 0.9, and the watch picked up changes from mild mental stress.</p><cite>Hernando et al., Sensors, 2018</cite></article>
+        <article><h3>The numbers run low, so compare with yourself</h3><p>Series 9 and Ultra 2 underestimated HRV by about 8 ms on average. A personal baseline cancels that offset.</p><cite>Sensors, 2024</cite></article>
+        <article><h3>HRV reflects stress, but it isn’t a diagnosis</h3><p>A review supports HRV for objective stress assessment and notes there is no accepted standard, so the app calls it an estimate.</p><cite>Kim et al., Psychiatry Investigation, 2018</cite></article>
+        <article><h3>Read the 7-day trend, not one day</h3><p>Sports science compares a 7-day rolling average with each person’s smallest worthwhile change, using at least 3 valid days a week.</p><cite>Plews et al., 2013 and 2014</cite></article>
+      </div>
+    </section>
+
+    <section class="block" id="notes">
+      <div class="grid2" style="align-items:start">
+        <div class="block-head" style="margin:0">
+          <span class="kicker">Before you start</span>
+          <h2>What to expect</h2>
+        </div>
+        <ul class="notes">
+          <li>It’s an estimate of relative pressure, not a diagnosis or medical advice.</li>
+          <li>Wear your watch to sleep; overnight recovery needs it.</li>
+          <li>A usual range and daily score appear after about a week of readings.</li>
+          <li>Rhythm Log reads Apple Health on your iPhone. You choose what to share.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block" id="get" style="padding-top:24px">
+      <div class="card get">
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:34em">
+          <h2 style="margin:0;font-size:26px">Not on the App Store yet</h2>
+          <p class="note" style="font-size:14px">Rhythm Log is open source. Build it to your own iPhone with Xcode and a free Apple account. Installs from a free account expire after 7 days; run it from Xcode again to renew.</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <a class="btn btn-primary" href="https://github.com/yihui-Xiong/rhythm-log">View on GitHub</a>
+          <a class="btn btn-quiet" href="https://github.com/yihui-Xiong/rhythm-log#run-the-app">How to install</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Rhythm Log, 2026. <a href="https://github.com/yihui-Xiong/rhythm-log">Source on GitHub</a></span>
+    <span>Not a medical device. All charts on this page use sample data.</span>
+  </footer>
+</div>
+
+<script>
+(() => {
+"use strict";
+const NS = "http://www.w3.org/2000/svg";
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const $ = (id) => document.getElementById(id);
+const pad = (n) => String(n).padStart(2, "0");
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const fmtHour = (t) => { const h = Math.floor(((t % 24) + 24) % 24); const m = Math.round((t - Math.floor(t)) * 60) % 60; return pad(h) + ":" + pad(m); };
+const num = (n) => Math.round(n).toLocaleString("en-US");
+
+function el(tag, attrs, parent) {
+  const node = document.createElementNS(NS, tag);
+  for (const k in attrs) node.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(node);
+  return node;
+}
+function rng(seed) {
+  return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+
+const BANDS = [
+  { max: 20, name: "Low", color: "--lime", ink: "#4D7C0F" },
+  { max: 60, name: "Usual", color: "--sky", ink: "#0369A1" },
+  { max: 85, name: "Elevated", color: "--tangerine", ink: "#C2410C" },
+  { max: 101, name: "High", color: "--pink", ink: "#BE185D" }
+];
+const band = (s) => BANDS.find((b) => s < b.max) || BANDS[3];
+const isDark = () => css("color-scheme") === "dark";
+const bandInk = (b) => isDark() ? css(b.color) : b.ink;
+
+/* ---------- Generic chart frame ---------- */
+const charts = [];
+function chart(id, height, draw, opts = {}) {
+  const host = $(id);
+  const c = { host, height, draw, sel: null, opts };
+  c.render = () => {
+    const w = host.clientWidth;
+    if (!w) return;
+    host.innerHTML = "";
+    const svg = el("svg", { width: w, height, viewBox: `0 0 ${w} ${height}`, role: "img", "aria-label": opts.label || "" }, host);
+    draw(svg, w, height, c);
+  };
+  charts.push(c);
+  new ResizeObserver(() => c.render()).observe(host);
+  return c;
+}
+function axisY(svg, x0, x1, y, label) {
+  el("line", { x1: x0, x2: x1, y1: y, y2: y, stroke: css("--grid"), "stroke-dasharray": "3 4" }, svg);
+  if (label !== undefined) { const t = el("text", { x: x1 + 6, y: y + 4, "font-size": 11, fill: css("--muted") }, svg); t.textContent = label; }
+}
+function axisX(svg, x, y, label, anchor = "middle") {
+  const t = el("text", { x, y, "font-size": 11, fill: css("--muted"), "text-anchor": anchor }, svg); t.textContent = label;
+}
+/* An invisible layer that turns pointer position into an index and back. */
+function hoverLayer(svg, x0, y0, w, h, count, onPick, c) {
+  const r = el("rect", { x: x0, y: y0, width: w, height: h, fill: "transparent", style: "cursor:crosshair" }, svg);
+  const pick = (e) => {
+    const box = svg.getBoundingClientRect();
+    const x = e.clientX - box.left - x0;
+    const i = clamp(Math.floor(x / w * count), 0, count - 1);
+    if (c.sel !== i) { c.sel = i; onPick(i); c.render(); }
+  };
+  r.addEventListener("pointermove", pick);
+  r.addEventListener("pointerdown", pick);
+  r.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") { c.sel = null; onPick(null); c.render(); } });
+}
+function readout(id, cap, value, unit, extra = "") {
+  $(id).innerHTML = `<span class="cap">${cap}</span><span class="val">${value}${unit ? ` <small>${unit}</small>` : ""}${extra}</span>`;
+}
+function badge(label, color) {
+  return ` <span class="badge" style="color:${color};background:color-mix(in srgb, ${color} 14%, transparent)">${label}</span>`;
+}
+function segmented(id, options, current, onPick) {
+  const host = $(id);
+  host.innerHTML = `<div class="thumb" aria-hidden="true"></div>` + options.map((o, i) => `<button type="button" data-i="${i}" aria-pressed="${i === current}">${o}</button>`).join("");
+  const thumb = host.firstChild;
+  const place = (i) => { thumb.style.width = `calc((100% - 6px) / ${options.length})`; thumb.style.transform = `translateX(${i * 100}%)`; };
+  place(current);
+  host.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    const i = +b.dataset.i;
+    host.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(+x.dataset.i === i)));
+    place(i); onPick(i);
+  }));
+}
+
+/* ---------- Sample days ---------- */
+const DAYS = [
+  { name: "Calm day", seed: 11, score: 18, wake: 7.2, sleepStart: -0.9, base: 58, rhr: 54, workout: null,
+    scores: { 7: 12, 8: 20, 9: 15, 10: 24, 11: 18, 12: 30, 13: 22, 14: 16, 15: 26, 16: 14, 17: 21, 18: 11, 19: 19, 20: 9, 21: 15 },
+    caption: "A full night’s sleep: daytime HRV mostly sits above your usual, so pressure stays low." },
+  { name: "Training day", seed: 23, score: 44, wake: 6.6, sleepStart: -1.2, base: 52, rhr: 57, workout: [17, 18.6, "Running"],
+    scores: { 7: 30, 8: 42, 9: 38, 10: 51, 11: 45, 12: 33, 13: 48, 14: 56, 15: 40, 16: 52, 19: 70, 20: 61, 21: 47 },
+    caption: "The 17:00 run isn’t scored. HRV dips for two hours afterwards, then settles." },
+  { name: "Busy day", seed: 37, score: 76, wake: 5.8, sleepStart: -0.4, base: 47, rhr: 61, workout: null,
+    scores: { 7: 50, 8: 55, 9: 62, 10: 71, 11: 80, 12: 66, 13: 74, 14: 88, 15: 92, 16: 84, 17: 77, 18: 69, 19: 81, 20: 63, 21: 58 },
+    caption: "Short sleep and a heavy afternoon: elevated to high estimates cluster from 14:00 to 17:00." }
+];
+function scoreAt(day, hour) {
+  if (day.scores[hour] !== undefined) return day.scores[hour];
+  const keys = Object.keys(day.scores).map(Number);
+  const near = keys.reduce((a, b) => Math.abs(b - hour) < Math.abs(a - hour) ? b : a);
+  return day.scores[near];
+}
+function buildDay(day) {
+  const r = rng(day.seed);
+  const inWorkout = (t) => day.workout && t >= day.workout[0] && t < day.workout[1];
+  // HRV readings, about every 10–15 minutes while awake
+  const hrv = [];
+  for (let t = day.wake + 0.25; t < 22.7; t += 0.15 + r() * 0.12) {
+    const hour = Math.floor(t);
+    const s = scoreAt(day, hour);
+    const workout = inWorkout(t);
+    const scored = !workout && t >= 6 && t < 22;
+    const rs = clamp(s + (r() - 0.5) * 26, 1, 100);
+    let v = day.base * (1.5 - 0.95 * rs / 100) * (1 + (r() - 0.5) * 0.18);
+    if (workout) v = day.base * 0.42 * (1 + (r() - 0.5) * 0.3);
+    hrv.push({ t, v: Math.round(v), score: Math.round(rs), scored });
+  }
+  // Half-hour pressure bars
+  const pressure = [];
+  for (let k = 12; k < 44; k++) {
+    const inSlot = hrv.filter((x) => x.scored && x.t >= k / 2 && x.t < (k + 1) / 2);
+    if (!inSlot.length) continue;
+    pressure.push({ slot: k, score: Math.round(inSlot.reduce((a, x) => a + x.score, 0) / inSlot.length) });
+  }
+  // Hourly heart rate ranges and steps
+  const sleepEnd = day.wake, sleepBegin = 24 + day.sleepStart;
+  const hr = [], steps = [];
+  for (let h = 0; h < 24; h++) {
+    const asleep = h + 0.5 < sleepEnd || h + 0.5 >= sleepBegin;
+    let lo, hi, st;
+    if (asleep) { lo = day.rhr - 5 + r() * 3; hi = lo + 6 + r() * 6; st = 0; }
+    else if (day.workout && h >= Math.floor(day.workout[0]) && h < Math.ceil(day.workout[1])) { lo = 108 + r() * 8; hi = 156 + r() * 10; st = 3800 + r() * 1400; }
+    else {
+      const s = scoreAt(day, h);
+      lo = day.rhr + 4 + r() * 6 + s * 0.05; hi = lo + 16 + r() * 18 + s * 0.12;
+      st = (h === 8 || h === 12 || h === 18) ? 1100 + r() * 1300 : 120 + r() * 650;
+    }
+    hr.push({ h, lo: Math.round(lo), hi: Math.round(hi) });
+    steps.push({ h, v: Math.round(st) });
+  }
+  // Sleep stages, from the evening before to waking
+  const stages = [];
+  let t = day.sleepStart, cycle = 0;
+  const push = (stage, len) => { const end = Math.min(t + len, day.wake); if (end > t) stages.push({ stage, s: t, e: end }); t = end; };
+  while (t < day.wake - 0.05) {
+    push("Core", 0.25 + r() * 0.15);
+    push("Deep", Math.max(0.08, 0.55 - cycle * 0.14) * (0.8 + r() * 0.4));
+    push("Core", 0.3 + r() * 0.2);
+    push("REM", 0.12 + cycle * 0.06 + r() * 0.08);
+    if (r() < 0.45) push("Awake", 0.03 + r() * 0.05);
+    cycle++;
+  }
+  const asleepHours = stages.filter((x) => x.stage !== "Awake").reduce((a, x) => a + x.e - x.s, 0);
+  const scoredVals = hrv.filter((x) => x.scored).map((x) => x.v).sort((a, b) => a - b);
+  const median = scoredVals.length ? scoredVals[Math.floor(scoredVals.length / 2)] : null;
+  return { hrv, pressure, hr, steps, stages, asleepHours, median, totalSteps: steps.reduce((a, x) => a + x.v, 0) };
+}
+const built = DAYS.map(buildDay);
+let dayIndex = 1;
+const today = () => built[dayIndex];
+const dayDef = () => DAYS[dayIndex];
+
+/* ---------- Dial ---------- */
+const dial = { svg: $("dialSvg"), rays: [], current: new Array(24).fill(0), from: null, target: null, start: 0, hour: null, arcs: [] };
+(function setupDial() {
+  const svg = dial.svg, c = 180;
+  el("circle", { cx: c, cy: c, r: 168, fill: "none", stroke: "transparent" }, svg);
+  dial.arcLayer = el("g", {}, svg);
+  for (let h = 0; h < 24; h++) dial.rays.push(el("line", { "stroke-linecap": "round", "stroke-width": 10 }, svg));
+  [["00", c, 14], ["06", 352, c + 4], ["12", c, 356], ["18", 8, c + 4]].forEach(([t, x, y]) => {
+    const n = el("text", { x, y, "font-size": 12, "text-anchor": t === "06" ? "end" : t === "18" ? "start" : "middle", fill: css("--muted") }, svg); n.textContent = t; n.dataset.axis = "1";
+  });
+  const wrap = $("dial");
+  const pickHour = (e) => {
+    const box = wrap.getBoundingClientRect();
+    const x = (e.clientX - box.left) / box.width * 360 - c, y = (e.clientY - box.top) / box.height * 360 - c;
+    const dist = Math.hypot(x, y);
+    if (dist < 60 || dist > 175) { setHour(null); return; }
+    let ang = Math.atan2(x, -y) * 180 / Math.PI; if (ang < 0) ang += 360;
+    setHour(Math.floor(ang / 15));
+  };
+  wrap.addEventListener("pointermove", pickHour);
+  wrap.addEventListener("pointerdown", pickHour);
+  wrap.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") setHour(null); });
+})();
+function rayTargets() {
+  const d = dayDef();
+  return Array.from({ length: 24 }, (_, h) => d.scores[h] !== undefined ? d.scores[h] / 100 : -1);
+}
+function setHour(h) {
+  const d = dayDef();
+  if (h !== null && d.scores[h] === undefined) h = null;
+  if (dial.hour === h) return;
+  dial.hour = h; paintDial(); paintCenter();
+}
+function paintCenter() {
+  const d = dayDef();
+  const s = dial.hour !== null ? d.scores[dial.hour] : d.score;
+  const b = band(s);
+  const col = bandInk(b);
+  $("dialValue").textContent = s + "%";
+  $("dialValue").style.color = col;
+  $("dialLabel").textContent = dial.hour !== null ? `${pad(dial.hour)}:00 · ${b.name}` : b.name;
+  $("dialLabel").style.color = col;
+  $("dialCenter").style.background = `radial-gradient(circle, color-mix(in srgb, ${css(b.color)} 18%, transparent) 0%, transparent 70%)`;
+}
+function paintDial(progress = 1) {
+  const c = 180, inner = 64, reach = 74;
+  const targets = rayTargets();
+  dial.rays.forEach((line, h) => {
+    const a = (h + 0.5) / 24 * Math.PI * 2;
+    const value = dial.current[h];
+    const grown = reduceMotion ? 1 : clamp(progress * 1.7 - h / 24 * 0.7, 0, 1);
+    const has = targets[h] >= 0;
+    const len = has ? (reach * (0.14 + 0.86 * value)) * grown : 4;
+    const sx = c + inner * Math.sin(a), sy = c - inner * Math.cos(a);
+    line.setAttribute("x1", sx); line.setAttribute("y1", sy);
+    line.setAttribute("x2", c + (inner + len) * Math.sin(a)); line.setAttribute("y2", c - (inner + len) * Math.cos(a));
+    const s = dayDef().scores[h];
+    line.setAttribute("stroke", has ? css(band(s).color) : css("--empty"));
+    line.setAttribute("opacity", dial.hour !== null && dial.hour !== h ? 0.22 : 1);
+    line.setAttribute("stroke-width", dial.hour === h ? 13 : 10);
+  });
+  // Arcs: sleep and workout on an outer ring
+  dial.arcLayer.innerHTML = "";
+  const R = 152;
+  const arc = (s, e, color) => {
+    const a0 = s / 24 * Math.PI * 2, a1 = e / 24 * Math.PI * 2;
+    const p = (a) => `${c + R * Math.sin(a)} ${c - R * Math.cos(a)}`;
+    el("path", { d: `M ${p(a0)} A ${R} ${R} 0 ${e - s > 12 ? 1 : 0} 1 ${p(a1)}`, fill: "none", stroke: color, "stroke-width": 7, "stroke-linecap": "round", opacity: progress < 1 ? progress : 1 }, dial.arcLayer);
+  };
+  const d = dayDef();
+  if (d.sleepStart < 0) { arc(24 + d.sleepStart, 24, css("--violet")); arc(0, d.wake, css("--violet")); } else arc(d.sleepStart, d.wake, css("--violet"));
+  if (d.workout) arc(d.workout[0], d.workout[1], css("--tangerine"));
+  dial.svg.querySelectorAll("[data-axis]").forEach((n) => n.setAttribute("fill", css("--muted")));
+}
+function animateDial(intro) {
+  const from = dial.current.slice();
+  const to = rayTargets().map((v) => Math.max(v, 0));
+  const t0 = performance.now(), dur = intro ? 1200 : 500;
+  if (reduceMotion) { dial.current = to; paintDial(1); paintCenter(); return; }
+  const step = (now) => {
+    const k = clamp((now - t0) / dur, 0, 1);
+    const e = 1 - Math.pow(1 - k, 3);
+    dial.current = from.map((f, i) => f + (to[i] - f) * (intro ? 1 : e));
+    paintDial(intro ? e : 1);
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+  paintCenter();
+}
+
+/* ---------- Day charts ---------- */
+const M = { l: 0, r: 34, t: 10, b: 26 };
+function hourAxis(svg, w, h) {
+  [0, 6, 12, 18].forEach((hr) => axisX(svg, (w - M.r) * hr / 24, h - 6, pad(hr), hr === 0 ? "start" : "middle"));
+}
+
+function renderSummary() {
+  const d = today(), def = dayDef();
+  $("summaryDay").textContent = def.name;
+  const hrs = Math.floor(d.asleepHours), mins = Math.round((d.asleepHours - hrs) * 60);
+  const rows = [
+    ["--sky", "HRV", d.median, "ms"],
+    ["--pink", "Resting HR", def.rhr, "bpm"],
+    ["--violet", "Sleep", `${hrs}h ${pad(mins)}m`, ""],
+    ["--lime", "Steps", num(d.totalSteps), ""]
+  ];
+  $("summaryRows").innerHTML = rows.map(([c, k, v, u]) => `<div class="row"><span class="k"><i style="background:var(${c})"></i>${k}</span><span class="v">${v}${u ? `<small>${u}</small>` : ""}</span></div>`).join("");
+}
+
+const hrvChart = chart("hrvChart", 200, (svg, w, h, c) => {
+  const d = today();
+  const iw = w - M.r, ih = h - M.t - M.b;
+  const lo = 10, hi = 100;
+  const x = (t) => t / 24 * iw, y = (v) => M.t + ih - (clamp(v, lo, hi) - lo) / (hi - lo) * ih;
+  [25, 50, 75, 100].forEach((v) => axisY(svg, 0, iw, y(v), v));
+  hourAxis(svg, w, h);
+  el("polyline", { points: d.hrv.map((p) => `${x(p.t)},${y(p.v)}`).join(" "), fill: "none", stroke: css("--sky"), "stroke-opacity": 0.35, "stroke-width": 1.5 }, svg);
+  const selHour = c.sel;
+  d.hrv.forEach((p) => {
+    const active = selHour === null || Math.floor(p.t) === selHour;
+    el("circle", { cx: x(p.t), cy: y(p.v), r: active && selHour !== null ? 4.5 : 3.2, fill: p.scored ? css(band(p.score).color) : css("--faint"), opacity: active ? 1 : 0.25 }, svg);
+  });
+  if (selHour !== null) el("line", { x1: x(selHour + 0.5), x2: x(selHour + 0.5), y1: M.t, y2: M.t + ih, stroke: css("--muted"), "stroke-opacity": 0.4 }, svg);
+  hoverLayer(svg, 0, M.t, iw, ih, 24, updateHrvReadout, c);
+}, { label: "HRV readings through the day" });
+function updateHrvReadout(hour) {
+  const d = today();
+  if (hour === null) {
+    const last = d.hrv[d.hrv.length - 1];
+    readout("hrvReadout", `Latest · ${fmtHour(last.t)}`, last.v, "ms");
+    return;
+  }
+  const inHour = d.hrv.filter((p) => Math.floor(p.t) === hour);
+  if (!inHour.length) { readout("hrvReadout", `${pad(hour)}:00`, "—", "", ` <small>No readings</small>`); return; }
+  const p = inHour[Math.floor(inHour.length / 2)];
+  const extra = p.scored ? badge(band(p.score).name, bandInk(band(p.score))) : ` <small>Not scored (sleep, workout or night)</small>`;
+  readout("hrvReadout", `${fmtHour(p.t)} · ${inHour.length} readings this hour`, p.v, "ms", extra);
+}
+
+const pressureChart = chart("pressureChart", 190, (svg, w, h, c) => {
+  const d = today();
+  const iw = w - M.r, ih = h - M.t - M.b;
+  const x = (slot) => slot / 48 * iw, y = (v) => M.t + ih - v / 100 * ih;
+  [0, 50, 100].forEach((v) => axisY(svg, 0, iw, y(v), v));
+  hourAxis(svg, w, h);
+  const bw = Math.max(2.5, iw / 48 * 0.42);
+  d.pressure.forEach((p) => {
+    const active = c.sel === null || c.sel === p.slot;
+    el("rect", { x: x(p.slot + 0.5) - bw / 2, y: y(p.score), width: bw, height: y(0) - y(p.score), rx: bw / 2, fill: css(band(p.score).color), opacity: active ? 1 : 0.25 }, svg);
+  });
+  hoverLayer(svg, 0, M.t, iw, ih, 48, updatePressureReadout, c);
+}, { label: "Pressure estimate per half hour" });
+function updatePressureReadout(slot) {
+  const d = today();
+  if (slot === null) { const b = band(dayDef().score); readout("pressureReadout", "Daily score", dayDef().score, "%", badge(b.name, bandInk(b))); return; }
+  const p = d.pressure.find((x) => x.slot === slot);
+  const label = `${pad(Math.floor(slot / 2))}:${slot % 2 ? "30" : "00"}–${pad(Math.floor((slot + 1) / 2))}:${(slot + 1) % 2 ? "30" : "00"}`;
+  if (!p) { readout("pressureReadout", label, "—", "", ` <small>No scored readings</small>`); return; }
+  const b = band(p.score);
+  readout("pressureReadout", label, p.score, "%", badge(b.name, bandInk(b)));
+}
+
+const hrChart = chart("hrChart", 190, (svg, w, h, c) => {
+  const d = today(), def = dayDef();
+  const iw = w - M.r, ih = h - M.t - M.b;
+  const lo = 40, hi = 180;
+  const x = (t) => t / 24 * iw, y = (v) => M.t + ih - (v - lo) / (hi - lo) * ih;
+  if (def.workout) el("rect", { x: x(def.workout[0]), y: M.t, width: x(def.workout[1]) - x(def.workout[0]), height: ih, fill: css("--tangerine"), opacity: 0.14 }, svg);
+  [60, 100, 140, 180].forEach((v) => axisY(svg, 0, iw, y(v), v));
+  hourAxis(svg, w, h);
+  const bw = Math.max(3, iw / 24 * 0.36);
+  d.hr.forEach((p) => {
+    const active = c.sel === null || c.sel === p.h;
+    el("rect", { x: x(p.h + 0.5) - bw / 2, y: y(p.hi), width: bw, height: Math.max(bw, y(p.lo) - y(p.hi)), rx: bw / 2, fill: css("--pink"), opacity: active ? 1 : 0.25 }, svg);
+  });
+  hoverLayer(svg, 0, M.t, iw, ih, 24, updateHrReadout, c);
+}, { label: "Hourly heart rate ranges" });
+function updateHrReadout(hour) {
+  const d = today(), def = dayDef();
+  if (hour === null) {
+    readout("hrReadout", "Range", `${Math.min(...d.hr.map((p) => p.lo))}–${Math.max(...d.hr.map((p) => p.hi))}`, "bpm");
+    return;
+  }
+  const p = d.hr[hour];
+  const w = def.workout && hour >= Math.floor(def.workout[0]) && hour < Math.ceil(def.workout[1]);
+  readout("hrReadout", `${pad(hour)}:00${w ? " · " + def.workout[2] : ""}`, `${p.lo}–${p.hi}`, "bpm");
+}
+
+const STAGES = ["Awake", "REM", "Core", "Deep"];
+const STAGE_COLOR = { Awake: "--tangerine", REM: "--pink", Core: "--sky", Deep: "--violet" };
+const sleepChart = chart("sleepChart", 170, (svg, w, h, c) => {
+  const d = today(), def = dayDef();
+  const iw = w - 50, rowH = (h - 30) / 4;
+  const span = def.wake - def.sleepStart;
+  const x = (t) => 50 + (t - def.sleepStart) / span * iw;
+  STAGES.forEach((s, i) => {
+    const t = el("text", { x: 0, y: 10 + i * rowH + rowH / 2 + 4, "font-size": 11, fill: css("--muted") }, svg); t.textContent = s;
+    el("line", { x1: 50, x2: w, y1: 10 + (i + 1) * rowH, y2: 10 + (i + 1) * rowH, stroke: css("--grid"), "stroke-dasharray": "3 4" }, svg);
+  });
+  d.stages.forEach((seg, i) => {
+    const row = STAGES.indexOf(seg.stage);
+    const active = c.sel === null || c.sel === i;
+    el("rect", { x: x(seg.s), y: 10 + row * rowH + rowH * 0.22, width: Math.max(2, x(seg.e) - x(seg.s)), height: rowH * 0.56, rx: 5, fill: css(STAGE_COLOR[seg.stage]), opacity: active ? 1 : 0.25 }, svg);
+  });
+  for (let t = Math.ceil(def.sleepStart); t <= Math.floor(def.wake); t += 2) axisX(svg, x(t), h - 4, pad((t + 24) % 24));
+  // Hover by time: pick the segment under the pointer.
+  const r = el("rect", { x: 50, y: 0, width: iw, height: h - 20, fill: "transparent", style: "cursor:crosshair" }, svg);
+  const pick = (e) => {
+    const box = svg.getBoundingClientRect();
+    const t = def.sleepStart + (e.clientX - box.left - 50) / iw * span;
+    const i = d.stages.findIndex((s) => t >= s.s && t < s.e);
+    if (i !== c.sel) { c.sel = i < 0 ? null : i; updateSleepReadout(c.sel); c.render(); }
+  };
+  r.addEventListener("pointermove", pick); r.addEventListener("pointerdown", pick);
+  r.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") { c.sel = null; updateSleepReadout(null); c.render(); } });
+}, { label: "Sleep stages" });
+function updateSleepReadout(i) {
+  const d = today(), def = dayDef();
+  $("sleepUnit").textContent = `${fmtHour(24 + def.sleepStart)}–${fmtHour(def.wake)}`;
+  if (i === null) {
+    const hrs = Math.floor(d.asleepHours), mins = Math.round((d.asleepHours - hrs) * 60);
+    readout("sleepReadout", "Time asleep", `${hrs}h ${pad(mins)}m`, "");
+    return;
+  }
+  const s = d.stages[i];
+  readout("sleepReadout", `${s.stage} · ${fmtHour(s.s + 24)}–${fmtHour(s.e + 24)}`, Math.round((s.e - s.s) * 60), "min");
+}
+
+const stepsChart = chart("stepsChart", 170, (svg, w, h, c) => {
+  const d = today();
+  const iw = w - M.r, ih = h - M.t - M.b;
+  const max = 6000;
+  const x = (t) => t / 24 * iw, y = (v) => M.t + ih - Math.min(v, max) / max * ih;
+  [0, 2000, 4000, 6000].forEach((v) => axisY(svg, 0, iw, y(v), v ? v / 1000 + "k" : 0));
+  hourAxis(svg, w, h);
+  const bw = Math.max(3, iw / 24 * 0.5);
+  d.steps.forEach((p) => {
+    if (!p.v) return;
+    const active = c.sel === null || c.sel === p.h;
+    el("rect", { x: x(p.h + 0.5) - bw / 2, y: y(p.v), width: bw, height: y(0) - y(p.v), rx: 3, fill: css("--lime"), opacity: active ? 1 : 0.25 }, svg);
+  });
+  hoverLayer(svg, 0, M.t, iw, ih, 24, updateStepsReadout, c);
+}, { label: "Hourly steps" });
+function updateStepsReadout(hour) {
+  const d = today();
+  if (hour === null) { readout("stepsReadout", "Total", num(d.totalSteps), "steps"); return; }
+  readout("stepsReadout", `${pad(hour)}:00`, num(d.steps[hour].v), "steps");
+}
+
+function renderDayCharts() {
+  renderSummary();
+  [hrvChart, pressureChart, hrChart, sleepChart, stepsChart].forEach((c) => { c.sel = null; c.render(); });
+  updateHrvReadout(null); updatePressureReadout(null); updateHrReadout(null); updateSleepReadout(null); updateStepsReadout(null);
+  $("dayCaption").textContent = dayDef().caption;
+}
+
+segmented("daySeg", DAYS.map((d) => d.name), dayIndex, (i) => {
+  dayIndex = i; dial.hour = null; animateDial(false); renderDayCharts();
+});
+
+/* ---------- Training ---------- */
+const ICON = {
+  r: (stroke) => `<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>`,
+  s: (stroke) => `<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.3" stroke-linecap="round" aria-hidden="true"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg>`
+};
+const TYPE = { r: { name: "Running", color: "--tangerine", ink: "#C2410C" }, s: { name: "Traditional strength training", color: "--violet", ink: "#6D28D9" } };
+const WEEKS = [
+  { label: "Sep 21", run: 64, strength: 190, cycle: 40 }, { label: "Sep 28", run: 22, strength: 245, cycle: 35 },
+  { label: "Oct 5", run: 95, strength: 260, cycle: 0 }, { label: "Oct 12", run: 70, strength: 110, cycle: 0 },
+  { label: "Oct 19", run: 30, strength: 230, cycle: 0 }, { label: "Oct 26", run: 85, strength: 95, cycle: 0 },
+  { label: "Nov 2", run: 80, strength: 203, cycle: 0 }, { label: "Nov 9", run: 25, strength: 201, cycle: 0 }
+];
+const WORKOUTS = {
+  2: [{ type: "s", start: "06:50", min: 98, kcal: 452, avg: 108, max: 141, zones: [61, 26, 9, 2, 0], rank: 1 }],
+  4: [{ type: "s", start: "06:55", min: 105, kcal: 485, avg: 112, max: 146, zones: [70, 24, 9, 2, 0], rank: 2 }],
+  7: [{ type: "r", start: "17:30", min: 38, kcal: 371, avg: 145, max: 160, zones: [3, 6, 13, 14, 2], rank: 1 }],
+  8: [{ type: "r", start: "08:10", min: 42, kcal: 410, avg: 149, max: 166, zones: [2, 5, 12, 18, 5], rank: 2 }],
+  9: [{ type: "s", start: "07:00", min: 96, kcal: 441, avg: 106, max: 138, zones: [64, 23, 8, 1, 0], rank: 3 }],
+  11: [{ type: "s", start: "06:55", min: 105, kcal: 485, avg: 110, max: 143, zones: [92, 11, 2, 0, 0], rank: 4 },
+       { type: "r", start: "18:10", min: 25, kcal: 236, avg: 138, max: 151, zones: [4, 9, 10, 2, 0], rank: 3 }]
+};
+const ZONE_BOUNDS = [115, 134, 152, 171];
+const ZONE_COLORS = ["--sky", "--lime", "--straw", "--tangerine", "--pink"];
+const TODAY = 12;
+let weekSel = WEEKS.length - 1, calDay = 11, workoutSel = 0;
+
+const volChart = chart("volChart", 220, (svg, w, h, c) => {
+  const iw = w, ih = h - 30;
+  const max = Math.max(...WEEKS.map((x) => x.run + x.strength + x.cycle));
+  const slot = iw / WEEKS.length, bw = Math.min(64, slot * 0.72);
+  WEEKS.forEach((wk, i) => {
+    const cx = slot * (i + 0.5);
+    el("rect", { x: cx - bw / 2, y: 6, width: bw, height: ih - 6, rx: 6, fill: css("--track") }, svg);
+    let top = ih;
+    [["cycle", "--sky"], ["strength", "--violet"], ["run", "--tangerine"]].reverse().forEach(([k, color]) => {
+      const hgt = wk[k] / max * (ih - 6);
+      if (!hgt) return;
+      top -= hgt;
+      el("rect", { x: cx - bw / 2, y: top, width: bw, height: hgt, fill: css(color), opacity: i === weekSel ? 1 : 0.5 }, svg);
+    });
+    const t = el("text", { x: cx, y: h - 8, "font-size": 11, "text-anchor": "middle", fill: i === weekSel ? css("--ink") : css("--muted"), "font-weight": i === weekSel ? 700 : 400 }, svg);
+    t.textContent = wk.label;
+  });
+  const r = el("rect", { x: 0, y: 0, width: iw, height: h, fill: "transparent", style: "cursor:pointer" }, svg);
+  const pick = (e) => { const box = svg.getBoundingClientRect(); const i = clamp(Math.floor((e.clientX - box.left) / iw * WEEKS.length), 0, WEEKS.length - 1); if (i !== weekSel) { weekSel = i; updateVolReadout(); c.render(); } };
+  r.addEventListener("pointerdown", pick); r.addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") pick(e); });
+}, { label: "Weekly training minutes by sport" });
+function updateVolReadout() {
+  const wk = WEEKS[weekSel], prev = WEEKS[weekSel - 1];
+  const total = wk.run + wk.strength + wk.cycle;
+  let extra = ` <small>week of ${wk.label}</small>`;
+  if (prev) { const diff = total - (prev.run + prev.strength + prev.cycle); extra += ` <small>· ${diff >= 0 ? "+" : "−"}${Math.abs(diff)} min vs. previous week</small>`; }
+  readout("volReadout", `Running ${wk.run} · Strength ${wk.strength}${wk.cycle ? " · Cycling " + wk.cycle : ""}`, total, "min", extra);
+}
+
+function renderTrainCal() {
+  const host = $("trainCal");
+  let html = "<span></span>".repeat(6);
+  let total = 0, count = 0;
+  for (let d = 1; d <= 30; d++) {
+    const list = WORKOUTS[d] || [];
+    const mins = list.reduce((a, x) => a + x.min, 0);
+    total += mins; count += list.length;
+    const main = list.slice().sort((a, b) => b.min - a.min)[0];
+    const future = d > TODAY;
+    const bg = main ? `background:color-mix(in srgb, var(${TYPE[main.type].color}) 15%, transparent)` : "";
+    const label = `November ${d}${main ? ", " + list.map((x) => `${TYPE[x.type].name} ${x.min} min`).join(", ") : ", no workouts"}`;
+    html += `<button type="button" data-d="${d}" class="${d === TODAY ? "today" : ""}" style="${bg}" aria-pressed="${d === calDay}" aria-label="${label}" ${future ? "disabled" : ""}>
+      <span class="d">${d}</span>${main ? ICON[main.type](isDark() ? css(TYPE[main.type].color) : TYPE[main.type].ink) : ""}<span class="m">${main ? mins + (list.length > 1 ? " +" : "") : future ? "" : "—"}</span></button>`;
+  }
+  host.innerHTML = html;
+  readout("calTotal", "November 2026", total, "min", ` <small>· ${count} workouts</small>`);
+  host.querySelectorAll("button[data-d]").forEach((b) => b.addEventListener("click", () => { calDay = +b.dataset.d; workoutSel = 0; renderTrainCal(); renderWorkout(); }));
+}
+
+let whrChart = null;
+function renderWorkout() {
+  const host = $("workoutPanel");
+  const list = WORKOUTS[calDay] || [];
+  const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][(calDay - 1) % 7];
+  if (!list.length) {
+    host.innerHTML = `<span class="kicker-sm">${weekday}, Nov ${calDay}</span><p class="note" style="font-size:14px">No workouts recorded on this day. Pick a date with an icon.</p>`;
+    whrChart = null; return;
+  }
+  const w = list[Math.min(workoutSel, list.length - 1)];
+  const total = w.zones.reduce((a, b) => a + b, 0);
+  host.innerHTML = `
+    <span class="kicker-sm">${weekday}, Nov ${calDay}</span>
+    <div class="wlist">${list.map((x, i) => `
+      <button type="button" class="wrow" data-i="${i}" aria-pressed="${i === Math.min(workoutSel, list.length - 1)}">
+        <span class="tile" style="background:color-mix(in srgb, var(${TYPE[x.type].color}) 15%, transparent)"><span style="width:20px;height:20px;display:flex">${ICON[x.type](isDark() ? css(TYPE[x.type].color) : TYPE[x.type].ink)}</span></span>
+        <span class="t"><b>${TYPE[x.type].name}</b><span>${x.min} min · ${x.start}</span></span>
+        <span class="kc">${x.kcal} kcal</span>
+      </button>`).join("")}</div>
+    <span class="kicker-sm">Nov · #${w.rank} this month</span>
+    <div class="stats">
+      <div><span>Duration</span><b>${Math.floor(w.min / 60)}:${pad(w.min % 60)}:00</b></div>
+      <div><span>Active energy</span><b>${w.kcal} <small>kcal</small></b></div>
+      <div><span>Average heart rate</span><b>${w.avg} <small>bpm</small></b></div>
+      <div><span>Maximum heart rate</span><b>${w.max} <small>bpm</small></b></div>
+    </div>
+    <div class="card-title"><h3><i style="background:var(--pink)"></i>Time in zones</h3></div>
+    <div class="zones">${[4, 3, 2, 1, 0].map((z) => {
+      const f = w.zones[z] / total;
+      const pct = f > 0 && f < 0.01 ? "<1%" : Math.round(f * 100) + "%";
+      const text = w.zones[z] ? (z === 2 ? "rgba(0,0,0,0.72)" : "#FFFFFF") : css("--muted");
+      return `<div class="zone"><div class="bar"><div class="fill" data-w="${w.zones[z] ? Math.max(12, f * 100) : 0}" style="background:var(${ZONE_COLORS[z]})"></div><span class="id" style="color:${text}">${z + 1}</span></div><span class="sum">${pct} · ${w.zones[z]} min</span></div>`;
+    }).join("")}</div>
+    <div class="card-title"><h3><i style="background:var(--pink)"></i>Workout heart rate</h3><span class="unit">bpm</span></div>
+    <div class="readout" id="whrReadout"></div>
+    <div class="chart" id="whrChart"></div>`;
+  host.querySelectorAll(".wrow").forEach((b) => b.addEventListener("click", () => { workoutSel = +b.dataset.i; renderWorkout(); }));
+  requestAnimationFrame(() => requestAnimationFrame(() => host.querySelectorAll(".fill").forEach((f, i) => { f.style.transitionDelay = (i * 60) + "ms"; f.style.width = f.dataset.w + "%"; })));
+  // Workout heart rate: 18 range bars coloured by zone
+  const r = rng(calDay * 7 + workoutSel);
+  const buckets = Array.from({ length: 18 }, (_, i) => {
+    const warm = Math.min(1, i / 3);
+    const mid = w.avg * (0.82 + 0.18 * warm) + (r() - 0.5) * (w.type === "s" ? 26 : 14);
+    return { lo: Math.round(mid - 6 - r() * 10), hi: Math.round(Math.min(w.max, mid + 6 + r() * 12)) };
+  });
+  const zoneOf = (v) => ZONE_BOUNDS.filter((b) => v >= b).length;
+  const startMin = +w.start.slice(0, 2) * 60 + +w.start.slice(3);
+  whrChart = { host: $("whrChart"), sel: null };
+  const c = whrChart;
+  c.render = () => {
+    const width = c.host.clientWidth; if (!width) return;
+    const h = 160; c.host.innerHTML = "";
+    const svg = el("svg", { width, height: h, viewBox: `0 0 ${width} ${h}`, role: "img", "aria-label": "Workout heart rate by zone" }, c.host);
+    const iw = width - M.r, ih = h - M.t - M.b, lo = 70, hi = 180;
+    const y = (v) => M.t + ih - (v - lo) / (hi - lo) * ih;
+    [100, 140, 180].forEach((v) => axisY(svg, 0, iw, y(v), v));
+    const slot = iw / buckets.length, bw = Math.max(4, slot * 0.5);
+    buckets.forEach((b, i) => {
+      const active = c.sel === null || c.sel === i;
+      el("rect", { x: slot * (i + 0.5) - bw / 2, y: y(b.hi), width: bw, height: Math.max(bw, y(b.lo) - y(b.hi)), rx: bw / 2, fill: css(ZONE_COLORS[zoneOf((b.lo + b.hi) / 2)]), opacity: active ? 1 : 0.25 }, svg);
+    });
+    const tm = (m) => `${pad(Math.floor(m / 60) % 24)}:${pad(m % 60)}`;
+    axisX(svg, 0, h - 6, tm(startMin), "start"); axisX(svg, iw, h - 6, tm(startMin + w.min), "end");
+    hoverLayer(svg, 0, M.t, iw, ih, buckets.length, (i) => {
+      if (i === null) { readout("whrReadout", "Range", `${Math.min(...buckets.map((b) => b.lo))}–${Math.max(...buckets.map((b) => b.hi))}`, "bpm"); return; }
+      const b = buckets[i], s = startMin + Math.round(i * w.min / buckets.length);
+      readout("whrReadout", `${tm(s)} · zone ${zoneOf((b.lo + b.hi) / 2) + 1}`, `${b.lo}–${b.hi}`, "bpm");
+    }, c);
+  };
+  readout("whrReadout", "Range", `${Math.min(...buckets.map((b) => b.lo))}–${Math.max(...buckets.map((b) => b.hi))}`, "bpm");
+  c.render();
+}
+
+const RUNS = [
+  ["Sep 22", 352, 158], ["Sep 27", 345, 156], ["Oct 3", 360, 157], ["Oct 6", 341, 154], ["Oct 11", 348, 153],
+  ["Oct 14", 338, 152], ["Oct 20", 355, 151], ["Oct 25", 342, 150], ["Oct 28", 336, 149], ["Nov 7", 344, 145],
+  ["Nov 8", 340, 149], ["Nov 11", 350, 138]
+];
+const paceChart = chart("paceChart", 220, (svg, w, h, c) => {
+  const iw = w - M.r, ih = h - M.t - M.b, lo = 130, hi = 165;
+  const x = (i) => (i + 0.5) / RUNS.length * iw, y = (v) => M.t + ih - (v - lo) / (hi - lo) * ih;
+  [135, 145, 155, 165].forEach((v) => axisY(svg, 0, iw, y(v), v));
+  // Least-squares trend line
+  const n = RUNS.length, xs = RUNS.map((_, i) => i), ys = RUNS.map((r) => r[2]);
+  const mx = xs.reduce((a, b) => a + b) / n, my = ys.reduce((a, b) => a + b) / n;
+  const slope = xs.reduce((a, xi, i) => a + (xi - mx) * (ys[i] - my), 0) / xs.reduce((a, xi) => a + (xi - mx) ** 2, 0);
+  el("line", { x1: x(0), y1: y(my + slope * (0 - mx)), x2: x(n - 1), y2: y(my + slope * (n - 1 - mx)), stroke: css("--tangerine"), "stroke-dasharray": "5 5", "stroke-width": 1.5, opacity: 0.7 }, svg);
+  RUNS.forEach((run, i) => {
+    const active = c.sel === null || c.sel === i;
+    el("circle", { cx: x(i), cy: y(run[2]), r: c.sel === i ? 7 : 5.5, fill: css("--tangerine"), opacity: active ? 1 : 0.3 }, svg);
+  });
+  [0, Math.floor(n / 2), n - 1].forEach((i) => axisX(svg, x(i), h - 6, RUNS[i][0]));
+  hoverLayer(svg, 0, M.t, iw, ih, RUNS.length, updatePaceReadout, c);
+}, { label: "Average heart rate for each run" });
+const paceText = (s) => `${Math.floor(s / 60)}:${pad(s % 60)} /km`;
+function updatePaceReadout(i) {
+  if (i === null) { const last = RUNS[RUNS.length - 1]; readout("paceReadout", `Latest · ${last[0]} · ${paceText(last[1])}`, last[2], "bpm"); return; }
+  const r = RUNS[i];
+  readout("paceReadout", `${r[0]} · ${paceText(r[1])}`, r[2], "bpm");
+}
+
+/* ---------- Recovery ---------- */
+// Oct 13 – Nov 12; index 19 = Nov 1
+const DAYTIME = [44, 47, 41, 45, 50, 43, 46, 39, 44, 48, 42, 45, 47, 43, 40, 46, 49, 44, 42, 45, 48, 41, null, 46, 43, 39, 37, 45, 40, 36, 38];
+const NIGHT = [58, 61, 55, 60, 64, 57, 62, 53, 59, 63, 56, 60, 62, 58, 54, 61, 65, 59, 56, 60, 63, 55, 57, 61, 58, null, 50, 59, 54, 49, 51];
+const NOV = 19;
+const SCORES = { 1: 34, 2: 22, 3: 41, 4: 58, 5: 47, 6: 52, 7: 49, 8: 63, 9: 71, 10: 46, 11: 66, 12: 74 };
+const RHR = { 1: 56, 2: 55, 3: 56, 4: 57, 5: 56, 6: 55, 7: 57, 8: 58, 9: 59, 10: 57, 11: 58, 12: 60 };
+const NIGHTS = [
+  { d: 6, s: -0.6, e: 7.3, hrv: 61, rhr: 55 }, { d: 7, s: -1.1, e: 6.9, hrv: 59, rhr: 57 }, { d: 8, s: 0.4, e: 7.6, hrv: 58, rhr: 58 },
+  { d: 9, s: -0.3, e: 6.2, hrv: null, rhr: 59 }, { d: 10, s: -0.8, e: 7.2, hrv: 54, rhr: 57 }, { d: 11, s: -0.7, e: 7.2, hrv: 49, rhr: 58 },
+  { d: 12, s: 0.6, e: 6.1, hrv: 51, rhr: 60 }
+];
+let metric = 0, recSel = TODAY, nightSel = NIGHTS.length - 1, trendNight = false;
+
+function renderRecCal() {
+  const host = $("recCal");
+  let html = "<span></span>".repeat(6);
+  const vals = [];
+  for (let d = 1; d <= 30; d++) {
+    const future = d > TODAY;
+    let text = "", bg = "", bar = "";
+    if (!future) {
+      if (metric === 0) { const s = SCORES[d], b = band(s); vals.push(s); text = s + "%"; bg = `background:color-mix(in srgb, var(${b.color}) 13%, transparent)`; bar = `<span style="width:12px;height:3px;border-radius:2px;background:var(${b.color})"></span>`; }
+      if (metric === 1) { const v = DAYTIME[NOV + d - 1]; if (v) { vals.push(v); text = v; bg = "background:color-mix(in srgb, var(--sky) 10%, transparent)"; } else text = "—"; }
+      if (metric === 2) { const v = RHR[d]; vals.push(v); text = v; bg = "background:color-mix(in srgb, var(--pink) 9%, transparent)"; }
+    }
+    html += `<button type="button" data-d="${d}" class="${d === TODAY ? "today" : ""}" style="${bg}" aria-pressed="${d === recSel}" ${future ? "disabled" : ""} aria-label="November ${d}${text ? ", " + text : ""}"><span class="d">${d}</span><span class="m" style="color:var(--ink)">${text}</span>${bar}</button>`;
+  }
+  host.innerHTML = html;
+  host.querySelectorAll("button[data-d]").forEach((b) => b.addEventListener("click", () => { recSel = +b.dataset.d; renderRecCal(); }));
+  const sorted = vals.slice().sort((a, b) => a - b);
+  const median = sorted[Math.floor(sorted.length / 2)];
+  const unit = ["%", "ms", "bpm"][metric];
+  const sel = recSel;
+  const line = `Nov ${sel}: score ${SCORES[sel]}% (${band(SCORES[sel]).name}) · HRV ${DAYTIME[NOV + sel - 1] || "—"} ms · resting ${RHR[sel]} bpm`;
+  readout("recCalReadout", line, median, unit + " median", ` <small>· ${vals.length} days</small>`);
+  $("recLegend").innerHTML = metric === 0
+    ? `<span><b style="background:var(--lime)"></b>Low</span><span><b style="background:var(--sky)"></b>Usual</span><span><b style="background:var(--tangerine)"></b>Elevated</span><span><b style="background:var(--pink)"></b>High</span><span style="margin-left:auto">Tap a date.</span>`
+    : `<span>${metric === 1 ? "Daily daytime HRV median" : "Daily resting heart rate"}</span><span style="margin-left:auto">Tap a date.</span>`;
+}
+segmented("metricSeg", ["Score", "HRV", "Resting HR"], metric, (i) => { metric = i; renderRecCal(); });
+
+const nightChart = chart("nightChart", 210, (svg, w, h, c) => {
+  const lab = 54, iw = w - lab, rowH = (h - 24) / NIGHTS.length;
+  const x = (t) => lab + (t + 6) / 24 * iw; // axis from 18:00 to 18:00
+  [-6, 0, 6, 12].forEach((t) => {
+    el("line", { x1: x(t), x2: x(t), y1: 0, y2: h - 22, stroke: css("--grid") }, svg);
+    axisX(svg, x(t), h - 6, pad((t + 24) % 24) + ":00");
+  });
+  NIGHTS.forEach((n, i) => {
+    const yy = i * rowH;
+    if (i === nightSel) el("rect", { x: 0, y: yy + 1, width: w, height: rowH - 2, rx: 6, fill: css("--track") }, svg);
+    const t = el("text", { x: 4, y: yy + rowH / 2 + 4, "font-size": 11, fill: css("--muted") }, svg); t.textContent = `11/${n.d}`;
+    el("rect", { x: x(n.s), y: yy + rowH / 2 - 4, width: x(n.e) - x(n.s), height: 8, rx: 4, fill: css("--violet"), opacity: i === nightSel ? 1 : 0.6 }, svg);
+  });
+  const r = el("rect", { x: 0, y: 0, width: w, height: h - 22, fill: "transparent", style: "cursor:pointer" }, svg);
+  r.addEventListener("pointerdown", (e) => {
+    const box = svg.getBoundingClientRect();
+    const i = clamp(Math.floor((e.clientY - box.top) / rowH), 0, NIGHTS.length - 1);
+    nightSel = i; updateNight(); c.render();
+  });
+}, { label: "Sleep timing for the last seven nights" });
+function updateNight() {
+  const n = NIGHTS[nightSel];
+  const hours = n.e - n.s;
+  readout("nightReadout", `Woke Nov ${n.d} · ${fmtHour(n.s + 24)}–${fmtHour(n.e)}`, hours.toFixed(1), "h asleep");
+  $("nightRows").innerHTML = `
+    <div class="row"><span class="k"><i style="background:var(--sky)"></i>Overnight HRV</span><span class="v">${n.hrv ?? "—"}${n.hrv ? "<small>ms</small>" : "<small>no readings</small>"}</span></div>
+    <div class="row"><span class="k"><i style="background:var(--pink)"></i>Resting HR</span><span class="v">${n.rhr}<small>bpm</small></span></div>`;
+}
+
+function logStats(values) {
+  const logs = values.filter(Boolean).map(Math.log);
+  const mean = logs.reduce((a, b) => a + b, 0) / logs.length;
+  const sd = Math.sqrt(logs.reduce((a, b) => a + (b - mean) ** 2, 0) / (logs.length - 1));
+  return { mean, sd };
+}
+const rolling = (series, i) => {
+  const logs = [];
+  for (let k = i; k > i - 7; k--) if (k >= 0 && series[k]) logs.push(Math.log(series[k]));
+  return logs.length >= 3 ? Math.exp(logs.reduce((a, b) => a + b, 0) / logs.length) : null;
+};
+let trendSel = TODAY;
+const trendChart = chart("trendChart", 230, (svg, w, h, c) => {
+  const series = trendNight ? NIGHT : DAYTIME;
+  const st = logStats(series.slice(0, NOV));
+  const usual = [Math.exp(st.mean - 0.5 * st.sd), Math.exp(st.mean + 0.5 * st.sd)];
+  const lo = trendNight ? 44 : 32, hi = trendNight ? 70 : 54;
+  const iw = w - M.r, ih = h - M.t - M.b;
+  const x = (d) => (d - 0.5) / 30 * iw, y = (v) => M.t + ih - (v - lo) / (hi - lo) * ih;
+  el("rect", { x: 0, y: y(usual[1]), width: iw, height: y(usual[0]) - y(usual[1]), fill: css("--sky"), opacity: 0.14 }, svg);
+  (trendNight ? [50, 60, 70] : [35, 45, 55]).filter((v) => v <= hi).forEach((v) => axisY(svg, 0, iw, y(v), v));
+  [1, 8, 15, 22, 29].forEach((d) => axisX(svg, x(d), h - 6, `Nov ${d}`, d === 1 ? "start" : "middle"));
+  const sel = c.sel !== null ? c.sel + 1 : trendSel;
+  el("line", { x1: x(sel), x2: x(sel), y1: M.t, y2: M.t + ih, stroke: css("--muted"), "stroke-opacity": 0.45 }, svg);
+  const line = [];
+  for (let d = 1; d <= TODAY; d++) {
+    const i = NOV + d - 1;
+    const avg = rolling(series, i);
+    if (avg) line.push(`${x(d)},${y(avg)}`);
+  }
+  el("polyline", { points: line.join(" "), fill: "none", stroke: css("--violet"), "stroke-width": 2.6, "stroke-linecap": "round", "stroke-linejoin": "round" }, svg);
+  for (let d = 1; d <= TODAY; d++) {
+    const v = series[NOV + d - 1];
+    if (v) el("circle", { cx: x(d), cy: y(v), r: d === sel ? 5 : 3.6, fill: css("--sky"), opacity: d === sel ? 1 : 0.6 }, svg);
+  }
+  hoverLayer(svg, 0, M.t, iw, ih, 30, (i) => {
+    if (i !== null && i + 1 > TODAY) { c.sel = TODAY - 1; }
+    if (i !== null && i + 1 <= TODAY) trendSel = i + 1;
+    updateTrendReadout();
+  }, c);
+  c.usual = usual;
+}, { label: "Daily HRV with a 7-day average and usual range" });
+function updateTrendReadout() {
+  const series = trendNight ? NIGHT : DAYTIME;
+  const st = logStats(series.slice(0, NOV));
+  const usual = [Math.exp(st.mean - 0.5 * st.sd), Math.exp(st.mean + 0.5 * st.sd)];
+  const d = trendSel, avg = rolling(series, NOV + d - 1), v = series[NOV + d - 1];
+  let status;
+  if (!avg) status = badge("Not enough data", css("--muted"));
+  else if (avg < usual[0]) status = badge("Below usual range", isDark() ? css("--tangerine") : "#C2410C");
+  else if (avg > usual[1]) status = badge("Above usual range", isDark() ? css("--lime") : "#4D7C0F");
+  else status = badge("Within usual range", isDark() ? css("--sky") : "#0369A1");
+  readout("trendReadout", `7-day average · Nov ${d} · that day ${v ? v + " ms" : "no reading"} · usual ${Math.round(usual[0])}–${Math.round(usual[1])} ms`, avg ? Math.round(avg) : "—", "ms", status);
+}
+segmented("trendSeg", ["Daytime", "Overnight"], 0, (i) => { trendNight = i === 1; trendChart.render(); updateTrendReadout(); });
+
+const rhrChart = chart("rhrChart", 180, (svg, w, h, c) => {
+  const iw = w - M.r, ih = h - M.t - M.b, lo = 50, hi = 64;
+  const x = (d) => (d - 0.5) / 30 * iw, y = (v) => M.t + ih - (v - lo) / (hi - lo) * ih;
+  [52, 56, 60, 64].forEach((v) => axisY(svg, 0, iw, y(v), v));
+  [1, 8, 15, 22, 29].forEach((d) => axisX(svg, x(d), h - 6, `Nov ${d}`, d === 1 ? "start" : "middle"));
+  const vals = Object.values(RHR).sort((a, b) => a - b), med = vals[Math.floor(vals.length / 2)];
+  el("line", { x1: 0, x2: iw, y1: y(med), y2: y(med), stroke: css("--sky"), "stroke-dasharray": "5 5", opacity: 0.8 }, svg);
+  Object.entries(RHR).forEach(([d, v]) => {
+    const active = c.sel === null || c.sel + 1 === +d;
+    el("circle", { cx: x(+d), cy: y(v), r: c.sel + 1 === +d ? 6 : 4.5, fill: css("--sky"), opacity: active ? 1 : 0.3 }, svg);
+  });
+  hoverLayer(svg, 0, M.t, iw, ih, 30, (i) => {
+    if (i === null || !RHR[i + 1]) { readout("rhrReadout", "Median · November", med, "bpm", ` <small>dashed line</small>`); return; }
+    readout("rhrReadout", `Nov ${i + 1}`, RHR[i + 1], "bpm", ` <small>${RHR[i + 1] - med >= 0 ? "+" : "−"}${Math.abs(RHR[i + 1] - med)} vs. median</small>`);
+  }, c);
+}, { label: "Daily resting heart rate" });
+
+/* ---------- Start ---------- */
+function renderAll() {
+  charts.forEach((c) => c.render());
+  paintDial(1); paintCenter();
+  renderTrainCal(); renderWorkout(); renderRecCal();
+}
+renderDayCharts();
+updateVolReadout(); renderTrainCal(); renderWorkout(); updatePaceReadout(null);
+renderRecCal(); updateNight(); updateTrendReadout();
+readout("rhrReadout", "Median · November", (() => { const v = Object.values(RHR).sort((a, b) => a - b); return v[Math.floor(v.length / 2)]; })(), "bpm", ` <small>dashed line</small>`);
+paintCenter();
+animateDial(true);
+window.addEventListener("resize", () => whrChart && whrChart.render());
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => requestAnimationFrame(renderAll));
+})();
+</script>
+</body>
+</html>

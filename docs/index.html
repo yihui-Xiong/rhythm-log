@@ -3,173 +3,171 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Explore daily heart readings, training, and recovery in Rhythm Log, an iPhone app for Apple Health records.">
-  <title>Rhythm Log · Heart, training, and recovery</title>
-  <link rel="icon" type="image/svg+xml" href="rhythm-mark.svg">
-  <link rel="stylesheet" href="overview.css">
+  <meta name="description" content="Rhythm Log is an iPhone app for exploring Apple Health records in the context of your days, workouts, and recovery.">
+  <title>Rhythm Log · A timeline for Apple Health</title>
+  <link rel="icon" href="rhythm-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="presentation.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap">
-  <script src="overview.js" defer></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Instrument+Serif&amp;display=swap">
+  <script src="presentation.js" defer></script>
 </head>
 <body>
-<header class="site-header shell" id="top">
+<header class="page-width masthead" id="top">
   <nav aria-label="Main navigation">
     <a href="#day">Day</a>
     <a href="#training">Training</a>
     <a href="#recovery">Recovery</a>
-    <a href="manual.html">User manual <span aria-hidden="true">↗</span></a>
   </nav>
-  <a class="wordmark" href="#top"><img src="rhythm-mark.svg" width="29" height="29" alt="">Rhythm Log</a>
+  <a class="brand" href="#top"><img src="rhythm-mark.svg" width="27" height="27" alt="">Rhythm Log</a>
 </header>
-<main class="shell">
-  <section class="overview" aria-labelledby="overview-title">
-    <div class="overview-copy">
-      <h1 id="overview-title">Heart and activity,<br>in context.</h1>
-      <p>Rhythm Log brings daily heart readings, workouts, and recovery together on iPhone, using the Apple Health records you choose to share.</p>
-      <a class="primary-link" href="#day">Explore the data <span aria-hidden="true">↓</span></a>
-    </div>
-    <figure class="data-panel trend-panel">
-      <figcaption class="panel-heading">
-        <div><h2>Daytime HRV</h2><p>November 1–11 · Sample data</p></div>
-        <p class="headline-metric"><strong>43.7</strong> <span>ms median</span></p>
-      </figcaption>
-      <svg class="hrv-plot" viewBox="0 0 493 233" role="img" aria-labelledby="chart-title chart-description">
-      <title id="chart-title">Sample daytime heart rate variability</title>
-      <desc id="chart-description">Ten daily medians range from 41.8 to 45.7 milliseconds. November 4 has no reading. The last reading on November 11 is 42.8 milliseconds.</desc>
-      <line class="plot-grid" x1="54" y1="186" x2="468" y2="186"/><text x="38" y="191" text-anchor="end">42</text>
-      <line class="plot-grid" x1="54" y1="106" x2="468" y2="106"/><text x="38" y="111" text-anchor="end">44</text>
-      <line class="plot-grid" x1="54" y1="26" x2="468" y2="26"/><text x="38" y="31" text-anchor="end">46</text>
-      <line class="plot-axis" x1="54" y1="202" x2="468" y2="202"/>
-      <text x="61" y="220" text-anchor="middle">Nov 1</text>
-      <text x="181" y="220" text-anchor="middle">Nov 4</text>
-      <text x="301" y="220" text-anchor="middle">Nov 7</text>
-      <text x="461" y="220" text-anchor="middle">Nov 11</text>
-      <polyline class="plot-line" points="61,38.00 101,118.00 141,170.00"/>
-      <polyline class="plot-line" points="221,194.00 261,66.00 301,190.00 341,54.00 381,174.00 421,118.00 461,154.00"/>
-      <circle class="plot-dot" cx="61" cy="38.00" r="4"/>
-      <circle class="plot-dot" cx="101" cy="118.00" r="4"/>
-      <circle class="plot-dot" cx="141" cy="170.00" r="4"/>
-      <circle class="plot-dot" cx="221" cy="194.00" r="4"/>
-      <circle class="plot-dot" cx="261" cy="66.00" r="4"/>
-      <circle class="plot-dot" cx="301" cy="190.00" r="4"/>
-      <circle class="plot-dot" cx="341" cy="54.00" r="4"/>
-      <circle class="plot-dot" cx="381" cy="174.00" r="4"/>
-      <circle class="plot-dot" cx="421" cy="118.00" r="4"/>
-      <circle class="plot-halo" cx="461" cy="154.00" r="11"/>
-      <circle class="plot-dot" cx="461" cy="154.00" r="5.5"/>
-      </svg>
-      <div class="plot-note"><span><i></i> Daily median</span><span>10 of 11 days with readings</span></div>
-    </figure>
-  </section>
-
-  <section class="feature" id="day" aria-labelledby="day-title">
-    <div class="feature-copy" id="start">
-      <p class="section-label">Day</p>
-      <h2 id="day-title">See what was happening around a reading.</h2>
-      <p>Sleep, workouts, and movement share a daily timeline. A heart reading can be traced back to its time, value, and source.</p>
-      <a href="manual.html#day">Read the daily timeline <span aria-hidden="true">↗</span></a>
-    </div>
-    <figure class="data-panel day-panel">
-      <figcaption class="panel-heading"><div><h3>Daily context</h3><p>November 10 · Sample data</p></div></figcaption>
-      <div class="day-axis" aria-hidden="true"><span>12 AM</span><span>6 AM</span><span>Noon</span><span>6 PM</span><span>12 AM</span></div>
-      <div class="day-band">
-        <div><span>Sleep</span><strong>6 h 48 min</strong></div>
-        <div class="day-track" role="img" aria-label="Sleep from midnight through 6:54 AM, with a short awake interval"><span class="sleep-first"></span><span class="sleep-second"></span></div>
-      </div>
-      <div class="day-band">
-        <div><span>Running</span><strong>35 min</strong></div>
-        <div class="day-track" role="img" aria-label="Running workout at 5 PM, lasting 35 minutes"><span class="run-session"></span></div>
-      </div>
-      <p class="panel-caption"><strong>47%</strong> daily HRV score. About 47% of the sample’s eligible historical daily medians were higher.</p>
-    </figure>
-  </section>
-
-  <section class="feature" id="training" aria-labelledby="training-title">
-    <div class="feature-copy">
-      <p class="section-label">Training</p>
-      <h2 id="training-title">Where did the week’s training time go?</h2>
-      <p>Compare completed weeks by sport, then follow a change back to the workouts that made up the total.</p>
-      <a href="manual.html#training">Explore training views <span aria-hidden="true">↗</span></a>
-    </div>
-    <figure class="data-panel training-panel">
-      <figcaption class="panel-heading">
-        <div><h3>Training volume</h3><p>Two seven-day blocks · Sample data</p></div>
-      </figcaption>
-      <div class="week-chart" role="group" aria-label="Compare two seven-day periods">
-        <button type="button" class="week-row" data-week="earlier" aria-pressed="false" aria-label="October 28 to November 3, 221.2 minutes">
-          <span class="week-label"><span>Oct 28–Nov 3</span><strong>221.2 min</strong></span>
-          <span class="week-track" aria-hidden="true"><i style="--portion:63.65%"></i><i style="--portion:36.35%"></i></span>
-        </button>
-        <button type="button" class="week-row" data-week="latest" aria-pressed="true" aria-label="November 4 to 10, 146.6 minutes">
-          <span class="week-label"><span>Nov 4–10</span><strong>146.6 min</strong></span>
-          <span class="week-track" aria-hidden="true"><i style="--portion:54.79%"></i><i style="--portion:11.48%"></i></span>
-        </button>
-      </div>
-      <div class="chart-legend"><span><i></i>Running</span><span><i></i>Strength training</span></div>
-      <p class="panel-caption" id="week-note" aria-live="polite"><strong>74.6 min less</strong> than the previous block. Strength training accounts for most of the change.</p>
-    </figure>
-  </section>
-
-  <section class="feature" id="workouts" aria-labelledby="workouts-title">
-    <div class="feature-copy">
-      <p class="section-label">Workout detail</p>
-      <h2 id="workouts-title">What did 35 minutes of running look like?</h2>
-      <p>Heart-rate zones describe the intensity of a session. Across sessions, Rhythm Log can compare average heart rate at similar paces and show recorded one-minute recovery.</p>
-      <a href="manual.html#workouts">See the workout controls <span aria-hidden="true">↗</span></a>
-    </div>
-    <figure class="data-panel zone-panel">
-      <figcaption class="panel-heading"><div><h3>Time in heart-rate zones</h3><p>Sample run · Recorded zone times</p></div><p class="headline-metric"><strong>145</strong> <span>BPM avg.</span></p></figcaption>
-      <dl class="zone-chart">
-        <div><dt>Zone 5</dt><dd><span class="zone-track" aria-hidden="true"><i style="--portion:6%"></i></span><span>6%</span></dd></div>
-        <div><dt>Zone 4</dt><dd><span class="zone-track" aria-hidden="true"><i style="--portion:36%"></i></span><span>36%</span></dd></div>
-        <div><dt>Zone 3</dt><dd><span class="zone-track" aria-hidden="true"><i style="--portion:35%"></i></span><span>35%</span></dd></div>
-        <div><dt>Zone 2</dt><dd><span class="zone-track" aria-hidden="true"><i style="--portion:15%"></i></span><span>15%</span></dd></div>
-        <div><dt>Zone 1</dt><dd><span class="zone-track" aria-hidden="true"><i style="--portion:8%"></i></span><span>8%</span></dd></div>
-      </dl>
-      <p class="panel-caption">Most of this sample run fell in Zones 3 and 4.</p>
-    </figure>
-  </section>
-
-  <section class="feature" id="recovery" aria-labelledby="recovery-title">
-    <div class="feature-copy">
-      <p class="section-label">Recovery</p>
-      <h2 id="recovery-title">Daytime data can stand on its own.</h2>
-      <p>Daytime HRV, resting heart rate, and steps give you a recovery view even if you take off your watch at night. Sleep and overnight vitals appear when you have records.</p>
-      <a href="manual.html#recovery">See how recovery is calculated <span aria-hidden="true">↗</span></a>
-    </div>
-    <div class="data-panel recovery-panel">
-      <div class="profile-picker" role="group" aria-label="Select a recovery sample profile" hidden>
-        <button type="button" data-profile="daytime" aria-pressed="true">Daytime only</button>
-        <button type="button" data-profile="overnight" aria-pressed="false">With overnight data</button>
-      </div>
-      <figure data-recovery="daytime">
-        <figcaption class="panel-heading"><div><h3>Daytime HRV coverage</h3><p>November sample · No sleep records</p></div></figcaption>
-        <div class="recovery-label"><span>Days with a value</span><strong>10 of 11</strong></div>
-        <div class="coverage-track" aria-hidden="true"><span></span></div>
-        <p class="panel-caption"><strong>43.7 ms</strong> median daytime HRV. Resting heart rate and steps add context for the same period.</p>
-      </figure>
-      <figure data-recovery="overnight">
-        <figcaption class="panel-heading"><div><h3>Sleep timing</h3><p>Sample session ending November 11</p></div></figcaption>
-        <div class="recovery-label"><span>11:18 PM–7:13 AM</span><strong>7.9 h</strong></div>
-        <div class="sleep-track" role="img" aria-label="Sleep from 11:18 PM to 7:13 AM on a local-time scale from 6 PM to noon"><span></span></div>
-        <div class="sleep-axis" aria-hidden="true"><span>6 PM</span><span>Midnight</span><span>6 AM</span><span>Noon</span></div>
-        <p class="panel-caption">The wake date keeps this session together even though it crosses midnight.</p>
-      </figure>
-    </div>
-  </section>
-
-  <section class="closing" id="setup" aria-labelledby="setup-title">
+<main>
+  <section class="page-width opening" aria-labelledby="title">
+    <h1 id="title">Rhythm Log</h1>
     <div>
-      <h2 id="setup-title">Start with Apple Health.</h2>
-      <p>Run the project on your iPhone or explore synthetic data in the simulator. The user manual covers installation, permissions, and each feature.</p>
+      <p>An iPhone app that puts heart readings, workouts, and rest on the same timeline.</p>
+      <a href="manual.html">User manual <span aria-hidden="true">↗</span></a>
     </div>
-    <a class="primary-link" href="manual.html#setup">Open the user manual <span aria-hidden="true">↗</span></a>
+  </section>
+
+  <section class="page-width chapter day-chapter" id="day" aria-labelledby="day-title">
+    <div class="chapter-title" id="start">
+      <h2 id="day-title">A day in the timeline.</h2>
+      <p>Sleep, movement, and a run in the same 24 hours.</p>
+    </div>
+    <figure class="day-figure">
+      <figcaption class="figure-meta"><span>November 10</span><span>Synthetic sample records</span></figcaption>
+      <div class="time-grid">
+        <div class="time-ticks" aria-hidden="true"><span>12 AM</span><span>6 AM</span><span>Noon</span><span>6 PM</span><span>12 AM</span></div>
+        <div class="lane sleep-lane">
+          <span class="lane-title">Sleep <strong>6 h 48 min</strong></span>
+          <div class="lane-plot" role="img" aria-label="Sleep from midnight to 6:54 AM, with a brief awake interval">
+            <i class="period" style="--start:0%;--length:12.917%"></i><i class="period" style="--start:13.333%;--length:15.417%"></i>
+          </div>
+        </div>
+        <div class="lane steps-lane">
+          <span class="lane-title">Steps <strong>11,018</strong></span>
+          <div class="lane-plot hour-bars" role="img" aria-label="Hourly steps with peaks at 8 AM, noon, and 6 PM. The highest hour was 8 AM with 2,383 steps.">
+            <i style="--start:30.417%;--height:5.8%"></i>
+            <i style="--start:34.583%;--height:95.3%"></i>
+            <i style="--start:38.750%;--height:19.4%"></i>
+            <i style="--start:42.917%;--height:20.2%"></i>
+            <i style="--start:47.083%;--height:27.0%"></i>
+            <i style="--start:51.250%;--height:67.7%"></i>
+            <i style="--start:55.417%;--height:13.8%"></i>
+            <i style="--start:59.583%;--height:10.6%"></i>
+            <i style="--start:63.750%;--height:20.4%"></i>
+            <i style="--start:67.917%;--height:8.8%"></i>
+            <i style="--start:72.083%;--height:19.9%"></i>
+            <i style="--start:76.250%;--height:70.0%"></i>
+            <i style="--start:80.417%;--height:14.4%"></i>
+            <i style="--start:84.583%;--height:21.4%"></i>
+            <i style="--start:88.750%;--height:26.0%"></i>
+          </div>
+        </div>
+        <div class="lane run-lane">
+          <span class="lane-title">Running <strong>35 min</strong></span>
+          <div class="lane-plot" role="img" aria-label="A 35-minute running workout beginning at 5 PM">
+            <i class="period" style="--start:70.833%;--length:2.45%"></i>
+          </div>
+        </div>
+      </div>
+    </figure>
+    <p class="chapter-note">The day view pairs these records with individual heart readings and their sources. <a href="manual.html#day">Explore the day view in the manual.</a></p>
+  </section>
+
+  <section class="chapter secondary-chapter" id="training" aria-labelledby="training-title">
+    <div class="page-width chapter-grid">
+      <div class="chapter-title">
+        <p class="section-name">Training</p>
+        <h2 id="training-title">What changed week to week?</h2>
+        <p>Compare running and strength sessions across two seven-day blocks. In this sample, strength training accounts for most of the drop in minutes.</p>
+      </div>
+      <figure class="comparison">
+        <figcaption class="figure-meta"><span id="training-measure">Workout minutes</span><span>Sample data</span></figcaption>
+        <div class="measure-switch" role="group" aria-label="Training measure" hidden>
+          <button type="button" data-measure="minutes" aria-pressed="true">Minutes</button>
+          <button type="button" data-measure="sessions" aria-pressed="false">Sessions</button>
+        </div>
+        <div class="comparison-bars">
+          <div class="comparison-period">
+            <div><span>Oct 28–Nov 3</span><strong data-total>221.2 min</strong></div>
+            <div class="comparison-track" role="img" aria-label="140.8 minutes running and 80.4 minutes strength training"><span style="--length:63.65%"></span><span style="--length:36.35%"></span></div>
+          </div>
+          <div class="comparison-period">
+            <div><span>Nov 4–10</span><strong data-total>146.6 min</strong></div>
+            <div class="comparison-track" role="img" aria-label="121.2 minutes running and 25.4 minutes strength training"><span style="--length:54.79%"></span><span style="--length:11.48%"></span></div>
+          </div>
+        </div>
+        <ul class="key" aria-label="Workout types"><li>Running</li><li>Strength training</li></ul>
+        <p class="figure-note" id="training-note" aria-live="polite">The latest block was 74.6 minutes shorter.</p>
+      </figure>
+    </div>
+    <div class="page-width workout-note" id="workouts">
+      <p>Individual workouts add heart-rate zones, pace comparisons, and recorded one-minute heart-rate recovery.</p>
+      <a href="manual.html#workouts">See the workout detail <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+
+  <section class="chapter page-width chapter-grid recovery-chapter" id="recovery" aria-labelledby="recovery-title">
+    <div class="chapter-title">
+      <p class="section-name">Recovery</p>
+      <h2 id="recovery-title">A baseline from daytime readings.</h2>
+      <p>Daytime HRV, resting heart rate, and steps are available with or without a sleep record. In this sample, ten days contribute to the daytime HRV series.</p>
+    </div>
+    <div>
+      <figure class="recovery-figure">
+        <figcaption class="figure-meta"><span>Daytime HRV · Nov 1–11</span><span>Sample data</span></figcaption>
+        <div class="recovery-summary"><strong>43.7 <small>ms</small></strong><span>Median daytime HRV<br>10 of 11 days with readings</span></div>
+        <svg class="recovery-plot" viewBox="0 0 560 147" role="img" aria-labelledby="recovery-plot-title recovery-plot-desc">
+        <title id="recovery-plot-title">Daytime HRV by date</title>
+        <desc id="recovery-plot-desc">Ten daytime values range from 41.8 to 45.7 milliseconds. November 4 is missing. The dashed reference line marks the displayed median of 43.7 milliseconds.</desc>
+        <line class="plot-guide" x1="16" x2="540" y1="64" y2="64"/>
+        <line class="plot-baseline" x1="16" x2="540" y1="107" y2="107"/>
+        <circle cx="30" cy="32.0" r="5" class="sample-dot"/>
+        <circle cx="79" cy="64.0" r="5" class="sample-dot"/>
+        <circle cx="128" cy="84.8" r="5" class="sample-dot"/>
+        <path class="missing-mark" d="M173,103 l8,8 m0,-8 l-8,8"/>
+        <circle cx="226" cy="94.4" r="5" class="sample-dot"/>
+        <circle cx="275" cy="43.2" r="5" class="sample-dot"/>
+        <circle cx="324" cy="92.8" r="5" class="sample-dot"/>
+        <circle cx="373" cy="38.4" r="5" class="sample-dot"/>
+        <circle cx="422" cy="86.4" r="5" class="sample-dot"/>
+        <circle cx="471" cy="64.0" r="5" class="sample-dot"/>
+        <circle cx="520" cy="78.4" r="5" class="sample-dot"/>
+        <text x="30" y="136" text-anchor="middle">Nov 1</text>
+        <text x="177" y="136" text-anchor="middle">Nov 4</text>
+        <text x="324" y="136" text-anchor="middle">Nov 7</text>
+        <text x="520" y="136" text-anchor="middle">Nov 11</text>
+        </svg>
+      </figure>
+      <details class="sleep-details">
+        <summary>When sleep is recorded</summary>
+        <p>A recorded night adds sleep timing, overnight HRV, and available overnight vitals. The session is grouped by wake date.</p>
+        <div class="night-line">
+          <span>11:18 PM</span><i aria-hidden="true"></i><span>7:13 AM</span>
+        </div>
+        <p class="figure-note">One sample night ending November 11 · 7.9 hours recorded.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="page-width closing" id="setup" aria-labelledby="setup-title">
+    <div>
+      <h2 id="setup-title">Try Rhythm Log.</h2>
+      <p>Run the iPhone project or explore sample records in the simulator.</p>
+    </div>
+    <a href="manual.html#setup">Installation and permissions <span aria-hidden="true">↗</span></a>
   </section>
 </main>
-<footer class="site-footer shell">
-  <span>Rhythm Log</span>
-  <nav aria-label="Project links"><a href="manual.html#evidence">Evidence and methods</a><a href="https://github.com/yihui-Xiong/rhythm-log">Source on GitHub</a><a href="https://github.com/yihui-Xiong/rhythm-log/tree/main/docs/portfolio/screenshots">Portfolio images</a></nav>
+<footer class="page-width footer">
+  <a class="brand" href="#top">Rhythm Log</a>
+  <nav aria-label="Project links">
+    <a href="manual.html">User manual</a>
+    <a href="manual.html#evidence">Evidence</a>
+    <a href="https://github.com/yihui-Xiong/rhythm-log">GitHub</a>
+    <a href="https://github.com/yihui-Xiong/rhythm-log/tree/main/docs/portfolio/screenshots">Portfolio images</a>
+  </nav>
 </footer>
 </body>
 </html>

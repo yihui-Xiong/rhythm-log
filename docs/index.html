@@ -276,6 +276,75 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
 @media (prefers-contrast: more) {
   :root { --muted: #34313F; --body: #1F1C28; --faint: #5E5A6C; --card-edge: rgba(24,21,31,0.35); --grid: rgba(24,21,31,0.25); }
 }
+
+/* ---------- Hierarchy and highlights ---------- */
+/* A marker-style underline in the chart's colour that draws in when it comes into view. */
+.hl {
+  background-image: linear-gradient(color-mix(in srgb, var(--hl, var(--accent)) 40%, transparent), color-mix(in srgb, var(--hl, var(--accent)) 40%, transparent));
+  background-repeat: no-repeat; background-position: 0 88%; background-size: 0% 0.34em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  padding: 0 0.08em; margin: 0 -0.08em;
+  transition: background-size 0.9s cubic-bezier(.2,.8,.2,1) 0.15s;
+}
+.hl.in { background-size: 100% 0.34em; }
+@media (prefers-reduced-motion: reduce) { .hl { transition: none; } }
+.copy p strong, .chapter-head p strong, .block-head p strong { color: var(--ink); font-weight: 600; }
+.chapter-head .part, .block-head .kicker { display: inline-flex; align-self: flex-start; width: fit-content; padding: 6px 12px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 11%, transparent); }
+.chapter-head .qs li { font-family: var(--sans); font-size: 16px; color: var(--ink); }
+.hint b, .copy p.hint b { display: inline-block; margin-right: 8px; padding: 2px 9px; border-radius: 999px; background: var(--track); color: var(--ink); font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: .8px; text-transform: uppercase; }
+.hint, .copy p.hint { color: var(--muted); }
+/* At a glance: the three ideas, before any chart */
+.glance { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 0 0 24px; }
+.glance a { display: flex; flex-direction: column; gap: 8px; padding: 20px 22px; border-radius: 22px; background: var(--card); border: 1px solid var(--card-edge); border-top: 4px solid var(--c); color: var(--ink); text-decoration: none; transition: transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s; }
+.glance a:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(24,21,31,0.06); }
+.glance b { font-size: 15px; letter-spacing: .4px; }
+.glance span { font-family: var(--sans); font-size: 15px; line-height: 1.55; color: var(--body); }
+.glance em { font-style: normal; font-size: 12px; font-weight: 700; color: var(--accent); margin-top: auto; }
+@media (prefers-reduced-motion: reduce) { .glance a { transition: none; } .glance a:hover { transform: none; } }
+
+/* ---------- A + B: index rows with live glyphs ---------- */
+.index { display: flex; flex-direction: column; margin: 0 0 24px; }
+.ix { display: grid; grid-template-columns: 76px minmax(0, 1fr) 72px; align-items: center; gap: 22px; padding: 20px 6px; border-top: 1px solid var(--grid); color: var(--ink); text-decoration: none; }
+.ix:last-child { border-bottom: 1px solid var(--grid); }
+.ix-n { font-size: 42px; font-weight: 500; line-height: 1; color: var(--faint); font-variant-numeric: tabular-nums; transition: color .25s; }
+.ix b { font-size: 19px; }
+.ix-t > span { display: block; margin-top: 6px; font-family: var(--sans); font-size: 15px; line-height: 1.55; color: var(--body); }
+.ix-hl { background-image: linear-gradient(color-mix(in srgb, var(--c) 40%, transparent), color-mix(in srgb, var(--c) 40%, transparent)); background-repeat: no-repeat; background-position: 0 88%; background-size: 0% 0.34em; transition: background-size .6s cubic-bezier(.2,.8,.2,1); }
+.ix:hover .ix-hl, .ix:focus-visible .ix-hl { background-size: 100% 0.34em; }
+.ix:hover .ix-n, .ix:focus-visible .ix-n { color: var(--ink); }
+.ix-g { width: 68px; height: 68px; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.ix:hover .ix-g, .ix:focus-visible .ix-g { transform: scale(1.1); }
+@media (max-width: 560px) {
+  .ix { grid-template-columns: 44px minmax(0, 1fr) 52px; gap: 14px; }
+  .ix-n { font-size: 28px; }
+  .ix-g { width: 52px; height: 52px; }
+}
+@media (prefers-reduced-motion: reduce) { .ix-hl, .ix-g, .ix-n { transition: none; } .ix:hover .ix-g { transform: none; } }
+
+/* ---------- B: steps as numbered rows, no boxes ---------- */
+.steps, .setup { display: flex; flex-direction: column; gap: 0; }
+.steps li, .setup li { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; align-items: baseline; background: none; border: 0; border-top: 1px solid var(--grid); border-radius: 0; padding: 18px 6px; }
+.steps li:last-child, .setup li:last-child { border-bottom: 1px solid var(--grid); }
+.steps li b, .setup li b { font-size: 16px; color: var(--ink); }
+.steps li span, .setup li span { font-size: 16px; }
+@media (max-width: 700px) { .steps li, .setup li { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+
+/* Part labels: plain text, no pill */
+.chapter-head .part, .block-head .kicker { padding: 0; background: none; }
+
+/* ---------- C: evidence facts as an asymmetric bento with one big stat each ---------- */
+.facts { display: grid; grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; gap: 14px; margin-bottom: 22px; }
+.fact { background: var(--card); border: 1px solid var(--card-edge); border-radius: 22px; padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+.fact.big { grid-row: span 2; justify-content: flex-end; }
+.fact.wide { grid-column: span 2; }
+.fact-n { font-size: 34px; font-weight: 600; line-height: 1.05; letter-spacing: -0.5px; color: var(--accent); font-variant-numeric: tabular-nums; }
+.fact.big .fact-n { font-size: clamp(56px, 7vw, 84px); }
+.fact h3 { margin: 0; font-size: 15px; line-height: 1.45; }
+.fact p { margin: 0; font-family: var(--sans); font-size: 15px; line-height: 1.6; color: var(--body); }
+.fact cite { font-style: normal; font-size: 12px; color: var(--muted); margin-top: auto; }
+@media (max-width: 880px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fact.big { grid-row: auto; grid-column: 1 / -1; } }
+@media (max-width: 560px) { .fact.wide { grid-column: auto; } }
+@media (max-width: 560px) { .facts { grid-template-columns: minmax(0, 1fr); } }
 </style>
 </head>
 <body>
@@ -300,7 +369,7 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
   <main id="top" tabindex="-1">
     <section class="hero">
       <div class="hero-copy">
-        <h1>Put every HRV reading back into your day.</h1>
+        <h1>Put every HRV reading back into <span class="hl" style="--hl: var(--violet)">your day</span>.</h1>
         <p class="lead">Rhythm Log reads what your Apple Watch writes to Apple Health and compares it only with your own last 30 days. It shows when your body was under pressure, how well you recovered overnight, and where training fits in.</p>
         <div style="display:flex;flex-wrap:wrap;gap:12px">
           <a class="btn btn-primary" href="https://github.com/yihui-Xiong/rhythm-log">View on GitHub</a>
@@ -328,14 +397,32 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
         <p class="note" id="dayCaption" style="text-align:center"></p>
         <p class="note" id="scoreMeaning" style="font-size:14px;line-height:1.6;color:var(--ink);align-self:stretch"></p>
         <p class="note" style="align-self:stretch">Reference days: 30</p>
-        <p class="note" style="text-align:center">Hover or tap an hour, or focus the dial and use the arrow keys. Each ray is one hour; longer and warmer means lower HRV than your usual.</p>
+        <p class="hint" style="align-self:stretch"><b>Try it</b> Hover or tap an hour, or focus the dial and use the arrow keys. Each ray is one hour; longer and warmer means lower HRV than your usual.</p>
       </div>
     </section>
+
+    <nav class="index" aria-label="What Rhythm Log shows">
+      <a class="ix" href="#day" style="--c: var(--sky)">
+        <span class="ix-n">01</span>
+        <span class="ix-t"><b><span class="ix-hl">Daytime pressure</span></b><span>When your HRV ran lower than your usual, hour by hour.</span></span>
+        <svg class="ix-g" id="glyphDay" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      </a>
+      <a class="ix" href="#training" style="--c: var(--tangerine)">
+        <span class="ix-n">02</span>
+        <span class="ix-t"><b><span class="ix-hl">Training</span></b><span>How much, how hard, and whether you’re getting fitter.</span></span>
+        <svg class="ix-g" id="glyphTrain" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      </a>
+      <a class="ix" href="#recovery" style="--c: var(--violet)">
+        <span class="ix-n">03</span>
+        <span class="ix-t"><b><span class="ix-hl">Overnight recovery</span></b><span>Sleep, overnight HRV and vitals against your usual range.</span></span>
+        <svg class="ix-g" id="glyphRec" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      </a>
+    </nav>
 
     <section class="block" id="how">
       <div class="block-head">
         <span class="kicker">How it reads</span>
-        <h2>Compared only with you</h2>
+        <h2>Compared <span class="hl" style="--hl: var(--violet)">only with you</span></h2>
         <p>No population averages. An HRV that’s low for someone else can be normal for you, so Rhythm Log only asks how today compares with your own recent past.</p>
       </div>
       <ol class="steps">
@@ -351,7 +438,7 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <div class="chapter-head">
         <div>
           <span class="part">Part 1 · A day</span>
-          <h2>One day, from a single reading to the whole picture</h2>
+          <h2>One day, <span class="hl" style="--hl: var(--sky)">hour by hour</span></h2>
           <p>The Day view opens with the dial and four numbers. Each number opens into the chart it came from. Switch the sample day at the top of the page, and every chart in this part follows it.</p>
           <ul class="qs">
             <li>When was my body under pressure today?</li>
@@ -368,8 +455,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature">
         <div class="copy">
           <span class="label">HRV through the day</span>
-          <h3>Every reading, coloured by how it compares with you</h3>
-          <p>While you’re still, your watch takes an HRV reading several times an hour. Each dot is one reading in milliseconds: the variation between your heartbeats. Its colour comes from ranking it against your own daytime readings from the past 30 days.</p>
+          <h3>Every reading, coloured by <span class="hl" style="--hl: var(--sky)">how it compares with you</span></h3>
+          <p>While you’re still, your watch takes an HRV reading several times an hour. Each dot is one reading in milliseconds: the variation between your heartbeats. Its colour comes from ranking it <strong>against your own daytime readings from the past 30 days</strong>.</p>
           <ul class="read"><li><i style="background:var(--sky)"></i><span>Blue and green dots sit within or above your usual: a calmer state for you.</span></li><li><i style="background:var(--tangerine)"></i><span>Orange and pink dots are lower than your usual, so the pressure estimate rises.</span></li><li><i class="none"></i><span>Grey dots were taken during sleep, a workout or the night. They’re shown, but not scored.</span></li></ul>
           <p class="hint"><b>In the app</b> Day view → Heart Readings. Tap a dot for its time and value; View All Readings lists every sample with its source.</p>
         </div>
@@ -382,8 +469,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature flip">
         <div class="copy">
           <span class="label">Pressure through the day</span>
-          <h3>The same readings, smoothed into half hours</h3>
-          <p>Single readings are noisy. Averaging the estimates in each half hour shows the shape of the day: when pressure built up, and when it eased.</p>
+          <h3>The same readings, <span class="hl" style="--hl: var(--tangerine)">smoothed into half hours</span></h3>
+          <p>Single readings are noisy. Averaging the estimates in each half hour <strong>shows the shape of the day</strong>: when pressure built up, and when it eased.</p>
           <ul class="read"><li><i style="background:var(--tangerine)"></i><span>Taller, warmer bars mean HRV was further below your usual.</span></li><li><i class="none"></i><span>Gaps mean nothing was scored: asleep, training, or the watch wasn’t worn.</span></li><li><i style="background:var(--violet)"></i><span>The daily score is calculated separately, from the day’s median HRV.</span></li></ul>
           <p class="hint"><b>In the app</b> Day view, directly below HRV through the day.</p>
         </div>
@@ -396,8 +483,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature">
         <div class="copy">
           <span class="label">Heart rate</span>
-          <h3>Heart rate explains what the HRV dots can’t</h3>
-          <p>Each bar spans the lowest to the highest heart rate in one hour. Low, narrow bars at night are sleep; tall bars are exertion. On the training day, the orange band marks the run, which is why HRV during it isn’t scored.</p>
+          <h3><span class="hl" style="--hl: var(--pink)">Heart rate</span> explains what the HRV dots can’t</h3>
+          <p>Each bar spans the lowest to the highest heart rate in one hour. <strong>Low, narrow bars at night are sleep; tall bars are exertion.</strong> On the training day, the orange band marks the run, which is why HRV during it isn’t scored.</p>
           <ul class="read"><li><i style="background:var(--pink)"></i><span>A bar’s length is the hour’s range, from its lowest to its highest reading.</span></li><li><i style="background:var(--tangerine)"></i><span>The orange band is a recorded workout.</span></li></ul>
           <p class="hint"><b>In the app</b> Day view → Heart Rate. Tap a bar to see that hour.</p>
         </div>
@@ -410,8 +497,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature flip">
         <div class="copy">
           <span class="label">Sleep</span>
-          <h3>The night before shapes the day after</h3>
-          <p>Recorded sleep stages, one row each. A short or broken night often comes before a day of lower HRV: compare the busy day with the calm day at the top of the page.</p>
+          <h3>The night before <span class="hl" style="--hl: var(--violet)">shapes the day after</span></h3>
+          <p>Recorded sleep stages, one row each. <strong>A short or broken night often comes before a day of lower HRV</strong>: compare the busy day with the calm day at the top of the page.</p>
           <ul class="read"><li><i style="background:var(--violet)"></i><span>Deep sleep comes mostly early in the night.</span></li><li><i style="background:var(--pink)"></i><span>REM periods get longer towards the morning.</span></li><li><i style="background:var(--tangerine)"></i><span>Brief awakenings are normal; long ones break the night up.</span></li></ul>
           <p class="hint"><b>In the app</b> Day view → Sleep. Open Sleep Details to see where each stage began and ended.</p>
         </div>
@@ -425,8 +512,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature">
         <div class="copy">
           <span class="label">Hourly steps</span>
-          <h3>When you moved, not just how much</h3>
-          <p>A daily total hides the shape of the day. Hourly steps show the walks and the commute, and can explain a dip in HRV or a rise in heart rate in the same hour.</p>
+          <h3>When you moved, <span class="hl" style="--hl: var(--lime)">not just how much</span></h3>
+          <p>A daily total hides the shape of the day. <strong>Hourly steps show the walks and the commute</strong>, and can explain a dip in HRV or a rise in heart rate in the same hour.</p>
           
           <p class="hint"><b>In the app</b> Day view → Hourly Steps.</p>
         </div>
@@ -442,7 +529,7 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <div class="chapter-head">
         <div>
           <span class="part">Part 2 · Training</span>
-          <h2>How much you trained, what each session did, and whether it’s working</h2>
+          <h2>How much, how hard, and <span class="hl" style="--hl: var(--tangerine)">is it working?</span></h2>
           <p>Training is read in three layers: weekly volume, single sessions, and fitness over time.</p>
         </div>
         <ul class="qs">
@@ -455,8 +542,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature">
         <div class="copy">
           <span class="label">Training volume</span>
-          <h3>How much, by sport, week by week</h3>
-          <p>Each bar is a seven-day block of recorded workout minutes, stacked by activity. Tap a week to compare it with the one before. In the app, the latest block also compares with your typical week, the median of the earlier blocks.</p>
+          <h3>How much, <span class="hl" style="--hl: var(--tangerine)">by sport</span>, week by week</h3>
+          <p>Each bar is a seven-day block of recorded workout minutes, stacked by activity. <strong>Tap a week to compare it with the one before.</strong> In the app, the latest block also compares with your typical week, the median of the earlier blocks.</p>
           <ul class="read"><li><i style="background:var(--tangerine)"></i><span>Running</span></li><li><i style="background:var(--violet)"></i><span>Strength training</span></li><li><i style="background:var(--sky)"></i><span>Cycling</span></li><li><i class="none"></i><span>Minutes measure time, not effort: an hour of easy cycling and an hour of intervals look the same here.</span></li></ul>
           <p class="hint"><b>In the app</b> Week → Training. Tap a bar, then expand the workout count to see the sessions behind it.</p>
         </div>
@@ -469,8 +556,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature wide">
         <div class="copy">
           <span class="label">Training calendar and workout</span>
-          <h3>From a date to a single session</h3>
-          <p>The calendar shows each day’s main workout and its minutes. Tap a date to open it, then tap a session to see how hard it was: the time spent in each heart rate zone, and how heart rate moved through it.</p>
+          <h3>From a date to <span class="hl" style="--hl: var(--tangerine)">a single session</span></h3>
+          <p>The calendar shows each day’s main workout and its minutes. Tap a date to open it, then tap a session to see <strong>how hard it was</strong>: the time spent in each heart rate zone, and how heart rate moved through it.</p>
           <ul class="read">
             <li><i style="background:var(--sky)"></i><span>Zones 1–2 are easy, conversational effort.</span></li>
             <li><i style="background:var(--straw)"></i><span>Zone 3 is steady, comfortably hard.</span></li>
@@ -492,8 +579,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature flip">
         <div class="copy">
           <span class="label">Pace and average heart rate</span>
-          <h3>Getting fitter shows up as a lower heart rate at the same pace</h3>
-          <p>Each dot is one run’s average heart rate. When runs at a similar pace need fewer beats per minute over the weeks, your aerobic fitness is likely improving. The dashed line is the trend.</p>
+          <h3>Getting fitter shows up as <span class="hl" style="--hl: var(--tangerine)">a lower heart rate at the same pace</span></h3>
+          <p>Each dot is one run’s average heart rate. <strong>When runs at a similar pace need fewer beats per minute over the weeks</strong>, your aerobic fitness is likely improving. The dashed line is the trend.</p>
           <ul class="read"><li><i style="background:var(--tangerine)"></i><span>Hover a dot to see its pace.</span></li><li><i class="none"></i><span>Heat, hills, hydration and the run’s structure change heart rate too, so compare similar runs.</span></li></ul>
           <p class="hint"><b>In the app</b> Training Performance. Pick an activity and indoor or outdoor, then compare runs at nearby paces.</p>
         </div>
@@ -506,8 +593,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature">
         <div class="copy">
           <span class="label">One-minute heart-rate recovery</span>
-          <h3>How fast your heart settles after a run</h3>
-          <p>How far heart rate falls in the first minute after exercise. A bigger drop generally means quicker recovery, and it tends to grow as fitness improves.</p>
+          <h3>How fast your heart <span class="hl" style="--hl: var(--pink)">settles after a run</span></h3>
+          <p>How far heart rate falls in the first minute after exercise. <strong>A bigger drop generally means quicker recovery</strong>, and it tends to grow as fitness improves.</p>
           <ul class="read"><li><i style="background:var(--pink)"></i><span>Each dot is the drop after one run, in beats per minute.</span></li><li><i class="none"></i><span>Walking, standing still or sitting down changes the number, so compare runs with similar cool-downs.</span></li></ul>
           <p class="hint"><b>In the app</b> Training Performance, the lower chart.</p>
         </div>
@@ -523,7 +610,7 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <div class="chapter-head">
         <div>
           <span class="part">Part 3 · Recovery</span>
-          <h2>How well you slept it off, night by night and across weeks</h2>
+          <h2>How well you <span class="hl" style="--hl: var(--violet)">slept it off</span></h2>
           <p>Recovery reads the hours you can’t feel: sleep timing, overnight HRV and vitals, and how your numbers are trending against your own usual range. It still works without sleep data, from daytime HRV and resting heart rate.</p>
         </div>
         <ul class="qs">
@@ -535,8 +622,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature">
         <div class="copy">
           <span class="label">Recovery calendar</span>
-          <h3>A month of daily scores at a glance</h3>
-          <p>Each date shows that day’s HRV score; switch to daily HRV or resting heart rate. A run of warm colours points to a stretch worth looking into, and tapping a date shows all three numbers for that day.</p>
+          <h3>A month of daily scores <span class="hl" style="--hl: var(--sky)">at a glance</span></h3>
+          <p>Each date shows that day’s HRV score; switch to daily HRV or resting heart rate. <strong>A run of warm colours points to a stretch worth looking into</strong>, and tapping a date shows all three numbers for that day.</p>
           <ul class="read"><li><i style="background:var(--lime)"></i><span>Low</span></li><li><i style="background:var(--sky)"></i><span>Usual</span></li><li><i style="background:var(--tangerine)"></i><span>Elevated</span></li><li><i style="background:var(--pink)"></i><span>High</span></li></ul>
           <p class="hint"><b>In the app</b> Month → Recovery, then the calendar icon. Choose a metric from the menu and tap a date.</p>
         </div>
@@ -552,8 +639,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature flip">
         <div class="copy">
           <span class="label">Sleep and recovery</span>
-          <h3>When you slept, grouped by the morning you woke</h3>
-          <p>Each row is one night on an evening-to-evening axis, so a night that crosses midnight stays in one piece. Tap a night to see its overnight HRV and the resting heart rate of the day that followed.</p>
+          <h3>When you slept, grouped by <span class="hl" style="--hl: var(--violet)">the morning you woke</span></h3>
+          <p>Each row is one night on an evening-to-evening axis, <strong>so a night that crosses midnight stays in one piece</strong>. Tap a night to see its overnight HRV and the resting heart rate of the day that followed.</p>
           <ul class="read"><li><i style="background:var(--violet)"></i><span>Bar length is time asleep; position shows bedtime and wake time.</span></li><li><i class="none"></i><span>A night without HRV readings stays blank rather than guessed.</span></li></ul>
           <p class="hint"><b>In the app</b> Week or Month → Recovery → Sleep &amp; Recovery.</p>
         </div>
@@ -567,8 +654,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature wide">
         <div class="copy">
           <span class="label">HRV trend</span>
-          <h3>Is your HRV holding within your usual range?</h3>
-          <p>One day’s HRV says little; a week says more. This is how training studies read HRV: a 7-day average compared with a band of normal day-to-day variation for you.</p>
+          <h3>Is your HRV holding <span class="hl" style="--hl: var(--sky)">within your usual range</span>?</h3>
+          <p><strong>One day’s HRV says little; a week says more.</strong> This is how training studies read HRV: a 7-day average compared with a band of normal day-to-day variation for you.</p>
           <ul class="read">
             <li><i style="background:var(--violet)"></i><span>The purple line is the 7-day average, drawn once at least 3 of the 7 days have a value.</span></li>
             <li><i style="background:var(--sky)"></i><span>The blue band is your usual range, from the 30 days before this month.</span></li>
@@ -586,8 +673,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature">
         <div class="copy">
           <span class="label">Resting heart rate</span>
-          <h3>Slow to change, so changes are worth noticing</h3>
-          <p>Resting heart rate moves less than HRV from day to day. When it climbs a few beats over several days, it often moves with heavy training, short sleep or getting ill. The dashed line is the month’s median.</p>
+          <h3>Slow to change, so <span class="hl" style="--hl: var(--sky)">changes are worth noticing</span></h3>
+          <p>Resting heart rate moves less than HRV from day to day. <strong>When it climbs a few beats over several days</strong>, it often moves with heavy training, short sleep or getting ill. The dashed line is the month’s median.</p>
           <ul class="read"><li><i style="background:var(--sky)"></i><span>Hover a day to see how far it sits from the median.</span></li></ul>
           <p class="hint"><b>In the app</b> Recovery, below the HRV trend, with daily steps beside it.</p>
         </div>
@@ -600,8 +687,8 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
       <article class="feature wide">
         <div class="copy">
           <span class="label">Overnight vitals</span>
-          <h3>What your body did while you slept</h3>
-          <p>Four measurements from the night, each against its own band from your previous 30 nights. One point outside its band is common. Several moving together on the same nights is the pattern to notice: in this sample, sleep heart rate, breathing rate and wrist temperature all rise over the last few nights.</p>
+          <h3>What your body did <span class="hl" style="--hl: var(--violet)">while you slept</span></h3>
+          <p>Four measurements from the night, each against its own band from your previous 30 nights. One point outside its band is common. <strong>Several moving together on the same nights is the pattern to notice</strong>: in this sample, sleep heart rate, breathing rate and wrist temperature all rise over the last few nights.</p>
           <ul class="read">
             <li><i style="background:var(--violet)"></i><span>Purple points are within your usual range.</span></li>
             <li><i style="background:var(--tangerine)"></i><span>Orange points fall outside it.</span></li>
@@ -621,14 +708,14 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
     <section class="block" id="evidence">
       <div class="block-head">
         <span class="kicker">Evidence and methods</span>
-        <h2>How each number is made, and where the evidence ends</h2>
+        <h2>How each number is made, and <span class="hl" style="--hl: var(--violet)">where the evidence ends</span></h2>
         <p>The four bands and the minimum counts are app design choices. They describe a position in your own data and have no validated cutoff for stress, readiness or disease.</p>
       </div>
-      <div class="cards4" style="margin-bottom:18px">
-        <article><h3>Apple Watch HRV is usable</h3><p>Against a chest strap, reliability and agreement were above 0.9, and the watch picked up mild mental stress.</p><cite>Source 4</cite></article>
-        <article><h3>Compare with yourself</h3><p>Series 9 and Ultra 2 underestimated HRV by about 8 ms on average. A personal baseline cancels that offset.</p><cite>Source 14</cite></article>
-        <article><h3>An estimate, not a diagnosis</h3><p>A review supports HRV for objective stress assessment and notes there is no accepted standard.</p><cite>Source 15</cite></article>
-        <article><h3>Trends over single days</h3><p>Training studies read a 7-day rolling average against each person’s smallest worthwhile change, with at least 3 valid days a week.</p><cite>Sources 16–17</cite></article>
+      <div class="facts">
+        <article class="fact big"><span class="fact-n">&gt;0.9</span><h3>Apple Watch HRV is usable</h3><p>Reliability and agreement against a chest strap, and the watch picked up mild mental stress.</p><cite>Source 4</cite></article>
+        <article class="fact"><span class="fact-n">≈ −8 ms</span><h3>So compare with yourself</h3><p>Series 9 and Ultra 2 read low on average; a personal baseline cancels the offset.</p><cite>Source 14</cite></article>
+        <article class="fact"><span class="fact-n">No cutoff</span><h3>An estimate, not a diagnosis</h3><p>HRV reflects stress, but there’s no accepted standard for it.</p><cite>Source 15</cite></article>
+        <article class="fact wide"><span class="fact-n">3 of 7 days</span><h3>Trends over single days</h3><p>Training studies read a 7-day average against each person’s smallest worthwhile change, with at least 3 valid days a week.</p><cite>Sources 16–17</cite></article>
       </div>
 
       <details class="method">
@@ -1643,7 +1730,47 @@ function updateVitalsReadout(i) {
 }
 
 /* ---------- Start ---------- */
+function drawGlyphs() {
+  const glyph = (id) => { const g = $(id); if (g) g.innerHTML = ""; return g; };
+  // Daytime: the dial, at glyph size
+  const gd = glyph("glyphDay");
+  if (gd) {
+    const sc = DAYS[1].scores, c = 32, inner = 17;
+    for (let h = 0; h < 24; h++) {
+      const a = (h + 0.5) / 24 * 2 * Math.PI - Math.PI / 2, s = sc[h];
+      const len = s === undefined ? 1.6 : 3 + 11 * s / 100;
+      el("line", { x1: c + inner * Math.cos(a), y1: c + inner * Math.sin(a), x2: c + (inner + len) * Math.cos(a), y2: c + (inner + len) * Math.sin(a),
+        stroke: s === undefined ? css("--rule") : css(band(s).color), "stroke-width": 2.6, "stroke-linecap": "round" }, gd);
+    }
+    const R = 13.5, a0 = -Math.PI / 2, a1 = DAYS[1].wake / 24 * 2 * Math.PI - Math.PI / 2;
+    el("path", { d: `M ${c + R * Math.cos(a0)} ${c + R * Math.sin(a0)} A ${R} ${R} 0 0 1 ${c + R * Math.cos(a1)} ${c + R * Math.sin(a1)}`, fill: "none", stroke: css("--violet"), "stroke-width": 2.4, "stroke-linecap": "round" }, gd);
+  }
+  // Training: the eight weekly stacks
+  const gt = glyph("glyphTrain");
+  if (gt) {
+    const max = Math.max(...WEEKS.map((w) => w.run + w.strength + w.cycle));
+    WEEKS.forEach((w, i) => {
+      let top = 58; const x = 5 + i * 7.2;
+      [["run", "--tangerine"], ["strength", "--violet"], ["cycle", "--sky"]].forEach(([k, col]) => {
+        const h = w[k] / max * 50; if (!h) return; top -= h;
+        el("rect", { x, y: top, width: 5, height: h, fill: css(col), opacity: i === WEEKS.length - 1 ? 1 : 0.55 }, gt);
+      });
+    });
+  }
+  // Recovery: the 7-day line against the usual band
+  const gr = glyph("glyphRec");
+  if (gr) {
+    const st = logStats(DAYTIME.slice(0, NOV)), lo = 32, hi = 54;
+    const y = (v) => 58 - (v - lo) / (hi - lo) * 52;
+    const u0 = Math.exp(st.mean - 0.5 * st.sd), u1 = Math.exp(st.mean + 0.5 * st.sd);
+    el("rect", { x: 4, y: y(u1), width: 56, height: y(u0) - y(u1), rx: 3, fill: css("--sky"), opacity: 0.16 }, gr);
+    const pts = [];
+    for (let d = 1; d <= TODAY; d++) { const v = rolling(DAYTIME, NOV + d - 1); if (v) pts.push(`${4 + (d - 1) / (TODAY - 1) * 56},${y(v)}`); }
+    el("polyline", { points: pts.join(" "), fill: "none", stroke: css("--violet"), "stroke-width": 2.6, "stroke-linecap": "round", "stroke-linejoin": "round" }, gr);
+  }
+}
 function renderAll() {
+  drawGlyphs();
   charts.forEach((c) => c.render());
   paintDial(); paintCenter();
   renderTrainCal(); renderWorkout(); renderRecCal();
@@ -1652,7 +1779,7 @@ renderDayCharts();
 updateVolReadout(); renderTrainCal(); renderWorkout(); updatePaceReadout(null);
 renderRecCal(); updateNight(); updateTrendReadout();
 readout("rhrReadout", "Median · November", (() => { const v = Object.values(RHR).sort((a, b) => a - b); return v[Math.floor(v.length / 2)]; })(), "bpm", ` <small>dashed line</small>`);
-updateHrrReadout(null); updateVitalsReadout(null);
+updateHrrReadout(null); updateVitalsReadout(null); drawGlyphs();
 paintCenter();
 animateDial(true);
 window.addEventListener("resize", () => whrChart && whrChart.render());
@@ -1673,6 +1800,14 @@ if ("IntersectionObserver" in window) {
 const topbar = $("topbar");
 const onScroll = () => topbar.classList.toggle("scrolled", window.scrollY > 8);
 window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+const marks = [...document.querySelectorAll(".hl")];
+if (reduceMotion || !("IntersectionObserver" in window)) marks.forEach((m) => m.classList.add("in"));
+else {
+  const markObserver = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add("in"); markObserver.unobserve(e.target); }
+  }), { rootMargin: "0px 0px -12% 0px", threshold: 0.6 });
+  marks.forEach((m) => markObserver.observe(m));
+}
 })();
 </script>
 </body>

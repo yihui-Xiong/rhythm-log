@@ -139,6 +139,20 @@ section.block { padding: 64px 0; }
 #trainCal button { width: 100%; padding: 6px 3px; }
 .cal-sport { width: 100%; min-height: 18px; display: grid; place-items: center; border-radius: 5px; }
 
+/* Year training calendar */
+.year-calendar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.year-month { min-width: 0; padding: 7px; display: grid; gap: 7px; text-align: left; color: var(--ink); background: var(--thumb); border: 1px solid var(--grid); border-radius: 9px; cursor: pointer; }
+.year-month[aria-pressed="true"] { border-color: var(--accent); }
+.year-month:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.year-month:disabled { cursor: default; opacity: .55; }
+.year-month-name { font: 700 12px "JetBrains Mono", monospace; }
+.year-month-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); justify-items: center; gap: 4px 1px; }
+.year-dot { width: min(100%, 7px); height: 7px; display: flex; border-radius: 50%; overflow: hidden; background: var(--track); }
+.year-dot.blank { background: transparent; }
+.year-dot.future { opacity: .45; }
+.year-dot i { flex: 1; }
+#year-training { --year-walk: color-mix(in srgb, var(--straw) 77%, black); scroll-margin-top: 16px; }
+
 /* Workout panel */
 .wlist { display: flex; flex-direction: column; gap: 4px; }
 .wrow { min-height: 56px; display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 14px; border: 0; background: transparent; cursor: pointer; text-align: left; width: 100%; }
@@ -567,7 +581,6 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
             <li><i style="background:var(--pink)"></i><span>Zones 4–5 are hard to very hard, hard to hold for long.</span></li>
           </ul>
           <p>Try November 11 to see stacked strength training and running tiles. In the app, the bar-chart switch shows the month’s total and lets you tap a weekly bar to filter the workout list. Each bar is labelled with its starting date.</p>
-          <p>Open Year for twelve light month tiles. A coloured dot marks a workout day, and a split dot shows multiple sports. Running is lime green, walking is golden yellow, indoor cycling is sky blue and strength training is violet. Tap a month to open its full training calendar.</p>
           <p class="hint"><b>In the app</b> Month → Training. Tap a date to open that day at its workouts.</p>
         </div>
         <div class="grid2">
@@ -579,6 +592,21 @@ html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 80px); }
             <div class="legend"><span><b style="background:var(--lime)"></b>Running</span><span><b style="background:var(--violet)"></b>Strength training</span><span><b style="background:var(--sky)"></b>Indoor Cycling</span><span><b style="background:var(--pink)"></b>Indoor Rowing</span></div>
           </div>
           <div class="card" id="workoutPanel" aria-live="polite"></div>
+        </div>
+      </article>
+      <article class="feature flip" id="year-training">
+        <div class="copy">
+          <span class="label">Yearly training calendar</span>
+          <h3>A year of movement <span class="hl" style="--hl: var(--lime)">at a glance</span></h3>
+          <p>Each dot is a day. A coloured dot marks a workout, and a split dot shows multiple sports on the same date. Grey dots are days with no recorded workout.</p>
+          <p>Select a month in this sample year to see how many days you trained.</p>
+          <p class="hint"><b>In the app</b> Year opens in Calendar view. Tap a month to open its full training calendar.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><h4><i style="background:var(--tangerine)"></i>Yearly training calendar</h4><span class="unit">Sample 2026</span></div>
+          <div class="year-calendar" id="yearTrainCal" role="group" aria-label="Months in the sample training year"></div>
+          <div class="readout" id="yearTrainReadout" aria-live="polite"></div>
+          <div class="legend"><span><b style="background:var(--lime)"></b>Running</span><span><b style="background:var(--year-walk)"></b>Walking</span><span><b style="background:var(--violet)"></b>Strength training</span><span><b style="background:var(--sky)"></b>Indoor cycling</span><span><b style="background:var(--pink)"></b>Indoor rowing</span></div>
         </div>
       </article>
       <article class="feature flip">
@@ -1448,6 +1476,59 @@ function renderTrainCal() {
   host.querySelectorAll("button[data-d]").forEach((b) => b.addEventListener("click", () => { calDay = +b.dataset.d; workoutSel = 0; renderTrainCal(); renderWorkout(); }));
 }
 
+function renderYearTrainCal() {
+  const year = 2026, sampleMonth = 10;
+  const shortMonth = new Intl.DateTimeFormat("en", { month: "short", timeZone: "UTC" });
+  const fullMonth = new Intl.DateTimeFormat("en", { month: "long", timeZone: "UTC" });
+  const sampleWeek = ["walk", "r", "s", "indoorCycling", "r", "walk", "s"];
+  const months = Array.from({ length: 12 }, (_, month) => {
+    const first = new Date(Date.UTC(year, month, 1));
+    const offset = (first.getUTCDay() + 6) % 7;
+    const dayCount = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+    const draw = rng(year * 12 + month);
+    const days = Array.from({ length: dayCount }, (_, index) => {
+      const date = index + 1;
+      const future = month > sampleMonth || (month === sampleMonth && date > TODAY);
+      if (future) return { sports: [], future };
+      if (month === sampleMonth) {
+        return { sports: [...new Set((WORKOUTS[date] || []).map((workout) => workout.type))], future };
+      }
+      const sport = sampleWeek[(offset + index) % 7];
+      const sports = draw() < 0.32 ? [] : [sport];
+      if (sport !== "indoorCycling" && draw() < 0.11) sports.push("indoorCycling");
+      return { sports, future };
+    });
+    return { first, offset, days };
+  });
+  const host = $("yearTrainCal");
+  host.innerHTML = months.map(({ first, offset, days }, month) => {
+    const label = fullMonth.format(first);
+    const activeDays = days.filter(({ sports }) => sports.length).length;
+    const dots = Array.from({ length: 42 }, (_, slot) => {
+      const day = days[slot - offset];
+      if (!day) return '<span class="year-dot blank"></span>';
+      const segments = day.sports.map((type) => {
+        const color = type === "walk" ? "--year-walk" : TYPE[type].color;
+        return `<i style="background:var(${color})"></i>`;
+      }).join("");
+      return `<span class="year-dot${day.future ? " future" : ""}">${segments}</span>`;
+    }).join("");
+    return `<button class="year-month" type="button" data-month="${month}" aria-pressed="false" aria-label="${label}, ${activeDays} workout days" ${month > sampleMonth ? "disabled" : ""}>
+      <span class="year-month-name">${shortMonth.format(first)}</span>
+      <span class="year-month-days" aria-hidden="true">${dots}</span>
+    </button>`;
+  }).join("");
+  const buttons = host.querySelectorAll("button");
+  const select = (month) => {
+    const { first, days } = months[month];
+    const count = days.filter(({ sports }) => sports.length).length;
+    buttons.forEach((button) => button.setAttribute("aria-pressed", String(+button.dataset.month === month)));
+    readout("yearTrainReadout", fullMonth.format(first), count, count === 1 ? "workout day" : "workout days");
+  };
+  buttons.forEach((button) => button.addEventListener("click", () => select(+button.dataset.month)));
+  select(sampleMonth);
+}
+
 let whrChart = null;
 function renderWorkout() {
   const host = $("workoutPanel");
@@ -1809,7 +1890,7 @@ function renderAll() {
   renderTrainCal(); renderWorkout(); renderRecCal();
 }
 renderDayCharts();
-updateVolReadout(); renderTrainCal(); renderWorkout(); updatePaceReadout(null);
+updateVolReadout(); renderTrainCal(); renderYearTrainCal(); renderWorkout(); updatePaceReadout(null);
 renderRecCal(); updateNight(); updateTrendReadout();
 readout("rhrReadout", "Median · November", (() => { const v = Object.values(RHR).sort((a, b) => a - b); return v[Math.floor(v.length / 2)]; })(), "bpm", ` <small>dashed line</small>`);
 updateHrrReadout(null); updateVitalsReadout(null); drawGlyphs();
